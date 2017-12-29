@@ -7,16 +7,17 @@
 #include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
 #include "parserauxiliaryfunctions.h"
-#include "typetokenstring.h"
 
 class Type
 {
 public:
     Type(const QString &type);
 
-
 private:
-    TypeTokenString typeString;
+    void buildParsingTree(const QString &typeString);
+
+
+    TypeParsingTree parsingTree;
 
 };
 

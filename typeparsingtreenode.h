@@ -3,7 +3,7 @@
 
 #include <QVector>
 #include <memory>
-#include "typetoken.h"
+#include "typetokenstring.h"
 
 class TypeParsingTree;
 
@@ -19,7 +19,7 @@ public:
 
     bool isRoot() const;
 
-    QVector<TypeToken> getType() const;
+    TypeTokenString getTypeString() const;
 
     unsigned int getHeight() const;
 

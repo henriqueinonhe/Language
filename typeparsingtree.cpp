@@ -2,15 +2,16 @@
 
 TypeParsingTree::TypeParsingTree() :
     root(this, nullptr, QVector<unsigned int>()),
-    height(0)
+    height(0),
+    typeString("")
 {
 
 }
 
-TypeParsingTree::TypeParsingTree(const QVector<TypeToken> &type) :
+TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
     root(this, nullptr, QVector<unsigned int>()),
     height(0),
-    type(type)
+    typeString(type)
 {
     root.typeBeginIndex = 0;
     root.typeEndIndex = type.size() - 1;

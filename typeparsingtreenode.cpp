@@ -45,9 +45,9 @@ bool TypeParsingTreeNode::isRoot() const
     return parent == nullptr;
 }
 
-QVector<TypeToken> TypeParsingTreeNode::getType() const
+TypeTokenString TypeParsingTreeNode::getTypeString() const
 {
-    return tree->type.mid(typeBeginIndex, typeEndIndex - typeBeginIndex + 1);
+    return tree->typeString.mid(typeBeginIndex, typeEndIndex - typeBeginIndex + 1);
 }
 
 unsigned int TypeParsingTreeNode::getHeight() const

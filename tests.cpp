@@ -329,5 +329,7 @@ TEST_CASE("TypeTokenString")
 
     CHECK(string.toString() == "[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType");
 
+    CHECK_THROWS(TypeTokenString(""));
+
 }
 

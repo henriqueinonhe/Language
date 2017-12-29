@@ -4,22 +4,21 @@
 #include <QString>
 #include <memory>
 #include "typeparsingtreenode.h"
-#include "typetoken.h"
-
+#include "typetokenstring.h"
 using namespace std;
 
 class TypeParsingTree
 {
 public:
     TypeParsingTree();
-    TypeParsingTree(const QVector<TypeToken> &type);
+    TypeParsingTree(const TypeTokenString &typeString);
 
     unsigned int getHeight() const;
 
 private:
     TypeParsingTreeNode root;
     unsigned int height;
-    QVector<TypeToken> type;
+    TypeTokenString typeString;
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTreeNode;

@@ -14,7 +14,12 @@ public:
 
     QString toString() const;
 
+    unsigned int size() const;
+    TypeTokenString mid(const unsigned int startPos, const unsigned int n);
+
 private:
+    TypeTokenString(const QVector<PoolRecordPointer<TypeToken>> &tokenList);
+
     static Pool<TypeToken> pool;
 
     QVector<PoolRecordPointer<TypeToken>> tokenList;
