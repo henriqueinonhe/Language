@@ -13,6 +13,7 @@ public:
     void goToParent();
     void goToRoot();
     void travelPath(const QString &path);
+    void travelPath(const QVector<unsigned int> &coordinates);
     void goToCoordinates(const QString &coordinates);
 
     TypeParsingTree getTree() const;

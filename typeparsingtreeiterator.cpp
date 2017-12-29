@@ -9,6 +9,11 @@ TypeParsingTreeIterator::TypeParsingTreeIterator(TypeParsingTree *tree) :
 
 void TypeParsingTreeIterator::goToChild(unsigned int index)
 {
+    if(index >= currentNode->children.size())
+    {
+        throw std::invalid_argument("This child does not exist.");
+    }
+
     currentNode = currentNode->children[index].get();
 }
 
@@ -33,6 +38,14 @@ void TypeParsingTreeIterator::travelPath(const QString &path)
     convertPathToCoordinates(path, vec);
 
     std::for_each(vec.begin(), vec.end(), [&](unsigned int index)
+    {
+        this->goToChild(index);
+    });
+}
+
+void TypeParsingTreeIterator::travelPath(const QVector<unsigned int> &coordinates)
+{
+    std::for_each(cooordinates.begin(), coordinates.end(), [&](unsigned int index)
     {
         this->goToChild(index);
     });

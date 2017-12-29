@@ -11,41 +11,25 @@ TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeN
     updateTreeHeight();
 }
 
-void TypeParsingTreeNode::printChildren(QString &str, const bool isLastChild)
-{
-    if(children.isEmpty())
-    {
-        return;
-    }
-
-    str += "{";
-    std::for_each(children.begin(), children.end() - 1, [&str](const shared_ptr<TypeParsingTreeNode> &ptr)
-    {
-        str += ptr->getTypeString().toString();
-        str += ";";
-    });
-
-    str += children.back()->getTypeString().toString();
-    str += "}   ";
-    if(isLastChild)
-    {
-        str += "\n\n";
-    }
-
-    std::for_each(children.begin(), children.end() - 1, [&str](const shared_ptr<TypeParsingTreeNode> &ptr)
-    {
-        ptr->printChildren(str, false);
-    });
-
-    children.back()->printChildren(str, true);
-}
-
 void TypeParsingTreeNode::updateTreeHeight()
 {
     if(tree->height < getHeight())
     {
         tree->height = getHeight();
     }
+}
+
+void TypeParsingTreeNode::gatherChidrenStrings(QString &str) const
+{
+    std::for_each(children.begin(), children.end(), [&str](const shared_ptr<TypeParsingTreeNode> &node)
+    {
+        str += "(";
+        str += QString::number(node->getCoordinates()[node->getCoordinates().size() - 2]);
+        str += QString::number(node->getCoordinates().back());
+        str += "){"
+        str += node->getTypeString().toString();
+        str += "} ";
+    });
 }
 
 QVector<unsigned int> TypeParsingTreeNode::getCoordinates() const
@@ -76,6 +60,11 @@ bool TypeParsingTreeNode::isRoot() const
     return parent == nullptr;
 }
 
+bool TypeParsingTreeNode::isChildless() const
+{
+    return children.isEmpty();
+}
+
 TypeTokenString TypeParsingTreeNode::getTypeString() const
 {
     return tree->typeString.mid(typeBeginIndex, typeEndIndex - typeBeginIndex + 1);
@@ -84,6 +73,11 @@ TypeTokenString TypeParsingTreeNode::getTypeString() const
 unsigned int TypeParsingTreeNode::getHeight() const
 {
     return coordinates.size();
+}
+
+unsigned int TypeParsingTreeNode::getChildrenNumber() const
+{
+    return children.size();
 }
 
 void TypeParsingTreeNode::appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex)

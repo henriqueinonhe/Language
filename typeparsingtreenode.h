@@ -19,10 +19,14 @@ public:
     QString coordinatesToString() const;
 
     bool isRoot() const;
+    bool isChildless() const;
 
     TypeTokenString getTypeString() const;
 
     unsigned int getHeight() const;
+    unsigned int getChildrenNumber() const;
+
+    void gatherChidrenStrings(QString &str) const;
 
 private:
     TypeParsingTreeNode(TypeParsingTree *tree,
@@ -31,8 +35,6 @@ private:
                         const unsigned int typeBeginIndex,
                         const unsigned int typeEndIndex);
 
-    void printChildren(QString &str, const bool isLastChild);
-    void printLastChild(QString &str);
 
     void updateTreeHeight();
 
