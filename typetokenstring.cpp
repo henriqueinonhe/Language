@@ -4,11 +4,6 @@ Pool<TypeToken> TypeTokenString::pool;
 
 TypeTokenString::TypeTokenString(const QString &string)
 {
-    if(string.isEmpty())
-    {
-        throw std::invalid_argument("The type token string cannot be empty!");
-    }
-
     lexString(string);
 }
 
@@ -31,6 +26,16 @@ unsigned int TypeTokenString::size() const
 TypeTokenString TypeTokenString::mid(const unsigned int startPos, const unsigned int n)
 {
     return TypeTokenString(tokenList.mid(startPos, n));
+}
+
+PoolRecordPointer<TypeToken> TypeTokenString::operator[](unsigned int index) const
+{
+    if(index >= size())
+    {
+        throw std::invalid_argument("Index out of bounds.");
+    }
+
+    return tokenList[index];
 }
 
 TypeTokenString::TypeTokenString(const QVector<PoolRecordPointer<TypeToken> > &tokenList) :

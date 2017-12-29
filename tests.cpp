@@ -133,7 +133,7 @@ TEST_CASE("TypeParsingTrees")
 {
     SECTION("TypeParsingTrees Nodes methods work")
     {
-        TypeParsingTree tree;
+        TypeParsingTree tree(TypeTokenString("Aflosos"));
         TypeParsingTreeIterator iter(&tree);
 
         CHECK(iter->coordinatesToString() == QString("()"));
@@ -171,7 +171,7 @@ TEST_CASE("TypeParsingTrees")
 
     SECTION("Tree methods and Tree Height")
     {
-        TypeParsingTree tree;
+        TypeParsingTree tree(TypeTokenString("Aflosos"));
         TypeParsingTreeIterator iter(&tree);
 
         CHECK(iter.getTree().getHeight() == 0);
@@ -195,7 +195,7 @@ TEST_CASE("TypeParsingTrees")
 
     SECTION("TypeParsingTree Iterator Paths")
     {
-        TypeParsingTree tree;
+        TypeParsingTree tree(TypeTokenString("Aflisis"));
         TypeParsingTreeIterator iter(&tree);
 
         iter->appendChild();
@@ -328,8 +328,6 @@ TEST_CASE("TypeTokenString")
     string = TypeTokenString("[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType");
 
     CHECK(string.toString() == "[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType");
-
-    CHECK_THROWS(TypeTokenString(""));
 
 }
 

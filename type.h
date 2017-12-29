@@ -16,6 +16,7 @@ public:
 private:
     void buildParsingTree(const QString &typeString);
 
+    bool isPrimitive(const TypeTokenString &typeString);
 
     TypeParsingTree parsingTree;
 

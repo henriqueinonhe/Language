@@ -148,6 +148,13 @@ public:
         return &ptr->getObject();
     }
 
+
+    ~PoolRecordPointer()
+    {
+        recountPointer();
+    }
+
+private:
     void recountPointer()
     {
         if(isSet)
@@ -163,12 +170,6 @@ public:
         }
     }
 
-    ~PoolRecordPointer()
-    {
-        recountPointer();
-    }
-
-private:
     PoolRecord<T> *ptr;
     bool isSet;
 };

@@ -10,7 +10,6 @@ using namespace std;
 class TypeParsingTree
 {
 public:
-    TypeParsingTree();
     TypeParsingTree(const TypeTokenString &typeString);
 
     unsigned int getHeight() const;
