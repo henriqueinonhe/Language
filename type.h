@@ -1,12 +1,15 @@
 #ifndef TOKENTYPE_H
 #define TOKENTYPE_H
 
+#include <memory>
 #include <QSet>
 #include <QVector>
 #include <QString>
 #include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
 #include "parserauxiliaryfunctions.h"
+
+using namespace std;
 
 class Type
 {
@@ -18,7 +21,7 @@ private:
 
     bool isPrimitive(const TypeTokenString &typeString);
 
-    TypeParsingTree parsingTree;
+    shared_ptr<TypeParsingTree> parsingTree;
 
 };
 

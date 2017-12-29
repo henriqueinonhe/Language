@@ -1,6 +1,7 @@
 #ifndef TYPEPARSINGTREENODE_H
 #define TYPEPARSINGTREENODE_H
 
+#include <QString>
 #include <QVector>
 #include <memory>
 #include "typetokenstring.h"
@@ -12,7 +13,7 @@ using namespace std;
 class TypeParsingTreeNode
 {
 public:
-    void appendChild();
+    void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
 
     QVector<unsigned int> getCoordinates() const;
     QString coordinatesToString() const;
@@ -24,7 +25,14 @@ public:
     unsigned int getHeight() const;
 
 private:
-    TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const QVector<unsigned int> &coordinates);
+    TypeParsingTreeNode(TypeParsingTree *tree,
+                        TypeParsingTreeNode *parent,
+                        const QVector<unsigned int> &coordinates,
+                        const unsigned int typeBeginIndex,
+                        const unsigned int typeEndIndex);
+
+    void printChildren(QString &str, const bool isLastChild);
+    void printLastChild(QString &str);
 
     void updateTreeHeight();
 

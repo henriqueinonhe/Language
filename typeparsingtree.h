@@ -14,6 +14,8 @@ public:
 
     unsigned int getHeight() const;
 
+    QString print();
+
 private:
     TypeParsingTreeNode root;
     unsigned int height;

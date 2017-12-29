@@ -10,6 +10,7 @@
 #include "pool.h"
 #include "typetokenstring.h"
 #include <QRegularExpression>
+#include <iostream>
 
 
 TEST_CASE("Trees")
@@ -140,7 +141,7 @@ TEST_CASE("TypeParsingTrees")
         CHECK(iter->getHeight() == 0);
         CHECK(iter->isRoot());
 
-        iter->appendChild();
+        iter->appendChild(0,0);
         iter.goToChild(0);
 
         CHECK(iter->coordinatesToString() == QString("(0)"));
@@ -151,13 +152,13 @@ TEST_CASE("TypeParsingTrees")
         CHECK(iter->coordinatesToString() == QString("()"));
         CHECK(iter->getHeight() == 0);
 
-        iter->appendChild();
+        iter->appendChild(0,0);
         iter.goToChild(1);
 
         CHECK(iter->coordinatesToString() == QString("(1)"));
         CHECK(iter->getHeight() == 1);
 
-        iter->appendChild();
+        iter->appendChild(0,0);
         iter.goToChild(0);
 
         CHECK(iter->coordinatesToString() == QString("(1,0)"));
@@ -171,24 +172,24 @@ TEST_CASE("TypeParsingTrees")
 
     SECTION("Tree methods and Tree Height")
     {
-        TypeParsingTree tree(TypeTokenString("Aflosos"));
+        TypeParsingTree tree(TypeTokenString("Aflosis"));
         TypeParsingTreeIterator iter(&tree);
 
         CHECK(iter.getTree().getHeight() == 0);
 
-        iter->appendChild();
+        iter->appendChild(0,0);
 
         CHECK(iter.getTree().getHeight() == 1);
 
         iter.goToChild(0);
 
-        iter->appendChild();
+        iter->appendChild(0,0);
 
         CHECK(iter.getTree().getHeight() == 2);
 
         iter.goToParent();
 
-        iter->appendChild();
+        iter->appendChild(0,0);
 
         CHECK(iter.getTree().getHeight() == 2);
     }
@@ -198,18 +199,18 @@ TEST_CASE("TypeParsingTrees")
         TypeParsingTree tree(TypeTokenString("Aflisis"));
         TypeParsingTreeIterator iter(&tree);
 
-        iter->appendChild();
-        iter->appendChild();
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
 
         iter.goToChild(1);
 
-        iter->appendChild();
-        iter->appendChild();
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
 
         iter.goToChild(0);
 
-        iter->appendChild();
-        iter->appendChild();
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
 
         iter.goToRoot();
         iter.travelPath("(0)");
@@ -331,3 +332,34 @@ TEST_CASE("TypeTokenString")
 
 }
 
+TEST_CASE("TypeParsingTree Printer")
+{
+    TypeParsingTree tree(TypeTokenString("[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType"));
+    TypeParsingTreeIterator iter(&tree);
+
+    iter->appendChild(0,10);
+    iter->appendChild(12,12);
+
+    iter.goToChild(0);
+
+    iter->appendChild(1,5);
+    iter->appendChild(7,9);
+
+    iter.goToChild(0);
+
+    iter->appendChild(2,2);
+    iter->appendChild(4,4);
+
+    iter.goToParent();
+
+    iter.goToChild(1);
+
+    iter->appendChild(8,8);
+
+    std::cout << tree.print().toStdString();
+}
+
+TEST_CASE("Type")
+{
+    CHECK_NOTHROW(Type("AFLUSISS"));
+}

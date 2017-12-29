@@ -25,9 +25,16 @@ void Type::buildParsingTree(const QString &typeString)
         throw std::invalid_argument("The type cannot be empty!");
     }
 
+    parsingTree = make_shared<TypeParsingTree>(TypeParsingTree(tokenString));
+
     /* A primeira coisa a se fazer aqui então é
      * checar se a expressão corresponde a um tipo primitivo
      * ou não. */
+
+    if(isPrimitive(tokenString))
+    {
+        return;
+    }
 
 
 

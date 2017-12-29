@@ -1,12 +1,43 @@
 #include "typeparsingtreenode.h"
 #include "TypeParsingTree.h"
 
-TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const QVector<unsigned int> &coordinates) :
+TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const QVector<unsigned int> &coordinates, const unsigned int typeBeginIndex, const unsigned int typeEndIndex) :
     tree(tree),
     parent(parent),
-    coordinates(coordinates)
+    coordinates(coordinates),
+    typeBeginIndex(typeBeginIndex),
+    typeEndIndex(typeEndIndex)
 {
     updateTreeHeight();
+}
+
+void TypeParsingTreeNode::printChildren(QString &str, const bool isLastChild)
+{
+    if(children.isEmpty())
+    {
+        return;
+    }
+
+    str += "{";
+    std::for_each(children.begin(), children.end() - 1, [&str](const shared_ptr<TypeParsingTreeNode> &ptr)
+    {
+        str += ptr->getTypeString().toString();
+        str += ";";
+    });
+
+    str += children.back()->getTypeString().toString();
+    str += "}   ";
+    if(isLastChild)
+    {
+        str += "\n\n";
+    }
+
+    std::for_each(children.begin(), children.end() - 1, [&str](const shared_ptr<TypeParsingTreeNode> &ptr)
+    {
+        ptr->printChildren(str, false);
+    });
+
+    children.back()->printChildren(str, true);
 }
 
 void TypeParsingTreeNode::updateTreeHeight()
@@ -55,11 +86,11 @@ unsigned int TypeParsingTreeNode::getHeight() const
     return coordinates.size();
 }
 
-void TypeParsingTreeNode::appendChild()
+void TypeParsingTreeNode::appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex)
 {
     QVector<unsigned int> coordinates = this->coordinates;
     coordinates.push_back(this->children.size());
 
-    children.push_back(make_shared<TypeParsingTreeNode>(TypeParsingTreeNode(this->tree, this, coordinates)));
+    children.push_back(make_shared<TypeParsingTreeNode>(TypeParsingTreeNode(this->tree, this, coordinates, typeBeginIndex, typeEndIndex)));
 }
 
