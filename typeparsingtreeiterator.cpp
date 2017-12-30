@@ -45,7 +45,7 @@ void TypeParsingTreeIterator::travelPath(const QString &path)
 
 void TypeParsingTreeIterator::travelPath(const QVector<unsigned int> &coordinates)
 {
-    std::for_each(cooordinates.begin(), coordinates.end(), [&](unsigned int index)
+    std::for_each(coordinates.begin(), coordinates.end(), [&](unsigned int index)
     {
         this->goToChild(index);
     });

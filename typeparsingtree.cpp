@@ -17,73 +17,66 @@ QString TypeParsingTree::print()
 {
     TypeParsingTreeIterator iter(this);
     QVector<unsigned int> coord{};
-    unsigned int currentHeight = 1;
+    int currentHeight = 0;
     QString str;
 
-
-
-    /* Desperate tryout */
-
-    //
-    str += "(){";
-    str += iter->getTypeString().toString();
-    str += "}\n\n";
-    //
-    if(!iter->isChildless())
+    while(currentHeight < (int) this->getHeight()) //Each run prints all the nodes at a certain tree height
     {
-        for(unsigned int i = 0; i < iter->getChildrenNumber(); i++)
+        while(coord.size() < currentHeight - 1) //"Getting to" the right height
         {
-            iter.goToChild(i);
-            str += "(,";
-            str += QString::number(iter->getOwnChildNumber());
-            str += "){";
-            str += iter->getTypeString().toString();
-            str += "}";
-
-            iter.goToParent();
-        }
-
-        str += "\n\n";
-    }
-
-    iter.goToRoot();
-
-    while(currentHeight <= this->getHeight())
-    {
-        unsigned int heightCounter = 0;
-        while(heightCounter < currentHeight)
-        {
-            if(!iter->isChildless())
-            {
-                iter.goToChild(0);
-                coord.push_back(0);
-                currentHeight++;
-            }
-            else
-            {
-                iter.goToParent();
-                currentHeight--;
-                //There is something here missing!
-            }
-
+            coord.push_back(0);
             label1:
-            iter->gatherChidrenStrings(str);
-            iter.goToParent();
-            coord.back()++;
             if(coord.back() < iter->getChildrenNumber())
             {
                 iter.goToChild(coord.back());
-                goto label1;
             }
             else
             {
-                coord.pop_back();
-                coord.back()++;
-                //Something Missing Here
+                if(!coord.isEmpty())
+                {
+                    coord.pop_back();
+                    iter.goToParent();
+                    coord.back()++;
+                    goto label1;
+                }
+                else
+                {
+                    str += "\n\n";
+                    currentHeight++;
+                    break;
+                }
             }
         }
-
+        coord.push_back(0);
+        while(coord.back() < iter->getChildrenNumber()) //Printing
+        {
+            iter.goToChild(coord.back());
+            str += "(";
+            if(iter->getCoordinates().size() >= 2)
+            {
+                str += QString::number(iter->getCoordinates()[iter->getCoordinates().size() - 2]);
+            }
+            str += ",";
+            str += QString::number(iter->getCoordinates().back());
+            str += "){";
+            str += iter->getTypeString().toString();
+            str += "} ";
+            iter.goToParent();
+            coord.back()++;
+        }
+        coord.pop_back();
+        iter.goToParent();
+        if(!coord.isEmpty())
+        {
+            coord.back()++;
+        }
+        else
+        {
+            str += "\n\n";
+            currentHeight++;
+        }
     }
+
 
     return str;
 }

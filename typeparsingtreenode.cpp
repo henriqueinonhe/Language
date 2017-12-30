@@ -26,7 +26,7 @@ void TypeParsingTreeNode::gatherChidrenStrings(QString &str) const
         str += "(";
         str += QString::number(node->getCoordinates()[node->getCoordinates().size() - 2]);
         str += QString::number(node->getCoordinates().back());
-        str += "){"
+        str += "){";
         str += node->getTypeString().toString();
         str += "} ";
     });
