@@ -80,6 +80,11 @@ unsigned int TypeParsingTreeNode::getChildrenNumber() const
     return children.size();
 }
 
+unsigned int TypeParsingTreeNode::getOwnChildNumber() const
+{
+    return coordinates.back();
+}
+
 void TypeParsingTreeNode::appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex)
 {
     QVector<unsigned int> coordinates = this->coordinates;

@@ -16,70 +16,74 @@ unsigned int TypeParsingTree::getHeight() const
 QString TypeParsingTree::print()
 {
     TypeParsingTreeIterator iter(this);
-    QVector<unsigned int> coord{0};
+    QVector<unsigned int> coord{};
     unsigned int currentHeight = 1;
     QString str;
-
-    //This is the ad-hoc part of the code.
-    str += "(){";
-    str += iter->getTypeString().toString();
-    str += "}\n\n";
-
-    //rewrite this
-    if(!iter->isChildless())
-    {
-        label1:
-        iter.goToChild(coord.back());
-        str += "(,";
-        str += QString::number(iter->getCoordinates().back());
-        str += "){\"";
-        str += iter->getTypeString().toString();
-        str += "\"} ";
-
-        iter.goToParent();
-        coord.back()++;
-
-        if(coord.back() < iter->getChildrenNumber())
-        {
-            goto label1;
-        }
-        else
-        {
-            currentHeight++;
-        }
-    }
-
-    //temporary fix
-    coord.back() = 0;
-
-    //real function
-    unsigned int heightCounter = 0;
-    while(heightCounter < currentHeight)
-    {
-        label2:
-        iter.goToChild(coord.back());
-        iter->gatherChidrenStrings(str);
-
-        iter.goToParent();
-        coord.back()++;
-
-        if(coord.back() < iter->getChildrenNumber())
-        {
-            goto label2;
-        }
-        else
-        {
-            coord.pop_back();
-            coord.back()++;
-        }
-    }
 
 
 
     /* Desperate tryout */
 
+    //
+    str += "(){";
+    str += iter->getTypeString().toString();
+    str += "}\n\n";
+    //
+    if(!iter->isChildless())
+    {
+        for(unsigned int i = 0; i < iter->getChildrenNumber(); i++)
+        {
+            iter.goToChild(i);
+            str += "(,";
+            str += QString::number(iter->getOwnChildNumber());
+            str += "){";
+            str += iter->getTypeString().toString();
+            str += "}";
 
+            iter.goToParent();
+        }
 
+        str += "\n\n";
+    }
+
+    iter.goToRoot();
+
+    while(currentHeight <= this->getHeight())
+    {
+        unsigned int heightCounter = 0;
+        while(heightCounter < currentHeight)
+        {
+            if(!iter->isChildless())
+            {
+                iter.goToChild(0);
+                coord.push_back(0);
+                currentHeight++;
+            }
+            else
+            {
+                iter.goToParent();
+                currentHeight--;
+                //There is something here missing!
+            }
+
+            label1:
+            iter->gatherChidrenStrings(str);
+            iter.goToParent();
+            coord.back()++;
+            if(coord.back() < iter->getChildrenNumber())
+            {
+                iter.goToChild(coord.back());
+                goto label1;
+            }
+            else
+            {
+                coord.pop_back();
+                coord.back()++;
+                //Something Missing Here
+            }
+        }
+
+    }
 
     return str;
 }
