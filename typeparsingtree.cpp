@@ -19,7 +19,7 @@ QString TypeParsingTree::print()
     QVector<TypeParsingTreeNode *> nextLevelNodes{&(*iter)};
     QString str;
 
-    for(int currentLevel = 0; currentLevel < (int) this->getHeight(); currentLevel++)
+    for(int currentLevel = 0; currentLevel <= (int) this->getHeight(); currentLevel++)
     {
         QVector<TypeParsingTreeNode *> nextLevelNodes2;
         std::for_each(nextLevelNodes.begin(),
