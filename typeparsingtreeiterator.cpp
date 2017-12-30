@@ -73,6 +73,11 @@ TypeParsingTreeNode *TypeParsingTreeIterator::operator->()
     return currentNode;
 }
 
+TypeParsingTreeNode &TypeParsingTreeIterator::operator*()
+{
+    return *currentNode;
+}
+
 bool TypeParsingTreeIterator::checkPathStringValidity(const QString &path) const
 {
     QRegularExpression regex("^\\((\\d,)*\\d\\)$");

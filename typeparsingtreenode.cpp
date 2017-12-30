@@ -19,19 +19,6 @@ void TypeParsingTreeNode::updateTreeHeight()
     }
 }
 
-void TypeParsingTreeNode::gatherChidrenStrings(QString &str) const
-{
-    std::for_each(children.begin(), children.end(), [&str](const shared_ptr<TypeParsingTreeNode> &node)
-    {
-        str += "(";
-        str += QString::number(node->getCoordinates()[node->getCoordinates().size() - 2]);
-        str += QString::number(node->getCoordinates().back());
-        str += "){";
-        str += node->getTypeString().toString();
-        str += "} ";
-    });
-}
-
 QVector<unsigned int> TypeParsingTreeNode::getCoordinates() const
 {
     return coordinates;

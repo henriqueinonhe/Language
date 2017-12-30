@@ -27,8 +27,6 @@ public:
     unsigned int getChildrenNumber() const;
     unsigned int getOwnChildNumber() const;
 
-    void gatherChidrenStrings(QString &str) const;
-
 private:
     TypeParsingTreeNode(TypeParsingTree *tree,
                         TypeParsingTreeNode *parent,

@@ -16,67 +16,39 @@ unsigned int TypeParsingTree::getHeight() const
 QString TypeParsingTree::print()
 {
     TypeParsingTreeIterator iter(this);
-    QVector<unsigned int> coord{};
-    int currentHeight = 0;
+    QVector<TypeParsingTreeNode *> nextLevelNodes{&(*iter)};
     QString str;
 
-    while(currentHeight < (int) this->getHeight()) //Each run prints all the nodes at a certain tree height
+    for(int currentLevel = 0; currentLevel < (int) this->getHeight(); currentLevel++)
     {
-        while(coord.size() < currentHeight - 1) //"Getting to" the right height
-        {
-            coord.push_back(0);
-            label1:
-            if(coord.back() < iter->getChildrenNumber())
-            {
-                iter.goToChild(coord.back());
-            }
-            else
-            {
-                if(!coord.isEmpty())
-                {
-                    coord.pop_back();
-                    iter.goToParent();
-                    coord.back()++;
-                    goto label1;
-                }
-                else
-                {
-                    str += "\n\n";
-                    currentHeight++;
-                    break;
-                }
-            }
-        }
-        coord.push_back(0);
-        while(coord.back() < iter->getChildrenNumber()) //Printing
-        {
-            iter.goToChild(coord.back());
+        QVector<TypeParsingTreeNode *> nextLevelNodes2;
+        std::for_each(nextLevelNodes.begin(),
+                      nextLevelNodes.end(),
+                      [&str, &nextLevelNodes2](const TypeParsingTreeNode *node) {
             str += "(";
-            if(iter->getCoordinates().size() >= 2)
+            if(node->getCoordinates().size() >= 2)
             {
-                str += QString::number(iter->getCoordinates()[iter->getCoordinates().size() - 2]);
+                str += QString::number(node->getCoordinates()[node->getCoordinates().size() - 2]);
             }
-            str += ",";
-            str += QString::number(iter->getCoordinates().back());
-            str += "){";
-            str += iter->getTypeString().toString();
-            str += "} ";
-            iter.goToParent();
-            coord.back()++;
-        }
-        coord.pop_back();
-        iter.goToParent();
-        if(!coord.isEmpty())
-        {
-            coord.back()++;
-        }
-        else
-        {
-            str += "\n\n";
-            currentHeight++;
-        }
-    }
+            if(!node->getCoordinates().isEmpty())
+            {
+                str += ",";
+                str += QString::number(node->getCoordinates().back());
+            }
+            str += "){\"";
+            str += node->getTypeString().toString();
+            str += "\"}";
 
+            std::for_each(node->children.begin(),
+                          node->children.end(),
+                          [&nextLevelNodes2](const shared_ptr<TypeParsingTreeNode> &node)
+            {
+                nextLevelNodes2.push_back(node.get());
+            });
+        });
+        str += "\n\n";
+        nextLevelNodes.swap(nextLevelNodes2);
+    }
 
     return str;
 }

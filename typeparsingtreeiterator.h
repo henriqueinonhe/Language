@@ -19,6 +19,7 @@ public:
     TypeParsingTree getTree() const;
 
     TypeParsingTreeNode *operator->();
+    TypeParsingTreeNode &operator*();
 
 private:
     bool checkPathStringValidity(const QString &path) const;
