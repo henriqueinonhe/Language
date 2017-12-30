@@ -27,6 +27,7 @@ public:
     unsigned int getChildrenNumber() const;
     unsigned int getOwnChildNumber() const;
 
+
 private:
     TypeParsingTreeNode(TypeParsingTree *tree,
                         TypeParsingTreeNode *parent,
@@ -34,6 +35,7 @@ private:
                         const unsigned int typeBeginIndex,
                         const unsigned int typeEndIndex);
 
+    void printNodeToString(QString &str);
 
     void updateTreeHeight();
 

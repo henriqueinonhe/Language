@@ -24,20 +24,9 @@ QString TypeParsingTree::print()
         QVector<TypeParsingTreeNode *> nextLevelNodes2;
         std::for_each(nextLevelNodes.begin(),
                       nextLevelNodes.end(),
-                      [&str, &nextLevelNodes2](const TypeParsingTreeNode *node) {
-            str += "(";
-            if(node->getCoordinates().size() >= 2)
-            {
-                str += QString::number(node->getCoordinates()[node->getCoordinates().size() - 2]);
-            }
-            if(!node->getCoordinates().isEmpty())
-            {
-                str += ",";
-                str += QString::number(node->getCoordinates().back());
-            }
-            str += "){\"";
-            str += node->getTypeString().toString();
-            str += "\"}";
+                      [&str, &nextLevelNodes2](TypeParsingTreeNode *node) {
+
+            node->printNodeToString(str);
 
             std::for_each(node->children.begin(),
                           node->children.end(),

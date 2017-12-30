@@ -11,6 +11,23 @@ TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeN
     updateTreeHeight();
 }
 
+void TypeParsingTreeNode::printNodeToString(QString &str)
+{
+    str += "(";
+    if(coordinates.size() >= 2)
+    {
+        str += QString::number(coordinates[coordinates.size() - 2]);
+    }
+    if(!coordinates.isEmpty())
+    {
+        str += ",";
+        str += QString::number(coordinates.back());
+    }
+    str += "){\"";
+    str += getTypeString().toString();
+    str += "\"} ";
+}
+
 void TypeParsingTreeNode::updateTreeHeight()
 {
     if(tree->height < getHeight())
