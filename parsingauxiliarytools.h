@@ -1,6 +1,13 @@
-#include "parserauxiliaryfunctions.h"
+#ifndef PARSINGAUXILIARYTOOLS_H
+#define PARSINGAUXILIARYTOOLS_H
 
-unsigned int ParserAuxiliaryFunctions::findMainOperatorIndexWithDelimiters(const QVector<TypeToken> &sentence, const TypeToken &leftDelimiter, const TypeToken &rightDelimiter)
+namespace ParsingAuxiliaryTools
+{
+
+template<class StringClass, class CharClass>
+unsigned int findMainOperatorIndex(const StringClass &sentence,
+                                   const CharClass &leftDelimiter,
+                                   const CharClass &rightDelimiter)
 {
     unsigned int leftDelimiterCount = 0;
     unsigned int rightDelimiterCount = 0;
@@ -24,7 +31,7 @@ unsigned int ParserAuxiliaryFunctions::findMainOperatorIndexWithDelimiters(const
         {
             if(leftDelimiterCount != rightDelimiterCount)
             {
-                throw std::invalid_argument("Delimiters do not match!");
+                throw std::invalid_argument("Delimiters count do not match!");
             }
             else
             {
@@ -36,3 +43,9 @@ unsigned int ParserAuxiliaryFunctions::findMainOperatorIndexWithDelimiters(const
 
     return index;
 }
+
+
+
+}
+
+#endif // PARSINGAUXILIARYTOOLS_H

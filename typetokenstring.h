@@ -17,7 +17,7 @@ public:
     unsigned int size() const;
     TypeTokenString mid(const unsigned int startPos, const unsigned int n);
 
-    PoolRecordPointer<TypeToken> operator[](unsigned int index) const;
+    TypeToken operator[](unsigned int index) const;
 
 private:
     TypeTokenString(const QVector<PoolRecordPointer<TypeToken>> &tokenList);

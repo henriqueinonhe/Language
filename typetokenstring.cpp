@@ -28,14 +28,14 @@ TypeTokenString TypeTokenString::mid(const unsigned int startPos, const unsigned
     return TypeTokenString(tokenList.mid(startPos, n));
 }
 
-PoolRecordPointer<TypeToken> TypeTokenString::operator[](unsigned int index) const
+TypeToken TypeTokenString::operator[](unsigned int index) const
 {
     if(index >= size())
     {
         throw std::invalid_argument("Index out of bounds.");
     }
 
-    return tokenList[index];
+    return *tokenList[index];
 }
 
 TypeTokenString::TypeTokenString(const QVector<PoolRecordPointer<TypeToken> > &tokenList) :

@@ -7,7 +7,7 @@
 #include <QString>
 #include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
-#include "parserauxiliaryfunctions.h"
+#include "parsingauxiliarytools.h"
 
 using namespace std;
 
@@ -19,8 +19,11 @@ public:
 private:
     void buildParsingTree(const QString &typeString);
 
-    bool isPrimitive(const TypeTokenString &typeString);
-    bool isComposite(const TypeTokenString &typeString); //TODO
+    bool isPrimitive(const TypeTokenString &typeString) const;
+    void parseType(const TypeTokenString &typeString,
+                   const unsigned int startingIndex,
+                   TypeParsingTreeIterator iter,
+                   const bool argumentIsIncompleteType) const;
 
     shared_ptr<TypeParsingTree> parsingTree;
 

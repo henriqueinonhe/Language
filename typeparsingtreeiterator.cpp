@@ -9,7 +9,7 @@ TypeParsingTreeIterator::TypeParsingTreeIterator(TypeParsingTree *tree) :
 
 void TypeParsingTreeIterator::goToChild(unsigned int index)
 {
-    if(index >= currentNode->children.size())
+    if(index >= (uint) currentNode->children.size())
     {
         throw std::invalid_argument("This child does not exist.");
     }

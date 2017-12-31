@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     typeparsingtree.cpp \
     typeparsingtreenode.cpp \
     typeparsingtreeiterator.cpp \
-    parserauxiliaryfunctions.cpp \
     type.cpp \
     typetoken.cpp \
     typetokenstring.cpp \
@@ -45,9 +44,9 @@ HEADERS += \
     typeparsingtree.h \
     typeparsingtreenode.h \
     typeparsingtreeiterator.h \
-    parserauxiliaryfunctions.h \
     type.h \
     typetoken.h \
     pool.h \
     typetokenstring.h \
-    typeparsingtreeinterface.h
+    typeparsingtreeinterface.h \
+    parsingauxiliarytools.h

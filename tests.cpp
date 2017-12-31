@@ -337,15 +337,18 @@ TEST_CASE("TypeParsingTree Printer")
     TypeParsingTree tree(TypeTokenString("[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType"));
     TypeParsingTreeIterator iter(&tree);
 
+    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
     iter->appendChild(0,10);
     iter->appendChild(12,12);
 
     iter.goToChild(0);
+    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Product);
 
     iter->appendChild(1,5);
     iter->appendChild(7,9);
 
     iter.goToChild(0);
+    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);
 
     iter->appendChild(2,2);
     iter->appendChild(4,4);
@@ -353,6 +356,7 @@ TEST_CASE("TypeParsingTree Printer")
     iter.goToParent();
 
     iter.goToChild(1);
+    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
 
     iter->appendChild(8,8);
 
