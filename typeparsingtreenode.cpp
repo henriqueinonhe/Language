@@ -1,12 +1,13 @@
 #include "typeparsingtreenode.h"
 #include "TypeParsingTree.h"
 
-TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const QVector<unsigned int> &coordinates, const unsigned int typeBeginIndex, const unsigned int typeEndIndex) :
+TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const QVector<unsigned int> &coordinates, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
     tree(tree),
     parent(parent),
     coordinates(coordinates),
     typeBeginIndex(typeBeginIndex),
-    typeEndIndex(typeEndIndex)
+    typeEndIndex(typeEndIndex),
+    mainOperator(mainOperator)
 {
     updateTreeHeight();
 }
@@ -23,9 +24,36 @@ void TypeParsingTreeNode::printNodeToString(QString &str)
         str += ",";
         str += QString::number(coordinates.back());
     }
-    str += "){\"";
+    str += "){";
+    str += mainOperatorToString();
+    str += ",\"";
     str += getTypeString().toString();
     str += "\"} ";
+}
+
+QString TypeParsingTreeNode::mainOperatorToString() const
+{
+    if(mainOperator == MainOperator::Primitive)
+    {
+        return "()";
+    }
+    else if(mainOperator == MainOperator::Composition)
+    {
+        return "(->)";
+    }
+    else if(mainOperator == MainOperator::Product)
+    {
+        return "([])";
+    }
+    else if(mainOperator == MainOperator::Union)
+    {
+        return "({})";
+    }
+    else
+    {
+        throw std::logic_error("Main Operator is not set!");
+        return "";
+    }
 }
 
 void TypeParsingTreeNode::updateTreeHeight()
@@ -34,6 +62,16 @@ void TypeParsingTreeNode::updateTreeHeight()
     {
         tree->height = getHeight();
     }
+}
+
+TypeParsingTreeNode::MainOperator TypeParsingTreeNode::getMainOperator() const
+{
+    return mainOperator;
+}
+
+void TypeParsingTreeNode::setMainOperator(const MainOperator &value)
+{
+    mainOperator = value;
 }
 
 QVector<unsigned int> TypeParsingTreeNode::getCoordinates() const

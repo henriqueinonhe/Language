@@ -16,7 +16,7 @@ public:
     void travelPath(const QVector<unsigned int> &coordinates);
     void goToCoordinates(const QString &coordinates);
 
-    TypeParsingTree getTree() const;
+    TypeParsingTree &getTree() const;
 
     TypeParsingTreeNode *operator->();
     TypeParsingTreeNode &operator*();

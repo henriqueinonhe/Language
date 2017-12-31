@@ -13,6 +13,14 @@ using namespace std;
 class TypeParsingTreeNode
 {
 public:
+    enum class MainOperator
+    {
+        Primitive,
+        Composition,
+        Product,
+        Union
+    };
+
     void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
 
     QVector<unsigned int> getCoordinates() const;
@@ -28,14 +36,19 @@ public:
     unsigned int getOwnChildNumber() const;
 
 
+    MainOperator getMainOperator() const;
+    void setMainOperator(const MainOperator &value);
+
 private:
     TypeParsingTreeNode(TypeParsingTree *tree,
                         TypeParsingTreeNode *parent,
                         const QVector<unsigned int> &coordinates,
                         const unsigned int typeBeginIndex,
-                        const unsigned int typeEndIndex);
+                        const unsigned int typeEndIndex,
+                        const MainOperator mainOperator = MainOperator::Primitive);
 
     void printNodeToString(QString &str);
+    QString mainOperatorToString() const;
 
     void updateTreeHeight();
 
@@ -45,6 +58,7 @@ private:
     QVector<shared_ptr<TypeParsingTreeNode>> children;
     unsigned int typeBeginIndex;
     unsigned int typeEndIndex;
+    MainOperator mainOperator;
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTree;

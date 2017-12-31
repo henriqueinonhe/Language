@@ -20,6 +20,7 @@ private:
     void buildParsingTree(const QString &typeString);
 
     bool isPrimitive(const TypeTokenString &typeString);
+    bool isComposite(const TypeTokenString &typeString); //TODO
 
     shared_ptr<TypeParsingTree> parsingTree;
 

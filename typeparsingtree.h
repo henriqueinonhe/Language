@@ -10,7 +10,12 @@ using namespace std;
 class TypeParsingTree
 {
 public:
+
+
     TypeParsingTree(const TypeTokenString &typeString);
+
+    TypeParsingTree(const TypeParsingTree &other) = delete;
+    TypeParsingTree &operator=(const TypeParsingTree &other) = delete;
 
     unsigned int getHeight() const;
 

@@ -63,7 +63,7 @@ void TypeParsingTreeIterator::goToCoordinates(const QString &coordinates)
     travelPath(coordinates);
 }
 
-TypeParsingTree TypeParsingTreeIterator::getTree() const
+TypeParsingTree &TypeParsingTreeIterator::getTree() const
 {
     return *tree;
 }
