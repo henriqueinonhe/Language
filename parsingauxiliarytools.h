@@ -5,13 +5,14 @@ namespace ParsingAuxiliaryTools
 {
 
 template<class StringClass, class CharClass>
-unsigned int findMainOperatorIndex(const StringClass &sentence,
-                                   const CharClass &leftDelimiter,
-                                   const CharClass &rightDelimiter)
+unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
+                                        const CharClass &leftDelimiter,
+                                        const CharClass &rightDelimiter,
+                                        const unsigned int startPos = 0)
 {
     unsigned int leftDelimiterCount = 0;
     unsigned int rightDelimiterCount = 0;
-    unsigned int index = 0;
+    unsigned int index = startPos;
 
     do
     {

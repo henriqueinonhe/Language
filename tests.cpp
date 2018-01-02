@@ -360,10 +360,24 @@ TEST_CASE("TypeParsingTree Printer")
 
     iter->appendChild(8,8);
 
-    std::cout << tree.print().toStdString();
+    //std::cout << tree.print().toStdString();
 }
 
 TEST_CASE("Type")
 {
-    CHECK_NOTHROW(Type("AFLUSISS"));
+    SECTION("Pass")
+    {
+        CHECK_NOTHROW(Type("AFLUSISS"));
+        CHECK_NOTHROW(Type("[{Proposition}]->Proposition"));
+        CHECK_NOTHROW(Type("[{Proposition},{Proposition}]->Proposition"));
+        CHECK_NOTHROW(Type("[{IndividualVariable,IndividualConstant},"
+                           "{IndividualVariable,IndividualConstant}]->Proposition"));
+        CHECK_NOTHROW(Type("[{IndividualVariable},{Proposition}]->Proposition"));
+        CHECK_NOTHROW(Type("[{Proposition}]->([{Proposition}]->Proposition)"));
+    }
+
+    SECTION("Fail")
+    {
+        CHECK_THROWS(Type(""));
+    }
 }

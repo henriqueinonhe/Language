@@ -26,6 +26,7 @@ public:
     Sort getSort() const;
 
     bool operator ==(const TypeToken &other) const;
+    bool operator !=(const TypeToken &other) const;
 
     QString getString() const;
     TypeToken setString(const QString &value);

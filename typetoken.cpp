@@ -19,7 +19,12 @@ TypeToken::Sort TypeToken::getSort() const
 bool TypeToken::operator ==(const TypeToken &other) const
 {
     return this->getString() == other.getString() &&
-           this->sort == other.sort;
+            this->sort == other.sort;
+}
+
+bool TypeToken::operator !=(const TypeToken &other) const
+{
+    return !(*this == other);
 }
 
 QString TypeToken::getString() const
