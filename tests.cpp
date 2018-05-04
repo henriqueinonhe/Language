@@ -374,6 +374,9 @@ TEST_CASE("Type")
                            "{IndividualVariable,IndividualConstant}]->Proposition"));
         CHECK_NOTHROW(Type("[{IndividualVariable},{Proposition}]->Proposition"));
         CHECK_NOTHROW(Type("[{Proposition}]->([{Proposition}]->Proposition)"));
+        CHECK_NOTHROW(Type("[{[{o}]->o}]->o"));
+        CHECK_NOTHROW(Type("[{[{o}]->o},{[{o}]->o}]->o"));
+        CHECK_NOTHROW(Type("[{a,b,c,d},{e,f,g},{h,i,j}]->k"));
     }
 
     SECTION("Fail")

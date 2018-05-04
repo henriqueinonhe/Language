@@ -14,7 +14,7 @@ Type::Type(const QString &type)
 
 }
 
-void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex)
+void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex) //FIXME!
 {
     unsigned int mainOperatorIndex;
     bool argumentIsIncompleteType;
@@ -42,9 +42,6 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
         throw std::invalid_argument("The first character of the left argument should be either '(' or '['.");
     }
 
-    //Coloca os operandos do lado esquerdo e direito da composição.
-    //Tirar os parênteses se necessário
-    //Tomar muito cuidado com esses roles! //FIXME
     unsigned int leftArgumentParenthesisPadding = iter->getTypeString()[0] == TypeToken("(") ? 1 : 0;
     unsigned int rightArgumentParenthesisPadding = iter->getTypeString()[mainOperatorIndex + 1] == TypeToken("(") ? 1 : 0;
 
@@ -60,7 +57,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
     iter.goToParent();
 
     iter.goToChild(1);
-    parseType(iter, startingIndex + mainOperatorIndex + 1, false);
+    parseType(iter, startingIndex + mainOperatorIndex + 1 + rightArgumentParenthesisPadding, false);
 }
 
 void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex)

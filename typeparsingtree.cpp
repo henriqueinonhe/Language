@@ -39,7 +39,7 @@ QString TypeParsingTree::print()
         nextLevelNodes.swap(nextLevelNodes2);
     }
 
-    str += "------------------------------";
+    str += "------------------------------\n";
 
     return str;
 }
