@@ -21,7 +21,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
 
     iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
 
-    if(iter->getTypeString()[0] == TypeToken("("))
+    if(leftArgumentIsCompositeType(iter->getTypeString()))
     {
         mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
                                                                          TypeToken("("),
@@ -29,7 +29,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
 
         leftArgumentIsProductType = false;
     }
-    else if(iter->getTypeString()[0] == TypeToken("["))
+    else if(leftArgumentIsProductType(iter->getTypeString()))
     {
         mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
                                                                          TypeToken("["),
@@ -87,6 +87,16 @@ void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIn
 bool Type::typeIsEmpty(const TypeTokenString &typeString)
 {
     return typeString.size() == 0;
+}
+
+bool Type::leftArgumentIsCompositeType(const TypeTokenString &typeString)
+{
+    return typeString[0] == TypeToken("(");
+}
+
+bool Type::leftArgumentIsProductType(const TypeTokenString &typeString)
+{
+    return typeString[0] == TypeToken("[");
 }
 
 void Type::parseUnionType(TypeParsingTreeIterator iter, const unsigned int startingIndex)

@@ -31,6 +31,8 @@ private:
     void findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex);
 
     bool typeIsEmpty(const TypeTokenString &typeString);
+    bool leftArgumentIsCompositeType(const TypeTokenString &typeString);
+    bool leftArgumentIsProductType(const TypeTokenString &typeString);
 
 };
 
