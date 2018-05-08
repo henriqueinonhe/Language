@@ -42,7 +42,7 @@ unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
 
     } while(leftDelimiterCount != rightDelimiterCount);
 
-    return index;
+    return index - 1;
 }
 
 

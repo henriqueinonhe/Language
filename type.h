@@ -34,6 +34,9 @@ private:
     bool leftArgumentIsCompositeType(const TypeTokenString &typeString);
     bool leftArgumentIsProductType(const TypeTokenString &typeString);
 
+    //NEW
+    void parseRightSideArgument(TypeParsingTreeIterator iter, const unsigned int startingIndex);
+
 };
 
 #endif // TOKENTYPE_H

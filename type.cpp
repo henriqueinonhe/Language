@@ -14,10 +14,9 @@ Type::Type(const QString &type)
 
 }
 
-void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex) //FIXME!
+void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex)
 {
     unsigned int mainOperatorIndex;
-    bool leftArgumentIsProductType;
 
     iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
 
@@ -25,17 +24,13 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
     {
         mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
                                                                          TypeToken("("),
-                                                                         TypeToken(")"));
-
-        leftArgumentIsProductType = false;
+                                                                         TypeToken(")")) + 1;
     }
     else if(leftArgumentIsProductType(iter->getTypeString()))
     {
         mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
                                                                          TypeToken("["),
-                                                                         TypeToken("]"));
-
-        leftArgumentIsProductType = true;
+                                                                         TypeToken("]")) + 1;
     }
     else
     {
@@ -53,7 +48,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
 
 
     iter.goToChild(0);
-    parseType(iter, startingIndex, leftArgumentIsProductType);
+    parseType(iter, startingIndex, leftArgumentIsProductType(iter->getTypeString()));
     iter.goToParent();
 
     iter.goToChild(1);
@@ -64,7 +59,7 @@ void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIn
 {
     if(typeString[mainOpIndex] != TypeToken("->"))
     {
-        throw std::invalid_argument("The composite operator was expected here!");
+        throw std::invalid_argument("The composition operator was expected here!");
     }
 
     if(typeString[mainOpIndex + 1].getSort() == TypeToken::Sort::PrimitiveType)
@@ -76,7 +71,7 @@ void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIn
         lastTokenIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(typeString,
                                                                      TypeToken("("),
                                                                      TypeToken(")"),
-                                                                     mainOpIndex + 1);
+                                                                     mainOpIndex + 1) + 1;
     }
     else
     {
@@ -99,71 +94,22 @@ bool Type::leftArgumentIsProductType(const TypeTokenString &typeString)
     return typeString[0] == TypeToken("[");
 }
 
-void Type::parseUnionType(TypeParsingTreeIterator iter, const unsigned int startingIndex)
+void Type::parseRightSideArgument(TypeParsingTreeIterator iter, const unsigned int startingIndex)
 {
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);
-
-    TypeTokenString typeString = iter->getTypeString();
-
-    unsigned int firstTokenIndex = 1;
-    unsigned int lastTokenIndex;
-    unsigned int childIndex = 0;
-
-    while(true)
+    if(typeIsEmpty(tokenString))
     {
-        if(typeString[firstTokenIndex].getSort() == TypeToken::Sort::PrimitiveType)
-        {
-            lastTokenIndex = firstTokenIndex;
-        }
-        else if(typeString[firstTokenIndex] == TypeToken("["))
-        {
-            unsigned int mainOpIndex;
-            mainOpIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(typeString,
-                                                                       TypeToken("["),
-                                                                       TypeToken("]"),
-                                                                       firstTokenIndex);
-
-            findLastTokenIndex(typeString, mainOpIndex, lastTokenIndex);
-        }
-        else if(typeString[firstTokenIndex] == TypeToken("("))
-        {
-            unsigned int mainOpIndex;
-            mainOpIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(typeString,
-                                                                       TypeToken("("),
-                                                                       TypeToken(")"),
-                                                                       firstTokenIndex);
-
-            findLastTokenIndex(typeString, mainOpIndex, lastTokenIndex);
-        }
-        else
-        {
-            throw std::invalid_argument("This is a not a suitable token!");
-        }
-
-
-        unsigned int firstTokenTrueIndex = startingIndex + firstTokenIndex;
-        unsigned int lastTokenTrueIndex = startingIndex + lastTokenIndex;
-        iter->appendChild(firstTokenTrueIndex, lastTokenTrueIndex);
-        iter.goToChild(childIndex);
-        childIndex++;
-        parseType(iter, firstTokenTrueIndex, false); //Will never be an incomplete type!
-        iter.goToParent();
-
-        if(typeString[lastTokenIndex + 1] == TypeToken(","))
-        {
-            firstTokenIndex = lastTokenIndex + 2;
-        }
-        else if(typeString[lastTokenIndex + 1] == TypeToken("}"))
-        {
-            break;
-        }
-        else
-        {
-            throw std::invalid_argument("A comma or a right curly bracket was expected here!");
-        }
+        throw std::invalid_argument("The type cannot be empty!");
     }
 
-
+    if(isPrimitive(iter->getTypeString()))
+    {
+        iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
+        return;
+    }
+    else //If it is not primitive, it must be composite then!
+    {
+        parseCompositeType(iter, 0);
+    }
 }
 
 void Type::buildParsingTree(const QString &typeString)
@@ -178,6 +124,10 @@ void Type::buildParsingTree(const QString &typeString)
     parsingTree.reset(new TypeParsingTree(tokenString)); //We must assign this way to avoid copying the tree (copy constructor)
     TypeParsingTreeIterator iter(parsingTree.get());
 
+    //NEW
+    parseRightSideArgument(iter, 0);
+
+    //OLD
     if(isPrimitive(iter->getTypeString()))
     {
         iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
@@ -194,44 +144,44 @@ bool Type::isPrimitive(const TypeTokenString &typeString) const
     return typeString.size() == 1 && typeString[0].getSort() == TypeToken::Sort::PrimitiveType;
 }
 
-void Type::parseType(TypeParsingTreeIterator iter, unsigned int startingIndex, bool argumentIsIncompleteType) //TODO Concertar as exceções, deixá-las mais informativas!
+void Type::parseType(TypeParsingTreeIterator iter, unsigned int startingIndex, bool argumentIsProductType) //TODO Concertar as exceções, deixá-las mais informativas!
 {
     TypeTokenString typeString = iter->getTypeString();
 
-    if(typeString.size() == 0)
+    if(typeIsEmpty(typeString))
     {
         throw std::invalid_argument("Type cannot be empty!");
     }
 
-    if(argumentIsIncompleteType)
+    if(argumentIsProductType)
     {
-        unsigned int leftCurlyBracketIndex = 1;
-        unsigned int rightCurlyBracketIndex;
-        unsigned int leftCurlyBracketTrueIndex;
-        unsigned int rightCurlyBracketTrueIndex;
+        unsigned int leftParenthesisIndex = 1;
+        unsigned int rightParenthesisIndex;
+        unsigned int leftParenthesisTrueIndex;
+        unsigned int rightParenthesisTrueIndex;
         unsigned int childIndex = 0;
 
         iter->setMainOperator(TypeParsingTreeNode::MainOperator::Product);
 
         while(true)
         {
-            rightCurlyBracketIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(typeString,
-                                                                                  TypeToken("{"),
-                                                                                  TypeToken("}"),
-                                                                                  leftCurlyBracketIndex) - 1;
-            leftCurlyBracketTrueIndex = startingIndex + leftCurlyBracketIndex;
-            rightCurlyBracketTrueIndex = startingIndex + rightCurlyBracketIndex;
-            iter->appendChild(leftCurlyBracketTrueIndex, rightCurlyBracketTrueIndex);
+            rightParenthesisIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(typeString,
+                                                                                  TypeToken("("),
+                                                                                  TypeToken(")"),
+                                                                                  leftParenthesisIndex); //Because there is no main Operator
+            leftParenthesisTrueIndex = startingIndex + leftParenthesisIndex;
+            rightParenthesisTrueIndex = startingIndex + rightParenthesisIndex;
+            iter->appendChild(leftParenthesisTrueIndex, rightParenthesisTrueIndex);
             iter.goToChild(childIndex);
-            parseUnionType(iter, leftCurlyBracketTrueIndex);
+            parseUnionType(iter, leftParenthesisTrueIndex);
 
-            if(typeString[rightCurlyBracketIndex + 1] == TypeToken(","))
+            if(typeString[rightParenthesisIndex + 1] == TypeToken(","))
             {
-                leftCurlyBracketIndex = rightCurlyBracketIndex + 2;
+                leftParenthesisIndex = rightParenthesisIndex + 2;
             }
             else
             {
-                if(typeString[rightCurlyBracketIndex + 1] == TypeToken("]"))
+                if(typeString[rightParenthesisIndex + 1] == TypeToken("]"))
                 {
                     break;
                 }
