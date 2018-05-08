@@ -13,8 +13,6 @@ public:
         RightParenthesis,
         LeftSquareBracket,
         RightSquareBracket,
-        LeftCurlyBracket,
-        RightCurlyBracket,
         Comma,
         CompositionOperator,
         PrimitiveType

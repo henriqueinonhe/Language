@@ -64,14 +64,6 @@ void TypeTokenString::lexString(const QString &string)
         {
             tokenList.push_back(pool.getPointer(TypeToken("]")));
         }
-        else if(string[index] == '{')
-        {
-            tokenList.push_back(pool.getPointer(TypeToken("{")));
-        }
-        else if(string[index] == '}')
-        {
-            tokenList.push_back(pool.getPointer(TypeToken("}")));
-        }
         else if(string[index] == ',')
         {
             tokenList.push_back(pool.getPointer(TypeToken(",")));
@@ -110,8 +102,6 @@ bool TypeTokenString::characterIsSeparator(const QString &c) const
            c == ")" ||
            c == "[" ||
            c == "]" ||
-           c == "{" ||
-           c == "}" ||
            c == "," ||
            c == "-";
 }

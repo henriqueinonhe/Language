@@ -17,7 +17,7 @@ Type::Type(const QString &type)
 void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex) //FIXME!
 {
     unsigned int mainOperatorIndex;
-    bool argumentIsIncompleteType;
+    bool leftArgumentIsProductType;
 
     iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
 
@@ -27,7 +27,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
                                                                          TypeToken("("),
                                                                          TypeToken(")"));
 
-        argumentIsIncompleteType = false;
+        leftArgumentIsProductType = false;
     }
     else if(iter->getTypeString()[0] == TypeToken("["))
     {
@@ -35,7 +35,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
                                                                          TypeToken("["),
                                                                          TypeToken("]"));
 
-        argumentIsIncompleteType = true;
+        leftArgumentIsProductType = true;
     }
     else
     {
@@ -53,7 +53,7 @@ void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int s
 
 
     iter.goToChild(0);
-    parseType(iter, startingIndex, argumentIsIncompleteType);
+    parseType(iter, startingIndex, leftArgumentIsProductType);
     iter.goToParent();
 
     iter.goToChild(1);
@@ -82,6 +82,11 @@ void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIn
     {
         throw std::invalid_argument("A primitive type or a complete type was expected here!");
     }
+}
+
+bool Type::typeIsEmpty(const TypeTokenString &typeString)
+{
+    return typeString.size() == 0;
 }
 
 void Type::parseUnionType(TypeParsingTreeIterator iter, const unsigned int startingIndex)
@@ -155,7 +160,7 @@ void Type::buildParsingTree(const QString &typeString)
 {
     TypeTokenString tokenString(typeString);
 
-    if(tokenString.size() == 0)
+    if(typeIsEmpty(tokenString))
     {
         throw std::invalid_argument("The type cannot be empty!");
     }

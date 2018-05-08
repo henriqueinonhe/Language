@@ -255,8 +255,6 @@ TEST_CASE("TypeToken")
         CHECK(TypeToken(")").getSort() == TypeToken::Sort::RightParenthesis);
         CHECK(TypeToken("[").getSort() == TypeToken::Sort::LeftSquareBracket);
         CHECK(TypeToken("]").getSort() == TypeToken::Sort::RightSquareBracket);
-        CHECK(TypeToken("{").getSort() == TypeToken::Sort::LeftCurlyBracket);
-        CHECK(TypeToken("}").getSort() == TypeToken::Sort::RightCurlyBracket);
         CHECK(TypeToken(",").getSort() == TypeToken::Sort::Comma);
         CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
         CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
@@ -265,8 +263,6 @@ TEST_CASE("TypeToken")
         CHECK(TypeToken().setString(")").getSort() == TypeToken::Sort::RightParenthesis);
         CHECK(TypeToken().setString("[").getSort() == TypeToken::Sort::LeftSquareBracket);
         CHECK(TypeToken().setString("]").getSort() == TypeToken::Sort::RightSquareBracket);
-        CHECK(TypeToken().setString("{").getSort() == TypeToken::Sort::LeftCurlyBracket);
-        CHECK(TypeToken().setString("}").getSort() == TypeToken::Sort::RightCurlyBracket);
         CHECK(TypeToken().setString(",").getSort() == TypeToken::Sort::Comma);
         CHECK(TypeToken().setString("->").getSort() == TypeToken::Sort::CompositionOperator);
         CHECK(TypeToken().setString("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
@@ -314,27 +310,27 @@ TEST_CASE("Pool")
 TEST_CASE("TypeTokenString")
 {   
 
-    TypeTokenString string = TypeTokenString("[{i,o},{i,o}]->o");
+    TypeTokenString string = TypeTokenString("[i,o]->o");
 
-    CHECK(string.toString() == "[{i,o},{i,o}]->o");
+    CHECK(string.toString() == "[i,o]->o");
 
     string = TypeTokenString("o->(o->o)");
 
     CHECK(string.toString() == "o->(o->o)");
 
-    string = TypeTokenString("[{o},{o}]->o");
+    string = TypeTokenString("[o,o]->o");
 
-    CHECK(string.toString() == "[{o},{o}]->o");
+    CHECK(string.toString() == "[o,o]->o");
 
-    string = TypeTokenString("[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType");
+    string = TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType");
 
-    CHECK(string.toString() == "[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType");
+    CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
 
 }
 
 TEST_CASE("TypeParsingTree Printer")
 {
-    TypeParsingTree tree(TypeTokenString("[{Variable,IndividualConstant},{PropositionalType}]->PropositionalType"));
+    TypeParsingTree tree(TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType"));
     TypeParsingTreeIterator iter(&tree);
 
     iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
@@ -360,7 +356,7 @@ TEST_CASE("TypeParsingTree Printer")
 
     iter->appendChild(8,8);
 
-    //std::cout << tree.print().toStdString();
+    std::cout << tree.print().toStdString();
 }
 
 TEST_CASE("Type")
@@ -368,15 +364,15 @@ TEST_CASE("Type")
     SECTION("Pass")
     {
         CHECK_NOTHROW(Type("AFLUSISS"));
-        CHECK_NOTHROW(Type("[{Proposition}]->Proposition"));
-        CHECK_NOTHROW(Type("[{Proposition},{Proposition}]->Proposition"));
-        CHECK_NOTHROW(Type("[{IndividualVariable,IndividualConstant},"
-                           "{IndividualVariable,IndividualConstant}]->Proposition"));
-        CHECK_NOTHROW(Type("[{IndividualVariable},{Proposition}]->Proposition"));
-        CHECK_NOTHROW(Type("[{Proposition}]->([{Proposition}]->Proposition)"));
-        CHECK_NOTHROW(Type("[{[{o}]->o}]->o"));
-        CHECK_NOTHROW(Type("[{[{o}]->o},{[{o}]->o}]->o"));
-        CHECK_NOTHROW(Type("[{a,b,c,d},{e,f,g},{h,i,j}]->k"));
+        CHECK_NOTHROW(Type("[Proposition]->Proposition"));
+        CHECK_NOTHROW(Type("[Proposition,Proposition]->Proposition"));
+        CHECK_NOTHROW(Type("[IndividualVariable,IndividualConstant,"
+                           "IndividualVariable,IndividualConstant]->Proposition"));
+        CHECK_NOTHROW(Type("[IndividualVariable,Proposition]->Proposition"));
+        CHECK_NOTHROW(Type("[Proposition]->([Proposition]->Proposition)"));
+        CHECK_NOTHROW(Type("[[o]->o]->o"));
+        CHECK_NOTHROW(Type("[[o]->o,[o]->o]->o"));
+        CHECK_NOTHROW(Type("[a,b,c,d,e,f,g,h,i,j]->k"));
     }
 
     SECTION("Fail")

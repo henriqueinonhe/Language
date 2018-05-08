@@ -58,14 +58,6 @@ void TypeToken::assignSort(const QString &string)
     {
         sort = Sort::RightSquareBracket;
     }
-    else if(string == "{")
-    {
-        sort = Sort::LeftCurlyBracket;
-    }
-    else if(string == "}")
-    {
-        sort = Sort::RightCurlyBracket;
-    }
     else if(string == ",")
     {
         sort = Sort::Comma;

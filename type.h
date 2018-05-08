@@ -25,11 +25,13 @@ private:
                    unsigned int startingIndex,
                    bool argumentIsIncompleteType);
     void parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex);
-    void parseUnionType(TypeParsingTreeIterator iter, const unsigned int startingIndex);
 
     shared_ptr<TypeParsingTree> parsingTree;
 
     void findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex);
+
+    bool typeIsEmpty(const TypeTokenString &typeString);
+
 };
 
 #endif // TOKENTYPE_H
