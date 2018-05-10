@@ -1,4 +1,4 @@
-#include "typetokenstring.h"
+﻿#include "typetokenstring.h"
 
 Pool<TypeToken> TypeTokenString::pool;
 
@@ -11,8 +11,8 @@ QString TypeTokenString::toString() const
 {
     QString str;
 
-    std::for_each(tokenList.begin(), tokenList.end(), [&str](const PoolRecordPointer<TypeToken> &record) {
-        str += record->getString();
+    std::for_each(tokenList.begin(), tokenList.end(), [&str](const PoolRecordPointer<TypeToken> &tokenRecord) {
+        str += tokenRecord->getString();
     });
 
     return str;
@@ -80,7 +80,7 @@ void TypeTokenString::lexString(const QString &string)
                 throw std::invalid_argument("The composition operator is not complete.");
             }
         }
-        else
+        else //TODO explain this shit!
         {
             int startIndex = index;
 

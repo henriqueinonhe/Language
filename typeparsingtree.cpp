@@ -13,7 +13,7 @@ unsigned int TypeParsingTree::getHeight() const
     return height;
 }
 
-QString TypeParsingTree::print()
+QString TypeParsingTree::print() //NOTE better refactor this, or at least document it very well!
 {
     TypeParsingTreeIterator iter(this);
     QVector<TypeParsingTreeNode *> nextLevelNodes{&(*iter)};

@@ -1,4 +1,4 @@
-#ifndef TYPETOKENSTRING_H
+﻿#ifndef TYPETOKENSTRING_H
 #define TYPETOKENSTRING_H
 
 #include "typetoken.h"
@@ -15,7 +15,7 @@ public:
     QString toString() const;
 
     unsigned int size() const;
-    TypeTokenString mid(const unsigned int startPos, const unsigned int n);
+    TypeTokenString mid(const unsigned int startPos, const unsigned int n) const;
 
     TypeToken operator[](unsigned int index) const;
 

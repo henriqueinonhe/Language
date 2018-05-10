@@ -1,4 +1,4 @@
-#ifndef TYPEPARSINGTREENODE_H
+﻿#ifndef TYPEPARSINGTREENODE_H
 #define TYPEPARSINGTREENODE_H
 
 #include <QString>
@@ -17,8 +17,7 @@ public:
     {
         Primitive,
         Composition,
-        Product,
-        Union
+        Product
     };
 
     void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
@@ -47,7 +46,7 @@ private:
                         const unsigned int typeEndIndex,
                         const MainOperator mainOperator = MainOperator::Primitive);
 
-    void printNodeToString(QString &str);
+    void printNodeToString(QString &str) const;
     QString mainOperatorToString() const;
 
     void updateTreeHeight();

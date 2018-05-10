@@ -1,4 +1,4 @@
-#ifndef POOL_H
+﻿#ifndef POOL_H
 #define POOL_H
 
 #include <QVector>
@@ -19,6 +19,9 @@ public:
 
     PoolRecordPointer<T> getPointer(const T &sample)
     {
+        /* Searches for already existing record containing the sample
+         * and returns the record's pointer if it exists. */
+
         for(auto iter = records.begin(); iter != records.end(); iter++)
         {
             if(iter->getObject() == sample)
@@ -27,18 +30,21 @@ public:
             }
         }
 
+        /* If no record containg the sample exists
+         * it creates a new record using sample as "model"*/
+
         records.push_back(PoolRecord<T>(sample, this));
 
         return PoolRecordPointer<T>(&records.back());
     }
 
-    QLinkedList<PoolRecord<T> > &getRecords()
+    QLinkedList<PoolRecord<T>> &getRecords()
     {
         return records;
     }
 
 private:
-    QLinkedList<PoolRecord<T>> records;
+    QLinkedList<PoolRecord<T>> records; //Needs to be a linked list, so addresses do not change when list resizes!
 
 template<class T2>
 friend class PoolRecordPointer;
@@ -75,6 +81,7 @@ private:
         counter(0),
         parent(parent)
     {
+        /* Only the pool may create pool records. */
     }
 
     void incrementCounter()
@@ -106,7 +113,7 @@ friend class PoolRecordPointer;
 
 
 template <class T>
-class PoolRecordPointer
+class PoolRecordPointer //Works basically as a shared pointer
 {
 public:
     PoolRecordPointer() :
@@ -171,7 +178,7 @@ private:
     }
 
     PoolRecord<T> *ptr;
-    bool isSet;
+    bool isSet; //Why is this necessary?
 };
 
 #endif // POOL_H

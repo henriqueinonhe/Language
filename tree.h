@@ -16,7 +16,7 @@ public:
 
 private:
     TreeNode root;
-    unsigned int height; //TODO
+    unsigned int height;
 
 friend class TreeIterator;
 friend class TreeNode;

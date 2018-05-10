@@ -20,23 +20,24 @@ public:
 private:
     void buildParsingTree(const QString &typeString);
 
-    bool isPrimitive(const TypeTokenString &typeString) const;
-    void parseType(TypeParsingTreeIterator iter,
-                   unsigned int startingIndex,
-                   bool argumentIsIncompleteType);
-    void parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex);
+    bool isPrimitiveType(const TypeTokenString &typeString) const;
 
     shared_ptr<TypeParsingTree> parsingTree;
 
     void findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex);
 
     bool typeIsEmpty(const TypeTokenString &typeString);
-    bool leftArgumentIsCompositeType(const TypeTokenString &typeString);
-    bool leftArgumentIsProductType(const TypeTokenString &typeString);
 
     //NEW
     void parseRightSideArgument(TypeParsingTreeIterator iter, const unsigned int startingIndex);
 
+    //NEW NEW
+    void parseType(TypeParsingTreeIterator iter, const unsigned int beginIndex);
+    bool isCompositeType(const TypeTokenString &tokenString);
+    bool parenthesisMatch(const TypeTokenString &tokenString, const unsigned int startIndex);
+    void findMainOperatorOffset(const TypeTokenString &tokenString);
+    bool stringEndsBeforeMainOperator(const TypeTokenString &tokenString, const unsigned int mainOperatorIndex);
+    bool isCompositionRightSideArgumentSuitableFirstToken(const TypeToken &token);
 };
 
 #endif // TOKENTYPE_H

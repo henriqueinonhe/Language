@@ -29,8 +29,7 @@ void TreeIterator::travelPath(const QString &path)
         throw std::invalid_argument("This is not a valid path!");
     }
 
-    QVector<unsigned int> vec;
-    convertPathToCoordinates(path, vec);
+    QVector<unsigned int> vec = convertPathToCoordinates(path);
 
     std::for_each(vec.begin(), vec.end(), [&](unsigned int index)
     {
@@ -60,23 +59,33 @@ TreeNode *TreeIterator::operator->()
     return currentNode;
 }
 
-bool TreeIterator::checkPathStringValidity(const QString &path)
+bool TreeIterator::checkPathStringValidity(const QString &path) const
 {
+    /* Path coordinates strings have the following form:
+     * "(x1,x2,...,xn)". */
+
     QRegularExpression regex("^\\((\\d,)*\\d\\)$");
 
     return regex.match(path).hasMatch();
 }
 
-void TreeIterator::convertPathToCoordinates(const QString &path, QVector<unsigned int> &vec)
+void TreeIterator::convertPathToCoordinates(const QString &path) const
 {
-    QString formattedPath = path.mid(1, path.size() - 2);
-    QStringList list = formattedPath.split(",");
+    QVector<unsigned int> vec;
+    const QString unencasedPath = removeOuterParenthesis(path);
+    const QStringList coordinatesList = unencasedPath.split(",");
 
-    std::for_each(list.begin(), list.end(), [&](const QString &str)
+    std::for_each(coordinatesList.begin(), coordinatesList.end(), [&](const QString &str)
     {
         vec.push_back(str.toInt());
     });
 
+    return vec;
+}
+
+QString TreeIterator::removeOuterParenthesis(const QString &path) const
+{
+    return path.mid(1, path.size() - 2);
 }
 
 

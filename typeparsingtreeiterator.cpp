@@ -34,18 +34,17 @@ void TypeParsingTreeIterator::travelPath(const QString &path)
         throw std::invalid_argument("This is not a valid path!");
     }
 
-    QVector<unsigned int> vec;
-    convertPathToCoordinates(path, vec);
+    const QVector<unsigned int> pathVector = convertStringToPath(path);
 
-    std::for_each(vec.begin(), vec.end(), [&](unsigned int index)
+    std::for_each(pathVector.begin(), pathVector.end(), [&](unsigned int index)
     {
         this->goToChild(index);
     });
 }
 
-void TypeParsingTreeIterator::travelPath(const QVector<unsigned int> &coordinates)
+void TypeParsingTreeIterator::travelPath(const QVector<unsigned int> &path)
 {
-    std::for_each(coordinates.begin(), coordinates.end(), [&](unsigned int index)
+    std::for_each(path.begin(), path.end(), [&](unsigned int index)
     {
         this->goToChild(index);
     });
@@ -80,19 +79,29 @@ TypeParsingTreeNode &TypeParsingTreeIterator::operator*()
 
 bool TypeParsingTreeIterator::checkPathStringValidity(const QString &path) const
 {
+    /* Path coordinates strings are in the form:
+     * "(x1,x2,...,xn)". */
+
     QRegularExpression regex("^\\((\\d,)*\\d\\)$");
 
     return regex.match(path).hasMatch();
 }
 
-void TypeParsingTreeIterator::convertPathToCoordinates(const QString &path, QVector<unsigned int> &vec) const
+void TypeParsingTreeIterator::convertStringToPath(const QString &path) const
 {
-    QString formattedPath = path.mid(1, path.size() - 2);
-    QStringList list = formattedPath.split(",");
+    QVector<unsigned int> pathVector;
+    const QString uncencasedPath = removeOuterParenthesis(path);
+    const QStringList coordinatesList = uncencasedPath.split(",");
 
-    std::for_each(list.begin(), list.end(), [&](const QString &str)
+    std::for_each(coordinatesList.begin(), coordinatesList.end(), [&](const QString &str)
     {
-        vec.push_back(str.toInt());
+        pathVector.push_back(str.toInt());
     });
 
+    return pathVector;
+}
+
+QString TypeParsingTreeIterator::removeOuterParenthesis(const QString &path) const
+{
+    return path.mid(1, path.size() - 2);
 }

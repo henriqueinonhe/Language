@@ -1,4 +1,4 @@
-#ifndef TYPEPARSINGTREEITERATOR_H
+﻿#ifndef TYPEPARSINGTREEITERATOR_H
 #define TYPEPARSINGTREEITERATOR_H
 
 #include "TypeParsingTree.h"
@@ -23,7 +23,8 @@ public:
 
 private:
     bool checkPathStringValidity(const QString &path) const;
-    void convertPathToCoordinates(const QString &path, QVector<unsigned int> &vec) const;
+    void convertStringToPath(const QString &path) const;
+    QString removeOuterParenthesis(const QString &path) const;
 
     TypeParsingTree *tree;
     TypeParsingTreeNode *currentNode;

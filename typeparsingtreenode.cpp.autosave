@@ -12,7 +12,7 @@ TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeN
     updateTreeHeight();
 }
 
-void TypeParsingTreeNode::printNodeToString(QString &str) //NOTE I really do not understand how this works!
+void TypeParsingTreeNode::printNodeToString(QString &str) const //NOTE I really do not understand how this works!
 {
     str += "(";
     if(coordinates.size() >= 2)

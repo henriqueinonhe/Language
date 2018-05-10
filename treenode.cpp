@@ -24,10 +24,13 @@ QVector<unsigned int> TreeNode::getCoordinates() const
 
 QString TreeNode::coordinatesToString() const
 {
+    /* Coordinates are of the form:
+     * "(x1,x2,x3,x4,x5,...,xn)" */
+
     QString coordinates;
 
     coordinates += "(";
-    if(!this->coordinates.empty())
+    if(!isRoot())
     {
         std::for_each(this->coordinates.begin(), this->coordinates.end() - 1, [&](unsigned int e) {
             coordinates += QString::number(e);
@@ -52,8 +55,8 @@ unsigned int TreeNode::getHeight() const
 
 void TreeNode::appendChild()
 {
-    QVector<unsigned int> coordinates = this->coordinates;
-    coordinates.push_back(this->children.size());
+    QVector<unsigned int> childCoordinates = this->coordinates;
+    childCoordinates.push_back(this->children.size());
 
-    children.push_back(make_shared<TreeNode>(TreeNode(this->tree, this, coordinates)));
+    children.push_back(make_shared<TreeNode>(TreeNode(this->tree, this, childCoordinates)));
 }
