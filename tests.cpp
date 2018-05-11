@@ -326,6 +326,8 @@ TEST_CASE("TypeTokenString")
 
     CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
 
+
+
 }
 
 TEST_CASE("TypeParsingTree Printer")
@@ -364,19 +366,33 @@ TEST_CASE("Type")
     SECTION("Pass")
     {
         CHECK_NOTHROW(Type("AFLUSISS"));
-        CHECK_NOTHROW(Type("[Proposition]->Proposition"));
+        CHECK_NOTHROW(Type("Proposition->Proposition"));
         CHECK_NOTHROW(Type("[Proposition,Proposition]->Proposition"));
         CHECK_NOTHROW(Type("[IndividualVariable,IndividualConstant,"
                            "IndividualVariable,IndividualConstant]->Proposition"));
         CHECK_NOTHROW(Type("[IndividualVariable,Proposition]->Proposition"));
-        CHECK_NOTHROW(Type("[Proposition]->([Proposition]->Proposition)"));
-        CHECK_NOTHROW(Type("[[o]->o]->o"));
-        CHECK_NOTHROW(Type("[[o]->o,[o]->o]->o"));
+        CHECK_NOTHROW(Type("Proposition->(Proposition->Proposition)"));
+        CHECK_NOTHROW(Type("(o->o)->o"));
+        CHECK_NOTHROW(Type("[o->o,o->o]->o"));
         CHECK_NOTHROW(Type("[a,b,c,d,e,f,g,h,i,j]->k"));
+        CHECK_NOTHROW(Type("A->(A->(A->(A->B)))"));
     }
 
     SECTION("Fail")
     {
         CHECK_THROWS(Type(""));
+        CHECK_THROWS(Type("[[o]->o]->o"));
+        CHECK_THROWS(Type("[Proposition]->([Proposition]->Proposition)"));
+        CHECK_THROWS(Type("[Proposition]->Proposition"));
+        CHECK_THROWS(Type("Proposition->([Proposition]->Proposition)"));
+        CHECK_THROWS(Type("[o->o]->o"));
+        CHECK_THROWS(Type("(o]->o)"));
+        CHECK_THROWS(Type("[,]->o"));
+        CHECK_THROWS(Type("[o,a)->a"));
+        CHECK_THROWS(Type("o->[i,i]"));
+        CHECK_THROWS(Type("o->(o]"));
+        CHECK_THROWS(Type("o->[i,i]"));
+        CHECK_THROWS(Type("[0,1]"));
     }
 }
+

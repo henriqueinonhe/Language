@@ -27,34 +27,27 @@ private:
         {
         }
 
+        ProductArgumentOffsets(){}
+
         unsigned int beginOffset;
         unsigned int endOffset;
     };
 
     void buildParsingTree(const QString &typeString);
-
-    bool isPrimitiveType(const TypeTokenString &typeString) const;
-
-    shared_ptr<TypeParsingTree> parsingTree;
-
-    void findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex);
+    void parseType(TypeParsingTreeIterator iter);
 
     bool typeIsEmpty(const TypeTokenString &typeString);
-
-    void parseType(TypeParsingTreeIterator iter);
-    bool stringEndsBeforeMainOperator(const TypeTokenString &tokenString, const unsigned int mainOperatorIndex);
-    bool isCompositionRightSideArgumentSuitableFirstToken(const TypeToken &token);
-
-    //NEW
+    bool isPrimitiveType(const TypeTokenString &typeString) const;
     bool hasProductTypeForm(const TypeTokenString &typeString) const;
     bool isWithinProductTypeMainScope(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount) const;
     bool isProductArgumentBreakPoint(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token) const;
     bool isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount) const;
+
     void separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList) const;
     unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString) const;
     void validateCompositionRightSideArgument(const TypeTokenString &tokenString, const unsigned int compositionOperatorOffset);
 
-
+    shared_ptr<TypeParsingTree> parsingTree;
 
 };
 

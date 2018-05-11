@@ -18,11 +18,12 @@ public:
     TypeTokenString mid(const unsigned int startPos, const unsigned int n) const;
 
     TypeToken operator[](unsigned int index) const;
-    TypeToken first() const; //TODO Test me
-    TypeToken last() const; //TODO Test me
+    TypeToken first() const;
+    TypeToken last() const;
 
-    bool isLastIndex(const unsigned int index) const; //TODO Test me
-    bool indexIsWithinBounds(const unsigned int index) const; //TODO Test me
+    bool isLastIndex(const unsigned int index) const;
+    bool indexIsWithinBounds(const unsigned int index) const;
+    bool isEmpty() const;
 
 private:
     TypeTokenString(const QVector<PoolRecordPointer<TypeToken>> &tokenList);

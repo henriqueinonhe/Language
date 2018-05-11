@@ -14,44 +14,9 @@ Type::Type(const QString &type)
 
 }
 
-void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex) //WTF IS THIS FOR?
-{
-    if(typeString[mainOpIndex] != TypeToken("->"))
-    {
-        throw std::invalid_argument("The composition operator was expected here!");
-    }
-
-    if(typeString[mainOpIndex + 1].getSort() == TypeToken::Sort::PrimitiveType)
-    {
-        lastTokenIndex = mainOpIndex + 1;
-    }
-    else if(typeString[mainOpIndex + 1] == TypeToken("("))
-    {
-        lastTokenIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(typeString,
-                                                                     TypeToken("("),
-                                                                     TypeToken(")"),
-                                                                     mainOpIndex + 1) + 1;
-    }
-    else
-    {
-        throw std::invalid_argument("A primitive type or a complete type was expected here!");
-    }
-}
-
-bool Type::typeIsEmpty(const TypeTokenString &typeString) //Keep
+bool Type::typeIsEmpty(const TypeTokenString &typeString)
 {
     return typeString.size() == 0;
-}
-
-bool Type::stringEndsBeforeMainOperator(const TypeTokenString &tokenString, const unsigned int mainOperatorIndex)
-{
-    return tokenString.size() == mainOperatorIndex;
-}
-
-bool Type::isCompositionRightSideArgumentSuitableFirstToken(const TypeToken &token)
-{
-    return token.getSort() == TypeToken::Sort::PrimitiveType ||
-            token.getSort() == TypeToken::Sort::LeftParenthesis;
 }
 
 bool Type::hasProductTypeForm(const TypeTokenString &typeString) const
@@ -186,7 +151,7 @@ void Type::separateProductArguments(const TypeTokenString &tokenString, QVector<
                 throw std::invalid_argument("There are unmatched square brackets!");
             }
 
-            argumentEndOffsetList.push_back(argumentEndOffset - tokenLookaheadCompensation);
+            offsetList.last().endOffset = argumentEndOffset - tokenLookaheadCompensation;
             break;
         }
 
@@ -215,6 +180,11 @@ void Type::parseType(TypeParsingTreeIterator iter)
             QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(1,1)};
 
             separateProductArguments(tokenString, offsetList);
+
+            if(offsetList.size() == 1)
+            {
+                throw std::invalid_argument("Product types must have at least two arguments!");
+            }
 
             std::for_each(offsetList.begin(), offsetList.end(), [&iter](const ProductArgumentOffsets &offsets)
             {
@@ -245,7 +215,7 @@ void Type::parseType(TypeParsingTreeIterator iter)
             const unsigned int leftArgumentBeginOffset = leftArgumentParenthesisPadding;
             const unsigned int leftArgumentEndOffset = compositionOperatorOffset - compositionOperatorCompensation - leftArgumentParenthesisPadding;
 
-            const unsigned int rightArgumentParenthesisPadding = tokenString[leftArgumentBeginOffset].getSort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
+            const unsigned int rightArgumentParenthesisPadding = tokenString[compositionOperatorOffset + compositionOperatorCompensation].getSort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
             const unsigned int rightArgumentBeginOffset = compositionOperatorOffset + compositionOperatorCompensation + rightArgumentParenthesisPadding;
             const unsigned int rightArgumentEndOffset = tokenString.size() - zeroIndexCompensation - rightArgumentParenthesisPadding;
 
@@ -264,6 +234,8 @@ void Type::parseType(TypeParsingTreeIterator iter)
             iter.goToChild(1);
             parseType(iter);
             iter.goToParent();
+
+            iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
         }
     }
 }
@@ -275,8 +247,12 @@ void Type::buildParsingTree(const QString &typeString)
     parsingTree.reset(new TypeParsingTree(tokenString)); //We must assign this way to avoid copying the tree (copy constructor)
     TypeParsingTreeIterator iter(parsingTree.get());
 
-    //First Type must be Primitive or composite, so I must take extra care here!
-    //A special first parse
+    if(hasProductTypeForm(tokenString))
+    {
+        throw std::invalid_argument("The main type cannot be a product type!");
+    }
+
+    parseType(iter);
 }
 
 bool Type::isPrimitiveType(const TypeTokenString &typeString) const

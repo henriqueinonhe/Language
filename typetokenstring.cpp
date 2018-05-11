@@ -23,7 +23,7 @@ unsigned int TypeTokenString::size() const
     return tokenList.size();
 }
 
-TypeTokenString TypeTokenString::mid(const unsigned int startPos, const unsigned int n)
+TypeTokenString TypeTokenString::mid(const unsigned int startPos, const unsigned int n) const
 {
     return TypeTokenString(tokenList.mid(startPos, n));
 }
@@ -40,11 +40,21 @@ TypeToken TypeTokenString::operator[](unsigned int index) const
 
 TypeToken TypeTokenString::first() const
 {
+    if(isEmpty())
+    {
+        throw std::invalid_argument("String is empty!");
+    }
+
     return *tokenList[0];
 }
 
 TypeToken TypeTokenString::last() const
 {
+    if(isEmpty())
+    {
+        throw std::invalid_argument("String is empty!");
+    }
+
     return *tokenList[size() - 1];
 }
 
@@ -56,6 +66,11 @@ bool TypeTokenString::isLastIndex(const unsigned int index) const
 bool TypeTokenString::indexIsWithinBounds(const unsigned int index) const
 {
     return index <= size() - 1;
+}
+
+bool TypeTokenString::isEmpty() const
+{
+    return size() == 0;
 }
 
 TypeTokenString::TypeTokenString(const QVector<PoolRecordPointer<TypeToken> > &tokenList) :
