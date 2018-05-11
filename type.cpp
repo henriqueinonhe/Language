@@ -1,4 +1,4 @@
-#include "type.h"
+﻿#include "type.h"
 
 Type::Type(const QString &type)
 {
@@ -14,65 +14,7 @@ Type::Type(const QString &type)
 
 }
 
-void Type::parseCompositeType(TypeParsingTreeIterator iter, const unsigned int startingIndex) //FIXME
-{
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
-    unsigned int mainOperatorIndex;
-
-    if(leftArgumentIsPrimitiveType(iter->getTypeString()))
-    {
-        mainOperatorIndex = 1;
-    }
-    else if(leftArgumentIsCompositeType(iter->getTypeString()))
-    {
-        mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
-                                                                         TypeToken("("),
-                                                                         TypeToken(")")) + 1;
-    }
-    else if(leftArgumentIsProductType(iter->getTypeString()))
-    {
-        mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
-                                                                         TypeToken("["),
-                                                                         TypeToken("]")) + 1;
-    }
-    else
-    {
-        throw std::invalid_argument("The first character of the left argument should be either '(' or '['.");
-    }
-
-    //Main Operator Check
-    if(!isCompositionOperato(iter->getTypeString()))
-    {
-        throw std::invalid_argument("The token at the main operator position should be a composition operator (->) !");
-    }
-
-    unsigned int leftArgumentParenthesisPadding = iter->getTypeString()[0] == TypeToken("(") ? 1 : 0;
-    unsigned int rightArgumentParenthesisPadding = iter->getTypeString()[mainOperatorIndex + 1] == TypeToken("(") ? 1 : 0;
-
-    iter->appendChild(startingIndex + leftArgumentParenthesisPadding,
-                      startingIndex + mainOperatorIndex - 1 - leftArgumentParenthesisPadding);
-    iter->appendChild(startingIndex + mainOperatorIndex + 1 + rightArgumentParenthesisPadding,
-                      startingIndex + iter->getTypeString().size() - 1 - rightArgumentParenthesisPadding);
-
-
-    //NEW
-    iter.goToChild(0);
-    parseLeftSideArgument(iter, startingIndex);
-    iter.goToParent();
-
-    iter.goToChild(1);
-    parseRightSideArgument(iter, startingIndex + mainOperatorIndex + 1 /*Where from? */ + rightArgumentParenthesisPadding);
-
-    //OLD
-    iter.goToChild(0);
-    parseType(iter, startingIndex, leftArgumentIsProductType(iter->getTypeString()));
-    iter.goToParent();
-
-    iter.goToChild(1);
-    parseType(iter, startingIndex + mainOperatorIndex + 1 + rightArgumentParenthesisPadding, false);
-}
-
-void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex)
+void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIndex, unsigned int &lastTokenIndex) //WTF IS THIS FOR?
 {
     if(typeString[mainOpIndex] != TypeToken("->"))
     {
@@ -96,54 +38,9 @@ void Type::findLastTokenIndex(TypeTokenString typeString, unsigned int &mainOpIn
     }
 }
 
-bool Type::typeIsEmpty(const TypeTokenString &typeString)
+bool Type::typeIsEmpty(const TypeTokenString &typeString) //Keep
 {
     return typeString.size() == 0;
-}
-
-bool Type::isCompositionOperator(const TypeTokenString &typeString, unsigned int index)
-{
-    return typeString[mainOperatorIndex].getSort() == TypeToken::Sort::CompositionOperator;
-}
-
-void Type::parseRightSideArgument(TypeParsingTreeIterator iter, const unsigned int startingIndex)
-{
-    if(typeIsEmpty(tokenString))
-    {
-        throw std::invalid_argument("The type cannot be empty!");
-    }
-
-    if(isPrimitiveType(iter->getTypeString()))
-    {
-        iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
-        return;
-    }
-    else //If it is not primitive, it must be composite then!
-    {
-        parseCompositeType(iter, startingIndex);
-    }
-}
-
-void Type::findMainOperatorOffset(const TypeTokenString &tokenString)
-{
-    if(tokenString[0].getSort() == TypeToken::Sort::LeftParenthesis)
-    {
-        mainOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                               TypeToken("("),
-                                                                               TypeToken(")")) + 1;
-    }
-    else if(tokenString[0].getSort() == TypeToken::Sort::LeftSquareBracket)
-    {
-        mainOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                               TypeToken("["),
-                                                                               TypeToken("]")) + 1;
-    }
-    else
-    {
-        mainOperatorOffset = 1;
-    }
-
-    return mainOperatorOffset;
 }
 
 bool Type::stringEndsBeforeMainOperator(const TypeTokenString &tokenString, const unsigned int mainOperatorIndex)
@@ -154,10 +51,98 @@ bool Type::stringEndsBeforeMainOperator(const TypeTokenString &tokenString, cons
 bool Type::isCompositionRightSideArgumentSuitableFirstToken(const TypeToken &token)
 {
     return token.getSort() == TypeToken::Sort::PrimitiveType ||
-           token.getSort() == TypeToken::Sort::LeftParenthesis;
+            token.getSort() == TypeToken::Sort::LeftParenthesis;
 }
 
-void Type::parseType(TypeParsingTreeIterator iter, const unsigned int beginIndex)
+bool Type::hasProductTypeForm(const TypeTokenString &typeString) const
+{
+    /* This is enough to settle the question whether the type in
+     * question has the Product Type Form, because the right side
+     * argument of a composition type cannot be a produc type,
+     * therefore, the only case where the first and last characters
+     * are square brackets are when the type is a product type. */
+
+    return typeString.first().getSort() == TypeToken::Sort::LeftSquareBracket &&
+           typeString.last().getSort() == TypeToken::Sort::RightSquareBracket;
+}
+
+bool Type::isWithinProductTypeMainScope(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount) const
+{
+    return leftSquareBracketCount == rightSquareBracketCount + 1;
+}
+
+bool Type::isProductArgumentBreakPoint(const unsigned int leftSquarteBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token) const
+{
+    return isWithinProductTypeMainScope(leftSquarteBracketCount, rightSquareBracketCount) &&
+            token.getSort() == TypeToken::Sort::Comma;
+}
+
+bool Type::isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount) const
+{
+    return leftSquareBracketCount == rightSquareBracketCount;
+}
+
+bool Type::possiblyHasCompositeTypeForm(const TypeTokenString &typeString) const
+{
+    return typeString.first().getSort() == TypeToken::Sort::LeftParenthesis ||
+           typeString.first().getSort() == TypeToken::Sort::LeftSquareBracket ||
+           typeString.first().getSort() == TypeToken::Sort::PrimitiveType;
+}
+
+void Type::separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList)
+{
+    const unsigned int tokenLookaheadCompensation = 1;
+    unsigned int leftSquareBracketCount = 1;
+    unsigned int rightSquareBracketCount = 0;
+    unsigned int argumentBeginOffset = 1;
+    unsigned int argumentEndOffset = 1;
+
+    while(true)
+    {
+        if(!tokenString.indexIsWithinBounds(argumentEndOffset))
+        {
+            throw std::invalid_argument("Index is out of bounds!");
+        }
+
+        if(tokenString[argumentEndOffset].getSort() == TypeToken::Sort::LeftSquareBracket)
+        {
+            leftSquareBracketCount++;
+        }
+
+        if(tokenString[argumentEndOffset].getSort() == TypeToken::Sort::RightSquareBracket)
+        {
+            rightSquareBracketCount++;
+        }
+
+        if(isProductArgumentBreakPoint(leftSquareBracketCount, rightSquareBracketCount, tokenString[argumentEndOffset]))
+        {
+            if(argumentEndOffset < argumentBeginOffset)
+            {
+                throw std::invalid_argument("Argument End Offset cannot be less than Argument Begin Offset!");
+            }
+
+            offsetList.back().endOffset = argumentEndOffset - tokenLookaheadCompensation; //Current argument ended
+            argumentEndOffset++;
+            argumentBeginOffset = argumentEndOffset;
+            offsetList.push_back(ProductArgumentOffsets(argumentBeginOffset, argumentBeginOffset)); //Next argument begun
+        }
+
+        if(isProductArgumentsScopeEnd(leftSquareBracketCount, rightSquareBracketCount))
+        {
+            if(!tokenString.isLastIndex(argumentEndOffset))
+            {
+                throw std::invalid_argument("There are unmatched square brackets!");
+            }
+
+            argumentEndOffsetList.push_back(argumentEndOffset - tokenLookaheadCompensation);
+            break;
+        }
+
+        argumentEndOffset++;
+    }
+}
+
+void Type::parseType(TypeParsingTreeIterator iter)
 {
     const TypeTokenString tokenString = iter->getTypeString();
 
@@ -171,128 +156,58 @@ void Type::parseType(TypeParsingTreeIterator iter, const unsigned int beginIndex
         iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
         return;
     }
-    else if(isCompositeType(tokenString))
+    else
     {
-        unsigned int mainOperatorOffset = findMainOperatorOffset(tokenString);
-
-        if(isCompositeType(tokenString))
+        if(hasProductTypeForm(tokenString))
         {
-            iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
+            QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(1,1)};
 
-            const unsigned int leftArgumentParenthesisPadding = tokenString[0].getSort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
-            const unsigned int leftArgumentBeginIndex = beginIndex + leftArgumentParenthesisPadding;
-            const unsigned int leftArgumentEndIndex = beginIndex + mainOperatorOffset - mainOperatorCompensation - leftArgumentParenthesisPadding;
-            const unsigned int mainOperatorCompensation = 1;
-            iter->appendChild(leftArgumentBeginIndex, leftArgumentEndIndex);
+            separateProductArguments(tokenString, offsetList);
 
-            const unsigned int rightArgumentBeginOffset = mainOperatorOffset + mainOperatorCompensation;
-            if(!parenthesisMatch(tokenString, rightArgumentBeginOffset))
+            std::for_each(offsetList.begin(), offsetList.end(), [&iter](const ProductArgumentOffsets &offsets)
             {
-                throw std::invalid_argument("Parenthesis on the right side argument don't match");
+                const unsigned int argumentBeginIndex = iter->typeBeginIndex + offsets.beginOffset;
+                const unsigned int argumentEndIndex = iter->typeBeginIndex + offsets.endOffset;
+
+                iter->appendChild(argumentBeginIndex, argumentEndIndex);
+            });
+
+            for(unsigned int childIndex = 0; childIndex < iter->getChildrenNumber(); childIndex++)
+            {
+                iter.goToChild(childIndex);
+                parseType(iter);
             }
 
-            if(tokenString[rightArgumentBeginOffset].getSort() == TypeToken::Sort::LeftSquareBracket)
-            {
-                throw std::invalid_argument("There cannot be a product type on the right side argument of a composition!");
-            }
-
-            const unsigned int rightArgumentParenthesisPadding = tokenString[mainOperatorOffset + mainOperatorCompensation].getSort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
-            const unsigned int rightArgumentBeginIndex = beginIndex + rightArgumentBeginOffset + rightArgumentParenthesisPadding;
-            const unsigned int rightArgumentEndIndex = beginIndex + tokenString.size() - rightArgumentParenthesisPadding;
-            iter->appendChild(rightArgumentBeginIndex, rightArgumentEndIndex);
-
-            iter.goToChild(0);
-            parseType(iter, leftArgumentBeginIndex);
-            iter.goToParent();
-
-            iter.goToChild(1);
-            parseType(iter, rightArgumentBeginIndex);
+            iter->setMainOperator(TypeParsingTreeNode::MainOperator::Product);
         }
         else
         {
+            unsigned int mainOperatorOffset;
 
+            if(tokenString.first().getSort() == TypeToken::Sort::PrimitiveType)
+            {
+                mainOperatorOffset = 1;
+
+                if(!tokenString[mainOperatorOffset].getSort() == TypeToken::Sort::CompositionOperator)
+                {
+                    throw std::invalid_argument("Composition operator was expected here!");
+                }
+
+                //Check right side argument
+            }
+            else if(tokenString.first().getSort() == TypeToken::Sort::LeftParenthesis)
+            {
+                const unsigned int mainOperatorCompensation = 1;
+                mainOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
+                                                                                       TypeToken("("),
+                                                                                       TypeToken(")")) +
+                                                                                       mainOperatorCompensation;
+
+
+            }
         }
     }
 }
-
-bool Type::isCompositeType(const TypeTokenString &tokenString)
-{
-    if(tokenString[0].getSort() == TypeToken::Sort::LeftParenthesis)
-    {
-        const unsigned int mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                                                 TypeToken("("),
-                                                                                                 TypeToken(")")) + 1;
-        if(stringEndsBeforeMainOperator(tokenString, mainOperatorIndex))
-        {
-            throw std::invalid_argument("Expected composition operator (->), but found end of input.");
-        }
-        else if(!tokenString[mainOperatorIndex].getSort() == TypeToken::Sort::CompositionOperator)
-        {
-            throw std::invalid_argument("Expected composition operator (->), but found something else.");
-        }
-        else if()
-        {
-
-        }
-        else if(tokenString[mainOperatorIndex + 1].getSort() == TypeToken::Sort::LeftSquareBracket)
-        {
-            throw std::invalid_argument("Right side composition argument cannot have a product type.");
-        }
-        else if(isCompositionRightSideArgumentSuitableFirstToken(tokenString[mainOperatorIndex + 1]))
-        {
-            throw std::invalid_argument("Expected a primitive type or a left parenthesis, but found something else.");
-        }
-
-    }
-    else if(tokenString[0].getSort() == TypeToken::Sort::LeftSquareBracket)
-    {
-        const unsigned int mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                                                 TypeToken("]"),
-                                                                                                 TypeToken("]")) + 1;
-
-        if(stringEndsBeforeMainOperator(tokenString, mainOperatorIndex))
-        {
-            return false; //Means it is a product type!
-        }
-        else if(!tokenString[mainOperatorIndex].getSort() == TypeToken::Sort::CompositionOperator)
-        {
-            throw std::invalid_argument("Expected composition operator (->), but found something else.");
-        }
-    }
-    else if(tokenString[0].getSort() == TypeToken::Sort::PrimitiveType)
-    {
-        const unsigned int mainOperatorIndex = 1;
-
-        if(!tokenString[mainOperatorIndex].getSort() == TypeToken::Sort::CompositionOperator)
-        {
-            throw std::invalid_argument("Expected composition operator (->), but found something else.");
-        }
-    }
-    else
-    {
-        return false;
-    }
-
-
-}
-
-bool Type::parenthesisMatch(const TypeTokenString &tokenString, const unsigned int startIndex)
-{
-    try
-    {
-        const unsigned int delimiterScopeEndIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                                                      TypeToken("("),
-                                                                                                      TypeToken(")"),
-                                                                                                      startIndex);
-    }
-    catch(std::invalid_argument &e)
-    {
-        return false;
-    }
-
-    return true;
-}
-
 
 void Type::buildParsingTree(const QString &typeString)
 {
@@ -301,80 +216,13 @@ void Type::buildParsingTree(const QString &typeString)
     parsingTree.reset(new TypeParsingTree(tokenString)); //We must assign this way to avoid copying the tree (copy constructor)
     TypeParsingTreeIterator iter(parsingTree.get());
 
-    const unsigned int startingIndex = 0;
-
-
-    //NEW NEW
-    if(typeIsEmpty(tokenString))
-    {
-        throw std::invalid_argument("The type cannot be empty!");
-    }
-
-    if(isPrimitiveType(iter->getTypeString()))
-    {
-        iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
-        return;
-    }
-    else //If it is not primitive, it must be composite then!
-    {
-        unsigned int mainOperatorIndex;
-
-        if(leftArgumentIsPrimitiveType(iter->getTypeString()))
-        {
-            mainOperatorIndex = 1;
-        }
-        else if(leftArgumentIsCompositeType(iter->getTypeString()))
-        {
-            mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
-                                                                             TypeToken("("),
-                                                                             TypeToken(")")) + 1;
-        }
-        else if(leftArgumentIsProductType(iter->getTypeString()))
-        {
-            mainOperatorIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(iter->getTypeString(),
-                                                                             TypeToken("["),
-                                                                             TypeToken("]")) + 1;
-        }
-        else
-        {
-            throw std::invalid_argument("The first character of the left argument should be either '(' or '['.");
-        }
-
-        //Main Operator Check
-        if(!isCompositionOperato(iter->getTypeString()))
-        {
-            throw std::invalid_argument("The token at the main operator position should be a composition operator (->) !");
-        }
-        else
-        {
-            iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
-        }
-
-        unsigned int leftArgumentParenthesisPadding = iter->getTypeString()[0] == TypeToken("(") ? 1 : 0;
-        unsigned int rightArgumentParenthesisPadding = iter->getTypeString()[mainOperatorIndex + 1] == TypeToken("(") ? 1 : 0;
-
-        iter->appendChild(startingIndex + leftArgumentParenthesisPadding,
-                          startingIndex + mainOperatorIndex - 1 - leftArgumentParenthesisPadding);
-        iter->appendChild(startingIndex + mainOperatorIndex + 1 + rightArgumentParenthesisPadding,
-                          startingIndex + iter->getTypeString().size() - 1 - rightArgumentParenthesisPadding);
-
-
-        //NEW
-        iter.goToChild(0);
-        parseLeftSideArgument(iter, startingIndex);
-        iter.goToParent();
-
-        iter.goToChild(1);
-        parseRightSideArgument(iter, startingIndex + mainOperatorIndex + 1 /*Where from? */ + rightArgumentParenthesisPadding);
-    }
-
-    //NEW
-    parseRightSideArgument(iter, startingIndex);
+    //First Type must be Primitive or composite, so I must take extra care here!
+    //A special first parse
 }
 
 bool Type::isPrimitiveType(const TypeTokenString &typeString) const
 {
-    return typeString.size() == 1 && typeString[0].getSort() == TypeToken::Sort::PrimitiveType;
+    return typeString.size() == 1 && typeString.first().getSort() == TypeToken::Sort::PrimitiveType;
 }
 
 

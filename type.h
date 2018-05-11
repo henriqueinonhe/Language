@@ -1,4 +1,4 @@
-#ifndef TOKENTYPE_H
+﻿#ifndef TOKENTYPE_H
 #define TOKENTYPE_H
 
 #include <iostream>
@@ -28,16 +28,32 @@ private:
 
     bool typeIsEmpty(const TypeTokenString &typeString);
 
-    //NEW
-    void parseRightSideArgument(TypeParsingTreeIterator iter, const unsigned int startingIndex);
-
-    //NEW NEW
-    void parseType(TypeParsingTreeIterator iter, const unsigned int beginIndex);
-    bool isCompositeType(const TypeTokenString &tokenString);
-    bool parenthesisMatch(const TypeTokenString &tokenString, const unsigned int startIndex);
-    void findMainOperatorOffset(const TypeTokenString &tokenString);
+    void parseType(TypeParsingTreeIterator iter);
     bool stringEndsBeforeMainOperator(const TypeTokenString &tokenString, const unsigned int mainOperatorIndex);
     bool isCompositionRightSideArgumentSuitableFirstToken(const TypeToken &token);
+
+    //NEW
+    bool hasProductTypeForm(const TypeTokenString &typeString) const;
+    bool isWithinProductTypeMainScope(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount) const;
+    bool isProductArgumentBreakPoint(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token) const;
+    bool isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount) const;
+    void separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList) const;
+    bool possiblyHasCompositeTypeForm(const TypeTokenString &typeString) const;
+
+
+    struct ProductArgumentOffsets
+    {
+        ProductArgumentOffsets(const unsigned int beginOffset,
+                               const unsigned int endOffset) :
+            beginOffset(beginOffset),
+            endOffset(endOffset)
+        {
+        }
+
+        unsigned int beginOffset;
+        unsigned int endOffset;
+    };
+
 };
 
 #endif // TOKENTYPE_H

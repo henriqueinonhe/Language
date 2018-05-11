@@ -30,12 +30,32 @@ TypeTokenString TypeTokenString::mid(const unsigned int startPos, const unsigned
 
 TypeToken TypeTokenString::operator[](unsigned int index) const
 {
-    if(index >= size())
+    if(!indexIsWithinBounds(index))
     {
         throw std::invalid_argument("Index out of bounds.");
     }
 
     return *tokenList[index];
+}
+
+TypeToken TypeTokenString::first() const
+{
+    return *tokenList[0];
+}
+
+TypeToken TypeTokenString::last() const
+{
+    return *tokenList[size() - 1];
+}
+
+bool TypeTokenString::isLastIndex(const unsigned int index) const
+{
+    return index == size() - 1;
+}
+
+bool TypeTokenString::indexIsWithinBounds(const unsigned int index) const
+{
+    return index <= size() - 1;
 }
 
 TypeTokenString::TypeTokenString(const QVector<PoolRecordPointer<TypeToken> > &tokenList) :

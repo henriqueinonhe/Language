@@ -6,7 +6,9 @@
 #include <memory>
 #include "typetokenstring.h"
 
+class TypeParsingTreeIterator;
 class TypeParsingTree;
+class Type;
 
 using namespace std;
 
@@ -61,6 +63,7 @@ private:
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTree;
+friend void Type::parseType(TypeParsingTreeIterator);
 
 };
 
