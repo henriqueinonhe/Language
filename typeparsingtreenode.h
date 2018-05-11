@@ -40,6 +40,9 @@ public:
     MainOperator getMainOperator() const;
     void setMainOperator(const MainOperator &value);
 
+    unsigned int getTypeBeginIndex() const;
+    unsigned int getTypeEndIndex() const;
+
 private:
     TypeParsingTreeNode(TypeParsingTree *tree,
                         TypeParsingTreeNode *parent,
@@ -63,7 +66,6 @@ private:
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTree;
-friend void Type::parseType(TypeParsingTreeIterator);
 
 };
 

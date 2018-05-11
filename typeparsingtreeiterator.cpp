@@ -1,4 +1,4 @@
-#include "typeparsingtreeiterator.h"
+﻿#include "typeparsingtreeiterator.h"
 
 TypeParsingTreeIterator::TypeParsingTreeIterator(TypeParsingTree *tree) :
     tree(tree),
@@ -87,7 +87,7 @@ bool TypeParsingTreeIterator::checkPathStringValidity(const QString &path) const
     return regex.match(path).hasMatch();
 }
 
-void TypeParsingTreeIterator::convertStringToPath(const QString &path) const
+QVector<unsigned int> TypeParsingTreeIterator::convertStringToPath(const QString &path) const
 {
     QVector<unsigned int> pathVector;
     const QString uncencasedPath = removeOuterParenthesis(path);

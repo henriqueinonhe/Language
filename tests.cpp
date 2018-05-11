@@ -1,4 +1,4 @@
-#include "catch.hpp"
+﻿#include "catch.hpp"
 #include "tree.h"
 #include "treenode.h"
 #include "treeiterator.h"
@@ -344,7 +344,7 @@ TEST_CASE("TypeParsingTree Printer")
     iter->appendChild(7,9);
 
     iter.goToChild(0);
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);
+    //iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);  RECHECK THIS
 
     iter->appendChild(2,2);
     iter->appendChild(4,4);

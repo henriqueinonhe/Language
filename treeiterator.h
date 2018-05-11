@@ -1,4 +1,4 @@
-#ifndef TREEITERATOR_H
+﻿#ifndef TREEITERATOR_H
 #define TREEITERATOR_H
 
 #include "tree.h"
@@ -21,7 +21,7 @@ public:
 
 private:
     bool checkPathStringValidity(const QString &path) const;
-    void convertPathToCoordinates(const QString &path) const;
+    QVector<unsigned int> convertPathToCoordinates(const QString &path) const;
     QString removeOuterParenthesis(const QString &path) const;
 
     Tree *tree;

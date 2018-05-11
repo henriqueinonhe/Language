@@ -45,10 +45,6 @@ QString TypeParsingTreeNode::mainOperatorToString() const
     {
         return "([])";
     }
-    else if(mainOperator == MainOperator::Union)
-    {
-        return "({})";
-    }
     else
     {
         throw std::logic_error("Main Operator is not set!");
@@ -62,6 +58,16 @@ void TypeParsingTreeNode::updateTreeHeight()
     {
         tree->height = getHeight();
     }
+}
+
+unsigned int TypeParsingTreeNode::getTypeEndIndex() const
+{
+    return typeEndIndex;
+}
+
+unsigned int TypeParsingTreeNode::getTypeBeginIndex() const
+{
+    return typeBeginIndex;
 }
 
 TypeParsingTreeNode::MainOperator TypeParsingTreeNode::getMainOperator() const

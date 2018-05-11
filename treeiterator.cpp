@@ -1,4 +1,4 @@
-#include "treeiterator.h"
+﻿#include "treeiterator.h"
 
 TreeIterator::TreeIterator(Tree *tree) :
     tree(tree),
@@ -69,7 +69,7 @@ bool TreeIterator::checkPathStringValidity(const QString &path) const
     return regex.match(path).hasMatch();
 }
 
-void TreeIterator::convertPathToCoordinates(const QString &path) const
+QVector<unsigned int> TreeIterator::convertPathToCoordinates(const QString &path) const
 {
     QVector<unsigned int> vec;
     const QString unencasedPath = removeOuterParenthesis(path);

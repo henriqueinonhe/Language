@@ -23,7 +23,7 @@ public:
 
 private:
     bool checkPathStringValidity(const QString &path) const;
-    void convertStringToPath(const QString &path) const;
+    QVector<unsigned int> convertStringToPath(const QString &path) const;
     QString removeOuterParenthesis(const QString &path) const;
 
     TypeParsingTree *tree;
