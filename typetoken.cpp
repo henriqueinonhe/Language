@@ -1,4 +1,4 @@
-#include "typetoken.h"
+﻿#include "typetoken.h"
 
 TypeToken::TypeToken()
 {
@@ -38,6 +38,11 @@ TypeToken TypeToken::setString(const QString &value)
     string = value;
 
     return *this;
+}
+
+unsigned int TypeToken::getTokenCharSpan() const
+{
+    return string.size();
 }
 
 void TypeToken::assignSort(const QString &string)

@@ -25,14 +25,18 @@ public:
     bool indexIsWithinBounds(const unsigned int index) const;
     bool isEmpty() const;
 
-private:
-    TypeTokenString(const QVector<PoolRecordPointer<TypeToken>> &tokenList);
+    bool operator==(const TypeTokenString &other) const;
+    bool operator!=(const TypeTokenString &other) const;
 
+private:
     static Pool<TypeToken> pool;
 
-    QVector<PoolRecordPointer<TypeToken>> tokenList;
+    TypeTokenString(const QVector<PoolRecordPointer<TypeToken>> &tokenList);
+
     void lexString(const QString &string);
     bool characterIsSeparator(const QString &c) const;
+
+    QVector<PoolRecordPointer<TypeToken>> tokenList;
 
 };
 

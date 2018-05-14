@@ -1,4 +1,4 @@
-#include "typeparsingtree.h"
+﻿#include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
 
 TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
@@ -42,4 +42,14 @@ QString TypeParsingTree::print() //NOTE better refactor this, or at least docume
     str += "------------------------------\n";
 
     return str;
+}
+
+bool TypeParsingTree::operator==(const TypeParsingTree &other) const
+{
+    return this->typeString == other.typeString;
+}
+
+bool TypeParsingTree::operator!=(const TypeParsingTree &other) const
+{
+    return !(*this == other);
 }

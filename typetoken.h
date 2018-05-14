@@ -1,4 +1,4 @@
-#ifndef TYPETOKEN_H
+﻿#ifndef TYPETOKEN_H
 #define TYPETOKEN_H
 
 #include <QString>
@@ -29,6 +29,7 @@ public:
     QString getString() const;
     TypeToken setString(const QString &value);
 
+    unsigned int getTokenCharSpan() const;
 
 private:
     void assignSort(const QString &string);

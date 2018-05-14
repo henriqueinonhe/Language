@@ -11,6 +11,7 @@
 #include "typetokenstring.h"
 #include <QRegularExpression>
 #include <iostream>
+#include "parsingerrorexception.hpp"
 
 
 TEST_CASE("Trees")
@@ -245,6 +246,13 @@ TEST_CASE("TypeParsingTrees")
         iter.goToCoordinates("(1,0,1)");
     }
 
+    SECTION("Other Methods")
+    {
+        CHECK(TypeParsingTree(TypeTokenString("Aflosis")) == TypeParsingTree(TypeTokenString("Aflosis")));
+
+        CHECK(TypeParsingTree(TypeTokenString("a")) != TypeParsingTree(TypeTokenString("b")));
+    }
+
 }
 
 TEST_CASE("TypeToken")
@@ -276,6 +284,19 @@ TEST_CASE("TypeToken")
         CHECK_THROWS(TypeToken("sd]ad"));
         CHECK_THROWS(TypeToken("sd{ad"));
         CHECK_THROWS(TypeToken("sd}ad"));
+    }
+
+    SECTION("Other Tests")
+    {
+        CHECK(TypeToken("bundinha") == TypeToken("bundinha"));
+        CHECK(TypeToken("(") == TypeToken("("));
+        CHECK(TypeToken(")") == TypeToken(")"));
+        CHECK(TypeToken("[") == TypeToken("["));
+        CHECK(TypeToken("]") == TypeToken("]"));
+        CHECK(TypeToken("->") == TypeToken("->"));
+        CHECK(TypeToken(",") == TypeToken(","));
+
+        CHECK(TypeToken("asdasd") != TypeToken("dsa"));
     }
 }
 
@@ -326,7 +347,10 @@ TEST_CASE("TypeTokenString")
 
     CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
 
+    CHECK(TypeTokenString("[Proposition,Proposition]->Proposition") == TypeTokenString("[Proposition,Proposition]->Proposition"));
+    CHECK(TypeTokenString("A->(A->(A->(A->B)))") == TypeTokenString("A->(A->(A->(A->B)))"));
 
+    CHECK(TypeTokenString("A") != TypeTokenString("B"));
 
 }
 
@@ -393,6 +417,59 @@ TEST_CASE("Type")
         CHECK_THROWS(Type("o->(o]"));
         CHECK_THROWS(Type("o->[i,i]"));
         CHECK_THROWS(Type("[0,1]"));
+    }
+
+    SECTION("Other Methods")
+    {
+        CHECK(Type("o->o") == Type("o->o"));
+
+        CHECK(Type("o") != Type("a->([c,d]->g)"));
+    }
+}
+
+TEST_CASE("ParsingErrorException")
+{
+    SECTION("Type Parsing Error Exception")
+    {
+        TypeTokenString str("[o,o]->[o,o]");
+
+        try
+        {
+            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator cannot be a product type!",
+                                                         6,
+                                                         10,
+                                                         str);
+        }
+        catch(const ParsingErrorException<TypeTokenString> &e)
+        {
+            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
+                              "[o,o]->[o,o]\n"
+                              "       ^^^^^"));
+        }
+
+        TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
+
+        try
+        {
+            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator fails parenthesis matching!",
+                                                         6,
+                                                         9,
+                                                         str2);
+        }
+        catch(const ParsingErrorException<TypeTokenString> &e)
+        {
+//            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator fails parenthesis matching!\n"
+//                                               "[Aflisis,Aflosis]->(a->b\n"
+//                                               "                   ^^^^^"));
+        }
+    }
+}
+
+TEST_CASE("Token")
+{
+    SECTION("Pass")
+    {
+
     }
 }
 

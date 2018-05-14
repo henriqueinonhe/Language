@@ -9,6 +9,7 @@
 #include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
 #include "parsingauxiliarytools.h"
+#include "parsingerrorexception.hpp"
 
 using namespace std;
 
@@ -16,6 +17,9 @@ class Type
 {
 public:
     Type(const QString &type);
+
+    bool operator==(const Type &other) const;
+    bool operator!=(const Type &other) const;
 
 private:
     struct ProductArgumentOffsets
@@ -35,6 +39,8 @@ private:
 
     void buildParsingTree(const QString &typeString);
     void parseType(TypeParsingTreeIterator iter);
+    void parseProductType(const TypeTokenString &tokenString, TypeParsingTreeIterator &iter);
+    void parseCompositeType(TypeParsingTreeIterator &iter, const TypeTokenString &tokenString);
 
     bool typeIsEmpty(const TypeTokenString &typeString);
     bool isPrimitiveType(const TypeTokenString &typeString) const;

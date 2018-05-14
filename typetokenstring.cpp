@@ -73,6 +73,32 @@ bool TypeTokenString::isEmpty() const
     return size() == 0;
 }
 
+bool TypeTokenString::operator==(const TypeTokenString &other) const
+{
+    if(this->size() == other.size())
+    {
+        for(int index = 0; index < tokenList.size(); index++)
+        {
+            if(*this->tokenList[index] != *other.tokenList[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+bool TypeTokenString::operator!=(const TypeTokenString &other) const
+{
+    return !(*this == other);
+}
+
 TypeTokenString::TypeTokenString(const QVector<PoolRecordPointer<TypeToken> > &tokenList) :
     tokenList(tokenList)
 {

@@ -1,4 +1,4 @@
-#ifndef TYPEPARSINGTREE_H
+﻿#ifndef TYPEPARSINGTREE_H
 #define TYPEPARSINGTREE_H
 
 #include <QString>
@@ -20,6 +20,9 @@ public:
     unsigned int getHeight() const;
 
     QString print();
+
+    bool operator==(const TypeParsingTree &other) const;
+    bool operator!=(const TypeParsingTree &other) const;
 
 private:
     TypeParsingTreeNode root;

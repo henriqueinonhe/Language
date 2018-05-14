@@ -1,4 +1,4 @@
-#include "token.h"
+﻿#include "token.h"
 
 Token::Token()
 {
@@ -18,5 +18,11 @@ QString Token::getString() const
 
 bool Token::operator==(const Token &other) const
 {
-    return other.string == this->string;
+    return other.string == this->string &&
+           *other.type == *this->type;
+}
+
+bool Token::operator!=(const Token &other) const
+{
+    return !(other == *this);
 }
