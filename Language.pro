@@ -21,7 +21,6 @@ SOURCES += main.cpp \
     type.cpp \
     typetoken.cpp \
     typetokenstring.cpp \
-    typeparsingtreeinterface.cpp \
     tokenstring.cpp \
     lexer.cpp \
     signature.cpp \
@@ -54,7 +53,6 @@ HEADERS += \
     typetoken.h \
     pool.h \
     typetokenstring.h \
-    typeparsingtreeinterface.h \
     parsingauxiliarytools.h \
     tokenstring.h \
     parsingerrorexception.hpp \
@@ -62,4 +60,5 @@ HEADERS += \
     signature.h \
     punctuationtoken.h \
     coretoken.h \
-    tablesignature.h
+    tablesignature.h \
+    parsingtree.h
