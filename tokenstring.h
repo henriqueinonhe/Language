@@ -2,17 +2,17 @@
 #define TOKENSTRING_H
 
 #include "token.h"
+#include "pool.h"
+
+class Lexer;
 
 class TokenString
 {
 public:
 
-    TokenString();
-
-    QString toString() const; //TODO
+    QString toString() const;
 
     unsigned int size() const;
-    TokenString mid(const unsigned int startPos, const unsigned int n) const;
 
     Token operator[](unsigned int index) const;
     Token first() const;
@@ -26,9 +26,11 @@ public:
     bool operator!=(const TokenString &other) const;
 
 private:
+    TokenString();
 
+    QVector<Token *> tokenList;
 
-    QVector<PoolRecordPointer<Token>> tokenList;
+    friend class Lexer;
 };
 
 #endif // TOKENSTRING_H

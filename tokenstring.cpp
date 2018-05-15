@@ -5,13 +5,21 @@ TokenString::TokenString()
 
 }
 
+QString TokenString::toString() const
+{
+    QString string;
+
+    std::for_each(tokenList.begin(), tokenList.end(), [&string](const Token * const token)
+    {
+        string += token->getString();
+    });
+
+    return string;
+}
+
 unsigned int TokenString::size() const
 {
     return tokenList.size();
-}
-
-TokenString TokenString::mid(const unsigned int startPos, const unsigned int n) const //TODO
-{
 }
 
 Token TokenString::operator[](unsigned int index) const
@@ -21,7 +29,7 @@ Token TokenString::operator[](unsigned int index) const
         throw std::invalid_argument("Index is out of bounds!");
     }
 
-    return *(tokenList[index]);
+    return *tokenList[index];
 }
 
 Token TokenString::first() const

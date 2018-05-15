@@ -10,7 +10,7 @@ Type::Type(const QString &type)
 
     buildParsingTree(type);
 
-    std::cout << parsingTree->print().toStdString();
+    //std::cout << parsingTree->print().toStdString(); For Debugging purposes!
 
 }
 
@@ -198,7 +198,7 @@ void Type::separateProductArguments(const TypeTokenString &tokenString, QVector<
 
 void Type::parseProductType(const TypeTokenString &tokenString, TypeParsingTreeIterator &iter)
 {
-    QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(1,1)};
+    QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(1,1)}; //The first argument begins at index 1, because index 0 = left square bracket
 
     separateProductArguments(tokenString, offsetList);
 
@@ -301,7 +301,12 @@ void Type::buildParsingTree(const QString &typeString)
 
     if(hasProductTypeForm(tokenString))
     {
-        throw std::invalid_argument("The main type cannot be a product type!");
+        const unsigned int zeroIndexCompensation = 1;
+
+        throw ParsingErrorException<TypeTokenString>("The main type cannot be a product type!",
+                                    0,
+                                    tokenString.size() - zeroIndexCompensation,
+                                    tokenString);
     }
 
     parseType(iter);

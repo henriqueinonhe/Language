@@ -101,7 +101,7 @@ private:
 
     T object;
     unsigned int counter;
-    Pool<T> *parent;
+    Pool<T> *parent; //Do we really need this?
 
 template<class T2>
 friend class Pool;
@@ -113,7 +113,7 @@ friend class PoolRecordPointer;
 
 
 template <class T>
-class PoolRecordPointer //Works basically as a shared pointer
+class PoolRecordPointer
 {
 public:
     PoolRecordPointer() :
@@ -178,7 +178,7 @@ private:
     }
 
     PoolRecord<T> *ptr;
-    bool isSet; //Why is this necessary?
+    bool isSet; //To avoid using delete on a nullptr!
 };
 
 #endif // POOL_H

@@ -22,7 +22,12 @@ SOURCES += main.cpp \
     typetoken.cpp \
     typetokenstring.cpp \
     typeparsingtreeinterface.cpp \
-    tokenstring.cpp
+    tokenstring.cpp \
+    lexer.cpp \
+    signature.cpp \
+    punctuationtoken.cpp \
+    coretoken.cpp \
+    tablesignature.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -52,4 +57,9 @@ HEADERS += \
     typeparsingtreeinterface.h \
     parsingauxiliarytools.h \
     tokenstring.h \
-    parsingerrorexception.hpp
+    parsingerrorexception.hpp \
+    lexer.h \
+    signature.h \
+    punctuationtoken.h \
+    coretoken.h \
+    tablesignature.h

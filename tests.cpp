@@ -12,6 +12,12 @@
 #include <QRegularExpression>
 #include <iostream>
 #include "parsingerrorexception.hpp"
+#include "tokenstring.h"
+#include "lexer.h"
+#include "signature.h"
+#include "tablesignature.h"
+#include "coretoken.h"
+#include "punctuationtoken.h"
 
 
 TEST_CASE("Trees")
@@ -465,11 +471,91 @@ TEST_CASE("ParsingErrorException")
     }
 }
 
-TEST_CASE("Token")
+TEST_CASE("Punctuation Token")
 {
-    SECTION("Pass")
-    {
+    CHECK_NOTHROW(PunctuationToken("("));
+    CHECK_NOTHROW(PunctuationToken(")"));
+    CHECK_NOTHROW(PunctuationToken(","));
 
-    }
+    CHECK_THROWS(PunctuationToken(" "));
+    CHECK_THROWS(PunctuationToken("Abacateiro"));
+    CHECK_THROWS(PunctuationToken("Abacate"));
+    CHECK_THROWS(PunctuationToken("( "));
+    CHECK_THROWS(PunctuationToken(" )"));
+    CHECK_THROWS(PunctuationToken(" , "));
+    CHECK_THROWS(PunctuationToken("(("));
+    CHECK_THROWS(PunctuationToken("(,)"));
 }
 
+TEST_CASE("Core Token")
+{
+    CHECK_NOTHROW(CoreToken("asdsad", Type("o")));
+    CHECK_NOTHROW(CoreToken("Abacate", Type("o")));
+    CHECK_NOTHROW(CoreToken("Afleflesis", Type("o")));
+    CHECK_NOTHROW(CoreToken("Afleisis", Type("o")));
+
+    CHECK_THROWS(CoreToken("(", Type("o")));
+    CHECK_THROWS(CoreToken(")", Type("o")));
+    CHECK_THROWS(CoreToken(",", Type("o")));
+    CHECK_THROWS(CoreToken("das sdsd", Type("o")));
+    CHECK_THROWS(CoreToken("asdsd,dsds", Type("o")));
+    CHECK_THROWS(CoreToken("IASD(dds", Type("o")));
+}
+
+TEST_CASE("Lexer, Table Signature and Type Token String")
+{
+    TableSignature signature;
+
+    //Setting up Signature
+    PunctuationToken t1("(");
+    PunctuationToken t2(")");
+    PunctuationToken t3(",");
+
+    signature.addToken(&t1);
+    signature.addToken(&t2);
+    signature.addToken(&t3);
+
+    SECTION("Token pointers work")
+    {
+        CHECK(signature.getTokenPointer("(") == signature.getTokenPointer("("));
+        CHECK(signature.getTokenPointer(")") == signature.getTokenPointer(")"));
+        CHECK(signature.getTokenPointer(",") == signature.getTokenPointer(","));
+
+        CHECK_THROWS(signature.getTokenPointer("Aflisis"));
+        CHECK_THROWS(signature.getTokenPointer("P"));
+        CHECK_THROWS(signature.getTokenPointer("Int"));
+
+        CHECK_THROWS(signature.addToken(&t1));
+        CHECK_THROWS(signature.addToken(&t2));
+        CHECK_THROWS(signature.addToken(&t3));
+    }
+
+    //Some Core Tokens
+    CoreToken t4("P",Type("i->o"));
+    CoreToken t5("a", Type("i"));
+
+    //Setting Up Lexer
+    Lexer lexer(&signature);
+
+    SECTION("Lexing strings")
+    {
+        SECTION("Tokens that haven't been declared")
+        {
+            CHECK_THROWS(lexer.lex("b"));
+            CHECK_THROWS(lexer.lex("c"));
+        }
+
+        SECTION("Lexing is working properly")
+        {
+            //Issues here!
+            //CHECK(lexer.lex("(P,a)").toString() == QString("(P,a)"));
+            //CHECK(lexer.lex("(a,P)").toString() == QString("(a,P)"));
+        }
+
+        SECTION("Whitespace is handled properly")
+        {
+           // CHECK(lexer.lex("(P a a a a P         P , ) ()()()").toString() == QString("(P a a a a P P,)()()()")); //Issue here!
+        }
+    }
+
+}
