@@ -41,10 +41,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     catch.hpp \
-    tree.h \
-    treenode.h \
-    treeiterator.h \
-    treeiterator.h \
     token.h \
     typeparsingtree.h \
     typeparsingtreenode.h \
@@ -61,4 +57,4 @@ HEADERS += \
     punctuationtoken.h \
     coretoken.h \
     tablesignature.h \
-    parsingtree.h
+    abstractparsingtree.h

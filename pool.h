@@ -5,7 +5,11 @@
 #include <QLinkedList>
 
 template<class T>
+class Pool;
+
+template<class T>
 class PoolRecordPointer;
+
 template<class T>
 class PoolRecord;
 
@@ -46,8 +50,7 @@ public:
 private:
     QLinkedList<PoolRecord<T>> records; //Needs to be a linked list, so addresses do not change when list resizes!
 
-template<class T2>
-friend class PoolRecordPointer;
+friend class PoolRecordPointer<T>;
 
 };
 
@@ -103,11 +106,8 @@ private:
     unsigned int counter;
     Pool<T> *parent; //Do we really need this?
 
-template<class T2>
-friend class Pool;
-
-template<class T3>
-friend class PoolRecordPointer;
+    friend class Pool<T>;
+    friend class PoolRecordPointer<T>;
 
 };
 

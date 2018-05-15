@@ -39,7 +39,7 @@ private:
     {
         QString highlight;
 
-        for(unsigned int tokenIndex = 0; tokenIndex <  errorBeginIndex; tokenIndex++)
+        for(unsigned int tokenIndex = 0; tokenIndex < errorBeginIndex; tokenIndex++)
         {
             for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharSpan(); charIndex++)
             {

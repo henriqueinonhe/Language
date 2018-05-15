@@ -14,6 +14,7 @@ public:
 
 private:
     bool isSeparator(const QChar &character) const;
+    bool stringHasEnded(const QString &string, const int index) const;
     int findTokenBreakpointIndex(const QString &string, int beginIndex) const;
 
     Signature *signature;

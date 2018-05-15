@@ -52,7 +52,12 @@ bool Lexer::isSeparator(const QChar &character) const
 {
     return character == '(' ||
            character == ')' ||
-           character == ' ';
+            character == ' ';
+}
+
+bool Lexer::stringHasEnded(const QString &string, const int index) const
+{
+    return index >= string.size();
 }
 
 int Lexer::findTokenBreakpointIndex(const QString &string, int beginIndex) const
@@ -62,7 +67,7 @@ int Lexer::findTokenBreakpointIndex(const QString &string, int beginIndex) const
     {
         index++;
 
-        if(index >= string.size())
+        if(stringHasEnded(string, index))
         {
             break;
         }

@@ -44,7 +44,7 @@ QString TypeParsingTree::print() //NOTE better refactor this, or at least docume
     return str;
 }
 
-bool TypeParsingTree::operator==(const TypeParsingTree &other) const
+bool TypeParsingTree::operator==(const TypeParsingTree &other) const //FIXME include the sort comparison
 {
     return this->typeString == other.typeString;
 }
