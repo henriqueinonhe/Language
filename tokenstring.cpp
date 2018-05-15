@@ -36,6 +36,18 @@ unsigned int TokenString::size() const
     return tokenList.size();
 }
 
+TokenString TokenString::mid(const unsigned int beginIndex, const unsigned int size) const
+{
+    TokenString newString;
+
+    for(unsigned int counter = 0; counter < size; counter++)
+    {
+        newString.tokenList.push_back(this->tokenList[beginIndex + counter]);
+    }
+
+    return newString;
+}
+
 Token TokenString::operator[](unsigned int index) const
 {
     if(!indexIsWithinBounds(index))

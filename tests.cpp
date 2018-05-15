@@ -15,7 +15,9 @@
 #include "tablesignature.h"
 #include "coretoken.h"
 #include "punctuationtoken.h"
-#include "abstractparsingtree.h"
+#include "parsingtree.h"
+#include "parsingtreeiterator.h"
+#include "parsingtreenode.h"
 
 TEST_CASE("TypeParsingTrees")
 {
@@ -240,36 +242,36 @@ TEST_CASE("TypeTokenString")
 
 }
 
-TEST_CASE("TypeParsingTree Printer")
-{
-    TypeParsingTree tree(TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType"));
-    TypeParsingTreeIterator iter(&tree);
+//TEST_CASE("TypeParsingTree Printer") //Re check this whole thing
+//{
+//    TypeParsingTree tree(TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType"));
+//    TypeParsingTreeIterator iter(&tree);
 
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
-    iter->appendChild(0,10);
-    iter->appendChild(12,12);
+//    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
+//    iter->appendChild(0,10);
+//    iter->appendChild(12,12);
 
-    iter.goToChild(0);
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Product);
+//    iter.goToChild(0);
+//    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Product);
 
-    iter->appendChild(1,5);
-    iter->appendChild(7,9);
+//    iter->appendChild(1,5);
+//    iter->appendChild(7,9);
 
-    iter.goToChild(0);
-    //iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);  RECHECK THIS
+//    iter.goToChild(0);
+//    //iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);  RECHECK THIS
 
-    iter->appendChild(2,2);
-    iter->appendChild(4,4);
+//    iter->appendChild(2,2);
+//    iter->appendChild(4,4);
 
-    iter.goToParent();
+//    iter.goToParent();
 
-    iter.goToChild(1);
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
+//    iter.goToChild(1);
+//    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
 
-    iter->appendChild(8,8);
+//    iter->appendChild(8,8);
 
-    std::cout << tree.print().toStdString();
-}
+//    std::cout << tree.print().toStdString();
+//}
 
 TEST_CASE("Type")
 {
@@ -436,5 +438,129 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
             CHECK(lexer.lex("(P a a a a P         P  ) ()()()").toString() == QString("(P a a a a P P) () () ()"));
         }
     }
-
 }
+
+TEST_CASE("ParsingTrees")
+{
+    CoreToken token("A", Type("i"));
+
+    TableSignature signature;
+    signature.addToken(&token);
+
+    Lexer lexer(&signature);
+
+    SECTION("ParsingTrees Nodes methods work")
+    {
+        ParsingTree tree(lexer.lex("A"));
+        ParsingTreeIterator iter(&tree);
+
+        CHECK(iter->coordinatesToString() == QString("()"));
+        CHECK(iter->getHeight() == 0);
+        CHECK(iter->isRoot());
+
+        iter->appendChild(0,0);
+        iter.goToChild(0);
+
+        CHECK(iter->coordinatesToString() == QString("(0)"));
+        CHECK(iter->getHeight() == 1);
+
+        iter.goToParent();
+
+        CHECK(iter->coordinatesToString() == QString("()"));
+        CHECK(iter->getHeight() == 0);
+
+        iter->appendChild(0,0);
+        iter.goToChild(1);
+
+        CHECK(iter->coordinatesToString() == QString("(1)"));
+        CHECK(iter->getHeight() == 1);
+
+        iter->appendChild(0,0);
+        iter.goToChild(0);
+
+        CHECK(iter->coordinatesToString() == QString("(1,0)"));
+        CHECK(iter->getHeight() == 2);
+
+        iter.goToRoot();
+
+        CHECK(iter->coordinatesToString() == QString("()"));
+        CHECK(iter->isRoot());
+    }
+
+    SECTION("Tree methods and Tree Height")
+    {
+        ParsingTree tree(lexer.lex("A"));
+        ParsingTreeIterator iter(&tree);
+
+        CHECK(iter.getTree().getHeight() == 0);
+
+        iter->appendChild(0,0);
+
+        CHECK(iter.getTree().getHeight() == 1);
+
+        iter.goToChild(0);
+
+        iter->appendChild(0,0);
+
+        CHECK(iter.getTree().getHeight() == 2);
+
+        iter.goToParent();
+
+        iter->appendChild(0,0);
+
+        CHECK(iter.getTree().getHeight() == 2);
+    }
+
+    SECTION("ParsingTree Iterator Paths")
+    {
+        ParsingTree tree(lexer.lex("A"));
+        ParsingTreeIterator iter(&tree);
+
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
+
+        iter.goToChild(1);
+
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
+
+        iter.goToChild(0);
+
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
+
+        iter.goToRoot();
+        iter.travelPath("(0)");
+        CHECK(iter->coordinatesToString() == QString("(0)"));
+
+        iter.goToRoot();
+        iter.travelPath("(1)");
+        CHECK(iter->coordinatesToString() == QString("(1)"));
+
+        iter.goToRoot();
+        iter.travelPath("(1,0)");
+        CHECK(iter->coordinatesToString() == QString("(1,0)"));
+
+        iter.goToRoot();
+        iter.travelPath("(1,1)");
+        CHECK(iter->coordinatesToString() == QString("(1,1)"));
+
+        iter.goToRoot();
+        iter.travelPath("(1,0,0)");
+        CHECK(iter->coordinatesToString() == QString("(1,0,0)"));
+
+        iter.goToRoot();
+        iter.travelPath("(1,0,1)");
+        CHECK(iter->coordinatesToString() == QString("(1,0,1)"));
+
+        CHECK_THROWS(iter.travelPath("(0,0,)"));
+        CHECK_THROWS(iter.travelPath("(00,)"));
+        CHECK_THROWS(iter.travelPath("(0,0,)2"));
+        CHECK_THROWS(iter.travelPath("(0,0,0"));
+        CHECK_THROWS(iter.travelPath("0,0"));
+
+        iter.goToCoordinates("(1,0,1)");
+    }
+}
+
+

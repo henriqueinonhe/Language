@@ -9,10 +9,11 @@ class Lexer;
 class TokenString
 {
 public:
-
     QString toString() const;
 
     unsigned int size() const;
+
+    TokenString mid(const unsigned int beginIndex, const unsigned int size) const;
 
     Token operator[](unsigned int index) const;
     Token first() const;
