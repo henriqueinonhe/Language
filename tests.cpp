@@ -561,6 +561,7 @@ TEST_CASE("ParsingTrees")
 
         iter.goToCoordinates("(1,0,1)");
     }
+    //TEST
 }
 
 
