@@ -27,6 +27,7 @@ public:
 
 private:
     TokenString();
+    bool tokenNeedsSubsequentSeparation(const QVector<Token *> &tokenList, const int index) const;
 
     QVector<Token *> tokenList;
 

@@ -475,8 +475,8 @@ TEST_CASE("Punctuation Token")
 {
     CHECK_NOTHROW(PunctuationToken("("));
     CHECK_NOTHROW(PunctuationToken(")"));
-    CHECK_NOTHROW(PunctuationToken(","));
 
+    CHECK_THROWS(PunctuationToken(","));
     CHECK_THROWS(PunctuationToken(" "));
     CHECK_THROWS(PunctuationToken("Abacateiro"));
     CHECK_THROWS(PunctuationToken("Abacate"));
@@ -509,17 +509,14 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
     //Setting up Signature
     PunctuationToken t1("(");
     PunctuationToken t2(")");
-    PunctuationToken t3(",");
 
     signature.addToken(&t1);
     signature.addToken(&t2);
-    signature.addToken(&t3);
 
     SECTION("Token pointers work")
     {
         CHECK(signature.getTokenPointer("(") == signature.getTokenPointer("("));
         CHECK(signature.getTokenPointer(")") == signature.getTokenPointer(")"));
-        CHECK(signature.getTokenPointer(",") == signature.getTokenPointer(","));
 
         CHECK_THROWS(signature.getTokenPointer("Aflisis"));
         CHECK_THROWS(signature.getTokenPointer("P"));
@@ -527,12 +524,14 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
 
         CHECK_THROWS(signature.addToken(&t1));
         CHECK_THROWS(signature.addToken(&t2));
-        CHECK_THROWS(signature.addToken(&t3));
     }
 
     //Some Core Tokens
-    CoreToken t4("P",Type("i->o"));
+    CoreToken t4("P", Type("i->o"));
     CoreToken t5("a", Type("i"));
+
+    signature.addToken(&t4);
+    signature.addToken(&t5);
 
     //Setting Up Lexer
     Lexer lexer(&signature);
@@ -547,14 +546,14 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
 
         SECTION("Lexing is working properly")
         {
-            //Issues here!
-            //CHECK(lexer.lex("(P,a)").toString() == QString("(P,a)"));
-            //CHECK(lexer.lex("(a,P)").toString() == QString("(a,P)"));
+            CHECK(lexer.lex("(P a)").toString() == QString("(P a)"));
+            CHECK(lexer.lex("(a P)").toString() == QString("(a P)"));
         }
 
         SECTION("Whitespace is handled properly")
         {
-           // CHECK(lexer.lex("(P a a a a P         P , ) ()()()").toString() == QString("(P a a a a P P,)()()()")); //Issue here!
+            CHECK(lexer.lex("P        a()").toString() == QString("P a ()"));
+            CHECK(lexer.lex("(P a a a a P         P  ) ()()()").toString() == QString("(P a a a a P P) () () ()"));
         }
     }
 

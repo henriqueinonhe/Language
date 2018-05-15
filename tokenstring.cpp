@@ -5,14 +5,28 @@ TokenString::TokenString()
 
 }
 
+bool TokenString::tokenNeedsSubsequentSeparation(const QVector<Token *> &tokenList, const int index) const
+{
+    const int tokenLookaheadCompensation = 1;
+
+    return tokenList[index]->getString() != "(" &&
+           index < tokenList.size() - tokenLookaheadCompensation &&
+           tokenList[index + tokenLookaheadCompensation]->getString() != ")";
+}
+
 QString TokenString::toString() const
 {
     QString string;
 
-    std::for_each(tokenList.begin(), tokenList.end(), [&string](const Token * const token)
+    for(int index = 0; index < tokenList.size(); index++)
     {
-        string += token->getString();
-    });
+        string += tokenList[index]->getString();
+
+        if(tokenNeedsSubsequentSeparation(tokenList, index))
+        {
+            string += " ";
+        }
+    }
 
     return string;
 }

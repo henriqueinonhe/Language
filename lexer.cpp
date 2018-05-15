@@ -27,25 +27,21 @@ TokenString Lexer::lex(const QString &string)
         {
             tokenString.tokenList.push_back(signature->getTokenPointer(")"));
         }
-        else if(string[index] == ',')
-        {
-            tokenString.tokenList.push_back(signature->getTokenPointer(","));
-        }
         else if(string[index] == ' ')
         {
             continue;
         }
         else
         {
-            const int beginIndex = index;
-            const int endIndex = findTokenBreakpointIndex(string, beginIndex);
-            const int tokenSpan = endIndex - beginIndex + 1;
             const int tokenLookaheadCompensation = 1;
+            const int beginIndex = index;
+            const int endIndex = findTokenBreakpointIndex(string, beginIndex) - tokenLookaheadCompensation;
+            const int tokenSpan = endIndex - beginIndex + 1;
             const QString token = string.mid(beginIndex, tokenSpan);
 
             tokenString.tokenList.push_back(signature->getTokenPointer(token));
 
-            index = endIndex - tokenLookaheadCompensation;
+            index = endIndex;
         }
     }
 
@@ -56,7 +52,6 @@ bool Lexer::isSeparator(const QChar &character) const
 {
     return character == '(' ||
            character == ')' ||
-           character == ',' ||
            character == ' ';
 }
 
@@ -66,6 +61,11 @@ int Lexer::findTokenBreakpointIndex(const QString &string, int beginIndex) const
     while(!isSeparator(string[index]))
     {
         index++;
+
+        if(index >= string.size())
+        {
+            break;
+        }
     }
 
     return index;
