@@ -1,6 +1,6 @@
 ﻿#include "typeparser.h"
 
-//shared_ptr<TypeParsingTree> TypeParser::parsingTree;
+TypeParsingTree *TypeParser::parsingTree;
 
 bool TypeParser::typeIsEmpty(const TypeTokenString &typeString)
 {
@@ -281,8 +281,8 @@ void TypeParser::buildParsingTree(const QString &typeString) //FIXME Implement c
 {
     TypeTokenString tokenString(typeString);
 
-    parsingTree.reset(new TypeParsingTree(tokenString)); //We must assign this way to avoid copying the tree (copy constructor)
-    TypeParsingTreeIterator iter(parsingTree.get());
+    parsingTree = new TypeParsingTree(tokenString);
+    TypeParsingTreeIterator iter(parsingTree);
 
     if(hasProductTypeForm(tokenString))
     {

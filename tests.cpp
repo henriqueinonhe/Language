@@ -276,298 +276,297 @@ TEST_CASE("TypeParsingTree Printer") //Re check this whole thing
 
 TEST_CASE("Type")
 {
-    CHECK_NOTHROW(TypeParser().parse("AFLUSISS"));
-//    SECTION("Pass")
-//    {
-//        CHECK_NOTHROW(TypeParser::parse("Proposition->Proposition"));
-//        CHECK_NOTHROW(TypeParser::parse("[Proposition,Proposition]->Proposition"));
-//        CHECK_NOTHROW(TypeParser::parse("[IndividualVariable,IndividualConstant,"
-//                           "IndividualVariable,IndividualConstant]->Proposition"));
-//        CHECK_NOTHROW(TypeParser::parse("[IndividualVariable,Proposition]->Proposition"));
-//        CHECK_NOTHROW(TypeParser::parse("Proposition->(Proposition->Proposition)"));
-//        CHECK_NOTHROW(TypeParser::parse("(o->o)->o"));
-//        CHECK_NOTHROW(TypeParser::parse("[o->o,o->o]->o"));
-//        CHECK_NOTHROW(TypeParser::parse("[a,b,c,d,e,f,g,h,i,j]->k"));
-//        CHECK_NOTHROW(TypeParser::parse("A->(A->(A->(A->B)))"));
-//    }
+    SECTION("Pass")
+    {
+        CHECK_NOTHROW(TypeParser::parse("AFLUSISS"));
+        CHECK_NOTHROW(TypeParser::parse("Proposition->Proposition"));
+        CHECK_NOTHROW(TypeParser::parse("[Proposition,Proposition]->Proposition"));
+        CHECK_NOTHROW(TypeParser::parse("[IndividualVariable,IndividualConstant,"
+                           "IndividualVariable,IndividualConstant]->Proposition"));
+        CHECK_NOTHROW(TypeParser::parse("[IndividualVariable,Proposition]->Proposition"));
+        CHECK_NOTHROW(TypeParser::parse("Proposition->(Proposition->Proposition)"));
+        CHECK_NOTHROW(TypeParser::parse("(o->o)->o"));
+        CHECK_NOTHROW(TypeParser::parse("[o->o,o->o]->o"));
+        CHECK_NOTHROW(TypeParser::parse("[a,b,c,d,e,f,g,h,i,j]->k"));
+        CHECK_NOTHROW(TypeParser::parse("A->(A->(A->(A->B)))"));
+    }
 
-//    SECTION("Fail")
-//    {
-//        CHECK_THROWS(TypeParser::parse(""));
-//        CHECK_THROWS(TypeParser::parse("[[o]->o]->o"));
-//        CHECK_THROWS(TypeParser::parse("[Proposition]->([Proposition]->Proposition)"));
-//        CHECK_THROWS(TypeParser::parse("[Proposition]->Proposition"));
-//        CHECK_THROWS(TypeParser::parse("Proposition->([Proposition]->Proposition)"));
-//        CHECK_THROWS(TypeParser::parse("[o->o]->o"));
-//        CHECK_THROWS(TypeParser::parse("(o]->o)"));
-//        CHECK_THROWS(TypeParser::parse("[,]->o"));
-//        CHECK_THROWS(TypeParser::parse("[o,a)->a"));
-//        CHECK_THROWS(TypeParser::parse("o->[i,i]"));
-//        CHECK_THROWS(TypeParser::parse("o->(o]"));
-//        CHECK_THROWS(TypeParser::parse("o->[i,i]"));
-//        CHECK_THROWS(TypeParser::parse("[0,1]"));
-//    }
+    SECTION("Fail")
+    {
+        CHECK_THROWS(TypeParser::parse(""));
+        CHECK_THROWS(TypeParser::parse("[[o]->o]->o"));
+        CHECK_THROWS(TypeParser::parse("[Proposition]->([Proposition]->Proposition)"));
+        CHECK_THROWS(TypeParser::parse("[Proposition]->Proposition"));
+        CHECK_THROWS(TypeParser::parse("Proposition->([Proposition]->Proposition)"));
+        CHECK_THROWS(TypeParser::parse("[o->o]->o"));
+        CHECK_THROWS(TypeParser::parse("(o]->o)"));
+        CHECK_THROWS(TypeParser::parse("[,]->o"));
+        CHECK_THROWS(TypeParser::parse("[o,a)->a"));
+        CHECK_THROWS(TypeParser::parse("o->[i,i]"));
+        CHECK_THROWS(TypeParser::parse("o->(o]"));
+        CHECK_THROWS(TypeParser::parse("o->[i,i]"));
+        CHECK_THROWS(TypeParser::parse("[0,1]"));
+    }
 
-//    SECTION("Other Methods")
-//    {
-//        CHECK(TypeParser::parse("o->o") == TypeParser::parse("o->o"));
+    SECTION("Other Methods")
+    {
+        CHECK(TypeParser::parse("o->o") == TypeParser::parse("o->o"));
 
-//        CHECK(TypeParser::parse("o") != TypeParser::parse("a->([c,d]->g)"));
-//    }
+        CHECK(TypeParser::parse("o") != TypeParser::parse("a->([c,d]->g)"));
+    }
 }
 
-//TEST_CASE("ParsingErrorException")
-//{
-//    SECTION("Type Parsing Error Exception")
-//    {
-//        TypeTokenString str("[o,o]->[o,o]");
+TEST_CASE("ParsingErrorException")
+{
+    SECTION("Type Parsing Error Exception")
+    {
+        TypeTokenString str("[o,o]->[o,o]");
+        try
+        {
+            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator cannot be a product type!",
+                                                         6,
+                                                         10,
+                                                         str);
+        }
+        catch(const ParsingErrorException<TypeTokenString> &e)
+        {
+            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
+                              "[o,o]->[o,o]\n"
+                              "       ^^^^^"));
+        }
 
-//        try
-//        {
-//            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator cannot be a product type!",
-//                                                         6,
-//                                                         10,
-//                                                         str);
-//        }
-//        catch(const ParsingErrorException<TypeTokenString> &e)
-//        {
-//            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
-//                              "[o,o]->[o,o]\n"
-//                              "       ^^^^^"));
-//        }
+        TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
 
-//        TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
+        try
+        {
+            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator fails parenthesis matching!",
+                                                         6,
+                                                         9,
+                                                         str2);
+        }
+        catch(const ParsingErrorException<TypeTokenString> &e)
+        {
+            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator fails parenthesis matching!\n"
+                                               "[Aflisis,Aflosis]->(a->b\n"
+                                               "                   ^^^^^"));
+        }
+    }
+}
 
-//        try
-//        {
-//            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator fails parenthesis matching!",
-//                                                         6,
-//                                                         9,
-//                                                         str2);
-//        }
-//        catch(const ParsingErrorException<TypeTokenString> &e)
-//        {
-////            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator fails parenthesis matching!\n"
-////                                               "[Aflisis,Aflosis]->(a->b\n"
-////                                               "                   ^^^^^"));
-//        }
-//    }
-//}
+TEST_CASE("Punctuation Token")
+{
+    CHECK_NOTHROW(PunctuationToken("("));
+    CHECK_NOTHROW(PunctuationToken(")"));
 
-//TEST_CASE("Punctuation Token")
-//{
-//    CHECK_NOTHROW(PunctuationToken("("));
-//    CHECK_NOTHROW(PunctuationToken(")"));
+    CHECK_THROWS(PunctuationToken(","));
+    CHECK_THROWS(PunctuationToken(" "));
+    CHECK_THROWS(PunctuationToken("Abacateiro"));
+    CHECK_THROWS(PunctuationToken("Abacate"));
+    CHECK_THROWS(PunctuationToken("( "));
+    CHECK_THROWS(PunctuationToken(" )"));
+    CHECK_THROWS(PunctuationToken(" , "));
+    CHECK_THROWS(PunctuationToken("(("));
+    CHECK_THROWS(PunctuationToken("(,)"));
+}
 
-//    CHECK_THROWS(PunctuationToken(","));
-//    CHECK_THROWS(PunctuationToken(" "));
-//    CHECK_THROWS(PunctuationToken("Abacateiro"));
-//    CHECK_THROWS(PunctuationToken("Abacate"));
-//    CHECK_THROWS(PunctuationToken("( "));
-//    CHECK_THROWS(PunctuationToken(" )"));
-//    CHECK_THROWS(PunctuationToken(" , "));
-//    CHECK_THROWS(PunctuationToken("(("));
-//    CHECK_THROWS(PunctuationToken("(,)"));
-//}
+TEST_CASE("Core Token")
+{
+    Type a(TypeParser::parse("o"));
 
-//TEST_CASE("Core Token")
-//{
-//    Type a(TypeParser::parse("o"));
+    CHECK_NOTHROW(CoreToken("asdsad", a));
+    CHECK_NOTHROW(CoreToken("Abacate", a));
+    CHECK_NOTHROW(CoreToken("Afleflesis", a));
+    CHECK_NOTHROW(CoreToken("Afleisis", a));
 
-//    CHECK_NOTHROW(CoreToken("asdsad", a));
-//    CHECK_NOTHROW(CoreToken("Abacate", a));
-//    CHECK_NOTHROW(CoreToken("Afleflesis", a));
-//    CHECK_NOTHROW(CoreToken("Afleisis", a));
+    CHECK_THROWS(CoreToken("(", a));
+    CHECK_THROWS(CoreToken(")", a));
+    CHECK_THROWS(CoreToken(",", a));
+    CHECK_THROWS(CoreToken("das sdsd", a));
+    CHECK_THROWS(CoreToken("asdsd,dsds", a));
+    CHECK_THROWS(CoreToken("IASD(dds", a));
+}
 
-//    CHECK_THROWS(CoreToken("(", a));
-//    CHECK_THROWS(CoreToken(")", a));
-//    CHECK_THROWS(CoreToken(",", a));
-//    CHECK_THROWS(CoreToken("das sdsd", a));
-//    CHECK_THROWS(CoreToken("asdsd,dsds", a));
-//    CHECK_THROWS(CoreToken("IASD(dds", a));
-//}
+TEST_CASE("Lexer, Table Signature and Type Token String")
+{
+    TableSignature signature;
 
-//TEST_CASE("Lexer, Table Signature and Type Token String")
-//{
-//    TableSignature signature;
+    //Setting up Signature
+    PunctuationToken t1("(");
+    PunctuationToken t2(")");
 
-//    //Setting up Signature
-//    PunctuationToken t1("(");
-//    PunctuationToken t2(")");
+    signature.addToken(&t1);
+    signature.addToken(&t2);
 
-//    signature.addToken(&t1);
-//    signature.addToken(&t2);
+    SECTION("Token pointers work")
+    {
+        CHECK(signature.getTokenPointer("(") == signature.getTokenPointer("("));
+        CHECK(signature.getTokenPointer(")") == signature.getTokenPointer(")"));
 
-//    SECTION("Token pointers work")
-//    {
-//        CHECK(signature.getTokenPointer("(") == signature.getTokenPointer("("));
-//        CHECK(signature.getTokenPointer(")") == signature.getTokenPointer(")"));
+        CHECK_THROWS(signature.getTokenPointer("Aflisis"));
+        CHECK_THROWS(signature.getTokenPointer("P"));
+        CHECK_THROWS(signature.getTokenPointer("Int"));
 
-//        CHECK_THROWS(signature.getTokenPointer("Aflisis"));
-//        CHECK_THROWS(signature.getTokenPointer("P"));
-//        CHECK_THROWS(signature.getTokenPointer("Int"));
+        CHECK_THROWS(signature.addToken(&t1));
+        CHECK_THROWS(signature.addToken(&t2));
+    }
 
-//        CHECK_THROWS(signature.addToken(&t1));
-//        CHECK_THROWS(signature.addToken(&t2));
-//    }
+    //Some Core Tokens
+    Type type1 = TypeParser::parse("i->o");
+    Type type2 = TypeParser::parse("i");
 
-//    //Some Core Tokens
-//    Type type1 = TypeParser::parse("i->o");
-//    Type type2 = TypeParser::parse("i");
+    CoreToken t4("P", type1);
+    CoreToken t5("a", type2);
 
-//    CoreToken t4("P", type1);
-//    CoreToken t5("a", type2);
+    signature.addToken(&t4);
+    signature.addToken(&t5);
 
-//    signature.addToken(&t4);
-//    signature.addToken(&t5);
+    //Setting Up Lexer
+    Lexer lexer(&signature);
 
-//    //Setting Up Lexer
-//    Lexer lexer(&signature);
+    SECTION("Lexing strings")
+    {
+        SECTION("Tokens that haven't been declared")
+        {
+            CHECK_THROWS(lexer.lex("b"));
+            CHECK_THROWS(lexer.lex("c"));
+        }
 
-//    SECTION("Lexing strings")
-//    {
-//        SECTION("Tokens that haven't been declared")
-//        {
-//            CHECK_THROWS(lexer.lex("b"));
-//            CHECK_THROWS(lexer.lex("c"));
-//        }
+        SECTION("Lexing is working properly")
+        {
+            CHECK(lexer.lex("(P a)").toString() == QString("(P a)"));
+            CHECK(lexer.lex("(a P)").toString() == QString("(a P)"));
+        }
 
-//        SECTION("Lexing is working properly")
-//        {
-//            CHECK(lexer.lex("(P a)").toString() == QString("(P a)"));
-//            CHECK(lexer.lex("(a P)").toString() == QString("(a P)"));
-//        }
+        SECTION("Whitespace is handled properly")
+        {
+            CHECK(lexer.lex("P        a()").toString() == QString("P a ()"));
+            CHECK(lexer.lex("(P a a a a P         P  ) ()()()").toString() == QString("(P a a a a P P) () () ()"));
+        }
+    }
+}
 
-//        SECTION("Whitespace is handled properly")
-//        {
-//            CHECK(lexer.lex("P        a()").toString() == QString("P a ()"));
-//            CHECK(lexer.lex("(P a a a a P         P  ) ()()()").toString() == QString("(P a a a a P P) () () ()"));
-//        }
-//    }
-//}
+TEST_CASE("ParsingTrees")
+{
+    Type type = TypeParser::parse("i");
+    CoreToken token("A", type);
 
-//TEST_CASE("ParsingTrees")
-//{
-//    Type type = TypeParser::parse("i");
-//    CoreToken token("A", type);
+    TableSignature signature;
+    signature.addToken(&token);
 
-//    TableSignature signature;
-//    signature.addToken(&token);
+    Lexer lexer(&signature);
 
-//    Lexer lexer(&signature);
+    SECTION("ParsingTrees Nodes methods work")
+    {
+        ParsingTree tree(lexer.lex("A"));
+        ParsingTreeIterator iter(&tree);
 
-//    SECTION("ParsingTrees Nodes methods work")
-//    {
-//        ParsingTree tree(lexer.lex("A"));
-//        ParsingTreeIterator iter(&tree);
+        CHECK(iter->coordinatesToString() == QString("()"));
+        CHECK(iter->getHeight() == 0);
+        CHECK(iter->isRoot());
 
-//        CHECK(iter->coordinatesToString() == QString("()"));
-//        CHECK(iter->getHeight() == 0);
-//        CHECK(iter->isRoot());
+        iter->appendChild(0,0);
+        iter.goToChild(0);
 
-//        iter->appendChild(0,0);
-//        iter.goToChild(0);
+        CHECK(iter->coordinatesToString() == QString("(0)"));
+        CHECK(iter->getHeight() == 1);
 
-//        CHECK(iter->coordinatesToString() == QString("(0)"));
-//        CHECK(iter->getHeight() == 1);
+        iter.goToParent();
 
-//        iter.goToParent();
+        CHECK(iter->coordinatesToString() == QString("()"));
+        CHECK(iter->getHeight() == 0);
 
-//        CHECK(iter->coordinatesToString() == QString("()"));
-//        CHECK(iter->getHeight() == 0);
+        iter->appendChild(0,0);
+        iter.goToChild(1);
 
-//        iter->appendChild(0,0);
-//        iter.goToChild(1);
+        CHECK(iter->coordinatesToString() == QString("(1)"));
+        CHECK(iter->getHeight() == 1);
 
-//        CHECK(iter->coordinatesToString() == QString("(1)"));
-//        CHECK(iter->getHeight() == 1);
+        iter->appendChild(0,0);
+        iter.goToChild(0);
 
-//        iter->appendChild(0,0);
-//        iter.goToChild(0);
+        CHECK(iter->coordinatesToString() == QString("(1,0)"));
+        CHECK(iter->getHeight() == 2);
 
-//        CHECK(iter->coordinatesToString() == QString("(1,0)"));
-//        CHECK(iter->getHeight() == 2);
+        iter.goToRoot();
 
-//        iter.goToRoot();
+        CHECK(iter->coordinatesToString() == QString("()"));
+        CHECK(iter->isRoot());
+    }
 
-//        CHECK(iter->coordinatesToString() == QString("()"));
-//        CHECK(iter->isRoot());
-//    }
+    SECTION("Tree methods and Tree Height")
+    {
+        ParsingTree tree(lexer.lex("A"));
+        ParsingTreeIterator iter(&tree);
 
-//    SECTION("Tree methods and Tree Height")
-//    {
-//        ParsingTree tree(lexer.lex("A"));
-//        ParsingTreeIterator iter(&tree);
+        CHECK(iter.getTree().getHeight() == 0);
 
-//        CHECK(iter.getTree().getHeight() == 0);
+        iter->appendChild(0,0);
 
-//        iter->appendChild(0,0);
+        CHECK(iter.getTree().getHeight() == 1);
 
-//        CHECK(iter.getTree().getHeight() == 1);
+        iter.goToChild(0);
 
-//        iter.goToChild(0);
+        iter->appendChild(0,0);
 
-//        iter->appendChild(0,0);
+        CHECK(iter.getTree().getHeight() == 2);
 
-//        CHECK(iter.getTree().getHeight() == 2);
+        iter.goToParent();
 
-//        iter.goToParent();
+        iter->appendChild(0,0);
 
-//        iter->appendChild(0,0);
+        CHECK(iter.getTree().getHeight() == 2);
+    }
 
-//        CHECK(iter.getTree().getHeight() == 2);
-//    }
+    SECTION("ParsingTree Iterator Paths")
+    {
+        ParsingTree tree(lexer.lex("A"));
+        ParsingTreeIterator iter(&tree);
 
-//    SECTION("ParsingTree Iterator Paths")
-//    {
-//        ParsingTree tree(lexer.lex("A"));
-//        ParsingTreeIterator iter(&tree);
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
 
-//        iter->appendChild(0,0);
-//        iter->appendChild(0,0);
+        iter.goToChild(1);
 
-//        iter.goToChild(1);
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
 
-//        iter->appendChild(0,0);
-//        iter->appendChild(0,0);
+        iter.goToChild(0);
 
-//        iter.goToChild(0);
+        iter->appendChild(0,0);
+        iter->appendChild(0,0);
 
-//        iter->appendChild(0,0);
-//        iter->appendChild(0,0);
+        iter.goToRoot();
+        iter.travelPath("(0)");
+        CHECK(iter->coordinatesToString() == QString("(0)"));
 
-//        iter.goToRoot();
-//        iter.travelPath("(0)");
-//        CHECK(iter->coordinatesToString() == QString("(0)"));
+        iter.goToRoot();
+        iter.travelPath("(1)");
+        CHECK(iter->coordinatesToString() == QString("(1)"));
 
-//        iter.goToRoot();
-//        iter.travelPath("(1)");
-//        CHECK(iter->coordinatesToString() == QString("(1)"));
+        iter.goToRoot();
+        iter.travelPath("(1,0)");
+        CHECK(iter->coordinatesToString() == QString("(1,0)"));
 
-//        iter.goToRoot();
-//        iter.travelPath("(1,0)");
-//        CHECK(iter->coordinatesToString() == QString("(1,0)"));
+        iter.goToRoot();
+        iter.travelPath("(1,1)");
+        CHECK(iter->coordinatesToString() == QString("(1,1)"));
 
-//        iter.goToRoot();
-//        iter.travelPath("(1,1)");
-//        CHECK(iter->coordinatesToString() == QString("(1,1)"));
+        iter.goToRoot();
+        iter.travelPath("(1,0,0)");
+        CHECK(iter->coordinatesToString() == QString("(1,0,0)"));
 
-//        iter.goToRoot();
-//        iter.travelPath("(1,0,0)");
-//        CHECK(iter->coordinatesToString() == QString("(1,0,0)"));
+        iter.goToRoot();
+        iter.travelPath("(1,0,1)");
+        CHECK(iter->coordinatesToString() == QString("(1,0,1)"));
 
-//        iter.goToRoot();
-//        iter.travelPath("(1,0,1)");
-//        CHECK(iter->coordinatesToString() == QString("(1,0,1)"));
+        CHECK_THROWS(iter.travelPath("(0,0,)"));
+        CHECK_THROWS(iter.travelPath("(00,)"));
+        CHECK_THROWS(iter.travelPath("(0,0,)2"));
+        CHECK_THROWS(iter.travelPath("(0,0,0"));
+        CHECK_THROWS(iter.travelPath("0,0"));
 
-//        CHECK_THROWS(iter.travelPath("(0,0,)"));
-//        CHECK_THROWS(iter.travelPath("(00,)"));
-//        CHECK_THROWS(iter.travelPath("(0,0,)2"));
-//        CHECK_THROWS(iter.travelPath("(0,0,0"));
-//        CHECK_THROWS(iter.travelPath("0,0"));
-
-//        iter.goToCoordinates("(1,0,1)");
-//    }
-//}
+        iter.goToCoordinates("(1,0,1)");
+    }
+}
 
 

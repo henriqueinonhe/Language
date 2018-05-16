@@ -14,7 +14,7 @@
 class TypeParser
 {
 public:
-    Type parse(const QString &type);
+    static Type parse(const QString &type);
 
 private:
     struct ProductArgumentOffsets
@@ -32,23 +32,23 @@ private:
         unsigned int endOffset;
     };
 
-     void buildParsingTree(const QString &typeString);
-     void parseType(TypeParsingTreeIterator iter);
-     void parseProductType(const TypeTokenString &tokenString, TypeParsingTreeIterator &iter);
-     void parseCompositeType(TypeParsingTreeIterator &iter, const TypeTokenString &tokenString);
+     static void buildParsingTree(const QString &typeString);
+     static void parseType(TypeParsingTreeIterator iter);
+     static void parseProductType(const TypeTokenString &tokenString, TypeParsingTreeIterator &iter);
+     static void parseCompositeType(TypeParsingTreeIterator &iter, const TypeTokenString &tokenString);
 
-     bool typeIsEmpty(const TypeTokenString &typeString);
-     bool isPrimitiveType(const TypeTokenString &typeString);
-     bool hasProductTypeForm(const TypeTokenString &typeString);
-     bool isWithinProductTypeMainScope(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount);
-     bool isProductArgumentBreakPoint(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token);
-     bool isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount);
+     static bool typeIsEmpty(const TypeTokenString &typeString);
+     static bool isPrimitiveType(const TypeTokenString &typeString);
+     static bool hasProductTypeForm(const TypeTokenString &typeString);
+     static bool isWithinProductTypeMainScope(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount);
+     static bool isProductArgumentBreakPoint(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token);
+     static bool isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount);
 
-     void separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList);
-     unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString);
-     void validateCompositionRightSideArgument(const TypeTokenString &tokenString, const unsigned int compositionOperatorOffset);
+     static void separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList);
+     static unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString);
+     static void validateCompositionRightSideArgument(const TypeTokenString &tokenString, const unsigned int compositionOperatorOffset);
 
-    shared_ptr<TypeParsingTree> parsingTree;
+     static TypeParsingTree *parsingTree;
 };
 
 #endif // TYPEPARSER_H
