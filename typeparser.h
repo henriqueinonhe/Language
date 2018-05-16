@@ -15,6 +15,7 @@ class TypeParser
 {
 public:
     static Type parse(const QString &type);
+    static TypeParsingTree *getParsingTree(const QString &type);
 
 private:
     struct ProductArgumentOffsets
@@ -47,6 +48,8 @@ private:
      static void separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList);
      static unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString);
      static void validateCompositionRightSideArgument(const TypeTokenString &tokenString, const unsigned int compositionOperatorOffset);
+
+     static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 
      static TypeParsingTree *parsingTree;
 };

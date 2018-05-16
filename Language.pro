@@ -30,7 +30,9 @@ SOURCES += main.cpp \
     parsingtree.cpp \
     parsingtreenode.cpp \
     parsingtreeiterator.cpp \
-    typeparser.cpp
+    typeparser.cpp \
+    parser.cpp \
+    formula.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -64,4 +66,6 @@ HEADERS += \
     parsingtree.h \
     parsingtreenode.h \
     parsingtreeiterator.h \
-    typeparser.h
+    typeparser.h \
+    parser.h \
+    formula.h

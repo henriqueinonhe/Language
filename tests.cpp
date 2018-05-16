@@ -19,6 +19,8 @@
 #include "parsingtreeiterator.h"
 #include "parsingtreenode.h"
 #include "typeparser.h"
+#include "formula.h"
+#include "parser.h"
 
 TEST_CASE("TypeParsingTrees")
 {

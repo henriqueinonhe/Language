@@ -5,6 +5,7 @@
 #include "pool.h"
 
 class Lexer;
+class Parser;
 
 class TokenString
 {

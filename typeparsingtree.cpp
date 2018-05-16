@@ -53,3 +53,8 @@ bool TypeParsingTree::operator!=(const TypeParsingTree &other) const
 {
     return !(*this == other);
 }
+
+TypeTokenString TypeParsingTree::getTypeString() const
+{
+    return typeString;
+}

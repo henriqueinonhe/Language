@@ -5,13 +5,12 @@
 #include <memory>
 #include "typeparsingtreenode.h"
 #include "typetokenstring.h"
+
 using namespace std;
 
-class TypeParsingTree
+class TypeParsingTree //NOTE Maybe I should implement e deep copy option here! Or a Const Iterator.
 {
 public:
-
-
     TypeParsingTree(const TypeTokenString &typeString);
 
     TypeParsingTree(const TypeParsingTree &other) = delete;
@@ -23,6 +22,8 @@ public:
 
     bool operator==(const TypeParsingTree &other) const;
     bool operator!=(const TypeParsingTree &other) const;
+
+    TypeTokenString getTypeString() const;
 
 private:
     TypeParsingTreeNode root;

@@ -111,6 +111,11 @@ void TypeParser::validateCompositionRightSideArgument(const TypeTokenString &tok
     }
 }
 
+bool TypeParser::parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString)
+{
+    return tree != nullptr && tree->getTypeString() == tokenString;
+}
+
 void TypeParser::separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList)
 {
     const unsigned int tokenLookaheadCompensation = 1;
@@ -277,24 +282,38 @@ Type TypeParser::parse(const QString &type)
     return Type(type);
 }
 
+TypeParsingTree *TypeParser::getParsingTree(const QString &type)
+{
+    buildParsingTree(type);
+
+    return parsingTree;
+}
+
 void TypeParser::buildParsingTree(const QString &typeString) //FIXME Implement caching policy
 {
     TypeTokenString tokenString(typeString);
 
-    parsingTree = new TypeParsingTree(tokenString);
-    TypeParsingTreeIterator iter(parsingTree);
-
-    if(hasProductTypeForm(tokenString))
+    if(parsingTreeCacheCheck(parsingTree, tokenString))
     {
-        const unsigned int zeroIndexCompensation = 1;
-
-        throw ParsingErrorException<TypeTokenString>("The main type cannot be a product type!",
-                                    0,
-                                    tokenString.size() - zeroIndexCompensation,
-                                    tokenString);
+        return;
     }
+    else
+    {
+        parsingTree = new TypeParsingTree(tokenString);
+        TypeParsingTreeIterator iter(parsingTree);
 
-    parseType(iter);
+        if(hasProductTypeForm(tokenString))
+        {
+            const unsigned int zeroIndexCompensation = 1;
+
+            throw ParsingErrorException<TypeTokenString>("The main type cannot be a product type!",
+                                        0,
+                                        tokenString.size() - zeroIndexCompensation,
+                                        tokenString);
+        }
+
+        parseType(iter);
+    }
 }
 
 bool TypeParser::isPrimitiveType(const TypeTokenString &typeString)

@@ -7,6 +7,8 @@ class TypeParser;
 
 using namespace std;
 
+//TODO Implement pseudo-parsing and manipulation methods!
+
 class Type
 {
 public:
