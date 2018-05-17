@@ -330,7 +330,7 @@ TEST_CASE("ParsingErrorException")
                                                          10,
                                                          str);
         }
-        catch(const ParsingErrorException<TypeTokenString> &e)
+        catch(ParsingErrorException<TypeTokenString> &e)
         {
             CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
                               "[o,o]->[o,o]\n"

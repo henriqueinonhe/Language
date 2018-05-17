@@ -5,9 +5,9 @@ namespace ParsingAuxiliaryTools
 {
 
 template<class StringClass, class CharClass>
-unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
-                                        const CharClass &leftDelimiter,
-                                        const CharClass &rightDelimiter,
+unsigned int findDelimiterScopeEndIndex(StringClass sentence,
+                                        CharClass leftDelimiter,
+                                        CharClass rightDelimiter,
                                         const unsigned int startPos = 0)
 {
     const unsigned int tokenLookaheadCompensation = 1;

@@ -21,7 +21,7 @@ public:
         //NOTE Maybe should take some precautionary measures with indexes and error string size!
     }
 
-    virtual const char *what() const noexcept
+    virtual const char *what() noexcept
     {
         const QString explanatoryQString(this->explanatoryString);
         const QString errorQString = errorString.toString();
@@ -35,7 +35,7 @@ public:
     }
 
 private:
-    QString formatHighlight() const
+    QString formatHighlight()
     {
         QString highlight;
 

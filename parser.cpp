@@ -34,9 +34,9 @@ void Parser::buildParsingTree(const QString &sentence)
 
 void Parser::analyzeError(ParsingTreeIterator iter)
 {
-    const TokenString tokenString = iter->getTokenString();
+    TokenString tokenString = iter->getTokenString();
 
-    if(tokenString.first()->getString() == ")")
+    if(tokenString.first().getString() == ")")
     {
         throw ParsingErrorException<TokenString>("The first character cannot be a left parenthesis.",
                                                  0,
@@ -69,7 +69,7 @@ void Parser::analyzeError(ParsingTreeIterator iter)
 
 void Parser::parseApplication(ParsingTreeIterator iter)
 {
-    const TokenString tokenString = iter->getTokenString();
+    TokenString tokenString = iter->getTokenString();
     QVector<ArgumentOffsets> offsets = separateArgumentOffsets(tokenString);
 
     if(offsets.size() == 1)
@@ -122,32 +122,32 @@ void Parser::parseSentence(ParsingTreeIterator iter)
     }
 }
 
-bool Parser::isAtomic(const TokenString &tokenString) const
+bool Parser::isAtomic(TokenString &tokenString) const
 {
     return tokenString.size() == 1 &&
-           tokenString.first()->getString() != "(" &&
-           tokenString.first()->getString() != ")";
+           tokenString.first().getString() != "(" &&
+           tokenString.first().getString() != ")";
 }
 
-bool Parser::hasMolecularForm(const TokenString &tokenString) const
+bool Parser::hasMolecularForm(TokenString &tokenString) const
 {
-    return tokenString.first()->getString() == "(" &&
-           tokenString.last()->getString() == ")";
+    return tokenString.first().getString() == "(" &&
+           tokenString.last().getString() == ")";
 }
 
-bool Parser::isDelimiter(const Token &token) const
+bool Parser::isDelimiter(Token &token) const
 {
     return token.getString() == "(" ||
            token.getString() == ")";
 }
 
-bool Parser::outermostParenthesisMismatch(const TokenString &tokenString) const
+bool Parser::outermostParenthesisMismatch(TokenString &tokenString) const
 {
-    return tokenString.first()->getString() == "(" &&
-            tokenString.last()->getString() == ")";
+    return tokenString.first().getString() == "(" &&
+           tokenString.last().getString() == ")";
 }
 
-QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenString &tokenString) const
+QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(TokenString &tokenString) const
 {
     QVector<ArgumentOffsets> offsets;
 
@@ -158,14 +158,14 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenStri
 
     while(argumentBeginOffset < lastOffset)
     {
-        if(tokenString[argumentBeginOffset]->getString() == ")")
+        if(tokenString[argumentBeginOffset].getString() == ")")
         {
             throw ParsingErrorException<TokenString>("A \")\" was found where a \"(\" or a token was expected!",
                                                      argumentBeginOffset,
                                                      argumentBeginOffset,
                                                      tokenString);
         }
-        else if(tokenString[argumentBeginOffset]->getString() == "(")
+        else if(tokenString[argumentBeginOffset].getString() == "(")
         {
             try
             {
@@ -214,11 +214,11 @@ void Parser::performTypeChecking()
 
 void Parser::checkType(ParsingTreeIterator iter)
 {
-    const TokenString tokenString = iter->getTokenString();
+    TokenString tokenString = iter->getTokenString();
 
     if(isAtomic(tokenString))
     {
-        iter->setType(dynamic_cast<CoreToken>(tokenString.first())->getType());
+        iter->setType(dynamic_cast<CoreToken &>(tokenString.first()).getType());
         return;
     }
     else

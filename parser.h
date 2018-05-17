@@ -43,12 +43,12 @@ private:
     void parseApplication(ParsingTreeIterator iter);
     void analyzeError(ParsingTreeIterator iter);
 
-    bool isAtomic(const TokenString &tokenString) const;
-    bool hasMolecularForm(const TokenString &tokenString) const;
-    bool isDelimiter(const Token &token) const;
-    bool outermostParenthesisMismatch(const TokenString &tokenString) const;
+    bool isAtomic(TokenString &tokenString) const;
+    bool hasMolecularForm(TokenString &tokenString) const;
+    bool isDelimiter(Token &token) const;
+    bool outermostParenthesisMismatch(TokenString &tokenString) const;
 
-    QVector<ArgumentOffsets> separateArgumentOffsets(const TokenString &tokenString) const;
+    QVector<ArgumentOffsets> separateArgumentOffsets(TokenString &tokenString) const;
 
     //Type Checking Methods
     void performTypeChecking();
