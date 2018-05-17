@@ -591,9 +591,20 @@ TEST_CASE("Parser")
         CHECK_NOTHROW(parser.parse("(And (Not Q) (Not P))"));
     }
 
-    SECTION("Fail")
+    SECTION("Fail Due To Structure")
     {
-
+        CHECK_THROWS(parser.parse(""));
+        CHECK_THROWS(parser.parse("("));
+        CHECK_THROWS(parser.parse("()"));
+        CHECK_THROWS(parser.parse("F"));
+        CHECK_THROWS(parser.parse("AndP"));
+        CHECK_THROWS(parser.parse("PQ"));
+        CHECK_THROWS(parser.parse("(P)"));
+        CHECK_THROWS(parser.parse("(())"));
+        CHECK_THROWS(parser.parse("Not P"));
+        CHECK_THROWS(parser.parse("((Not P))"));
+        CHECK_THROWS(parser.parse("(Not (P))"));
+        CHECK_THROWS(parser.parse(")Not P("));
     }
 
 }

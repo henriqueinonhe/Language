@@ -43,7 +43,7 @@ private:
     void parseApplication(ParsingTreeIterator iter);
     void analyzeError(ParsingTreeIterator iter);
 
-    bool isAtomic(TokenString &tokenString) const;
+    bool isAtomic(const TokenString &tokenString) const;
     bool hasMolecularForm(TokenString &tokenString) const;
     bool isDelimiter(Token &token) const;
     bool outermostParenthesisMismatch(TokenString &tokenString) const;

@@ -13,7 +13,7 @@ Parser::Parser(Signature *signature, const Type &wellFormedFormulaType) :
 Formula Parser::parse(const QString &sentence)
 {
 
-    //TODO Cache stuff and return formula
+    //TODO Cache stuff and return formula and type stuff
     buildParsingTree(sentence);
 
     std::cout << parsingTree->print().toStdString();
@@ -72,7 +72,7 @@ void Parser::parseApplication(ParsingTreeIterator iter)
     TokenString tokenString = iter->getTokenString();
     QVector<ArgumentOffsets> offsets = separateArgumentOffsets(tokenString);
 
-    if(offsets.size() == 1)
+    if(offsets.size() < 2)
     {
         const unsigned int beginIndex = iter->getBeginIndex();
         const unsigned int endIndex = iter->getBeginIndex() + tokenString.size();
@@ -122,7 +122,7 @@ void Parser::parseSentence(ParsingTreeIterator iter)
     }
 }
 
-bool Parser::isAtomic(TokenString &tokenString) const
+bool Parser::isAtomic(const TokenString &tokenString) const
 {
     return tokenString.size() == 1 &&
            tokenString.first().getString() != "(" &&

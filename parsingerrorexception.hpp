@@ -11,7 +11,7 @@ public:
     ParsingErrorException(const char *str,
                           const unsigned int errorBeginIndex,
                           const unsigned int errorEndIndex,
-                          T errorString) :
+                          const T &errorString) :
         std::invalid_argument(str),
         errorBeginIndex(errorBeginIndex),
         errorEndIndex(errorEndIndex),
