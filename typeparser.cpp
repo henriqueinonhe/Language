@@ -299,6 +299,12 @@ void TypeParser::buildParsingTree(const QString &typeString) //FIXME Implement c
     }
     else
     {
+        //NOTE Refactor
+        if(parsingTree != nullptr)
+        {
+            delete parsingTree;
+        }
+
         parsingTree = new TypeParsingTree(tokenString);
         TypeParsingTreeIterator iter(parsingTree);
 

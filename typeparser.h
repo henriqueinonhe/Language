@@ -51,7 +51,7 @@ private:
 
      static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 
-     static TypeParsingTree *parsingTree;
+     static TypeParsingTree *parsingTree; //FIXME
 };
 
 #endif // TYPEPARSER_H

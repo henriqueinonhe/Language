@@ -27,9 +27,6 @@ private:
     unsigned int height;
     TokenString tokenString;
 
-    const unsigned int firstTokenIndex = 0;
-    const unsigned int lastTokenIndex = tokenString.size() - 1;
-
 friend class ParsingTreeIterator;
 friend class ParsingTreeNode;
 

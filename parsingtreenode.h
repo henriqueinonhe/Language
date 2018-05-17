@@ -14,7 +14,7 @@ using namespace std;
 class ParsingTreeNode
 {
 public:
-    void appendChild(const unsigned int BeginIndex, const unsigned int EndIndex);
+    void appendChild(const unsigned int beginIndex, const unsigned int endIndex);
 
     QVector<unsigned int> getCoordinates() const;
     QString coordinatesToString() const;
@@ -22,7 +22,7 @@ public:
     bool isRoot() const;
     bool isChildless() const;
 
-    TokenString getString() const;
+    TokenString getTokenString() const;
 
     unsigned int getHeight() const;
     unsigned int getChildrenNumber() const;
@@ -33,12 +33,12 @@ public:
 
 private:
     ParsingTreeNode(ParsingTree *tree,
-                        ParsingTreeNode *parent,
-                        const QVector<unsigned int> &coordinates,
-                        const unsigned int BeginIndex,
-                        const unsigned int EndIndex);
+                    ParsingTreeNode *parent,
+                    const QVector<unsigned int> &coordinates,
+                    const unsigned int beginIndex,
+                    const unsigned int endIndex);
 
-    //void printNodeToString(QString &str) const; FIXME
+    void printNodeToString(QString &str) const;
 
     void updateTreeHeight();
 
@@ -46,8 +46,8 @@ private:
     ParsingTreeNode *parent;
     QVector<unsigned int> coordinates;
     QVector<shared_ptr<ParsingTreeNode>> children;
-    unsigned int BeginIndex;
-    unsigned int EndIndex;
+    unsigned int beginIndex;
+    unsigned int endIndex;
 
 friend class ParsingTreeIterator;
 friend class ParsingTree;

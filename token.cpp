@@ -20,3 +20,8 @@ bool Token::operator!=(const Token &other) const
 {
     return !(other == *this);
 }
+
+unsigned int Token::getTokenCharSpan() const
+{
+    return string.size();
+}

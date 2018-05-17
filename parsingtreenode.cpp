@@ -5,30 +5,30 @@ ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, con
     tree(tree),
     parent(parent),
     coordinates(coordinates),
-    BeginIndex(BeginIndex),
-    EndIndex(EndIndex)
+    beginIndex(BeginIndex),
+    endIndex(EndIndex)
 {
     updateTreeHeight();
 }
 
-//void ParsingTreeNode::printNodeToString(QString &str) const //FIXME Rework Type Considerations
-//{
-//    str += "(";
-//    if(coordinates.size() >= 2)
-//    {
-//        str += QString::number(coordinates[coordinates.size() - 2]);
-//    }
-//    if(!coordinates.isEmpty())
-//    {
-//        str += ",";
-//        str += QString::number(coordinates.back());
-//    }
-//    str += "){";
-//    str += mainOperatorToString();
-//    str += ",\"";
-//    str += getString().toString();
-//    str += "\"} ";
-//}
+void ParsingTreeNode::printNodeToString(QString &str) const //FIXME Rework Type Considerations
+{
+    str += "(";
+    if(coordinates.size() >= 2)
+    {
+        str += QString::number(coordinates[coordinates.size() - 2]);
+    }
+    if(!coordinates.isEmpty())
+    {
+        str += ",";
+        str += QString::number(coordinates.back());
+    }
+    str += "){";
+    //str += mainOperatorToString();
+    str += ",\"";
+    //str += getString().toString();
+    str += "\"} ";
+}
 
 void ParsingTreeNode::updateTreeHeight()
 {
@@ -40,12 +40,12 @@ void ParsingTreeNode::updateTreeHeight()
 
 unsigned int ParsingTreeNode::getEndIndex() const
 {
-    return EndIndex;
+    return endIndex;
 }
 
 unsigned int ParsingTreeNode::getBeginIndex() const
 {
-    return BeginIndex;
+    return beginIndex;
 }
 
 QVector<unsigned int> ParsingTreeNode::getCoordinates() const
@@ -81,10 +81,10 @@ bool ParsingTreeNode::isChildless() const
     return children.isEmpty();
 }
 
-TokenString ParsingTreeNode::getString() const
+TokenString ParsingTreeNode::getTokenString() const
 {
-    const unsigned int StringSize = EndIndex - BeginIndex + 1;
-    return tree->tokenString.mid(BeginIndex, StringSize);
+    const unsigned int stringSize = endIndex - beginIndex + 1;
+    return tree->tokenString.mid(beginIndex, stringSize);
 }
 
 unsigned int ParsingTreeNode::getHeight() const

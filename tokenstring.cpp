@@ -21,6 +21,18 @@ QString TokenString::toString() const
     for(int index = 0; index < tokenList.size(); index++)
     {
         string += tokenList[index]->getString();
+    }
+
+    return string;
+}
+
+QString TokenString::formattedString() const
+{
+    QString string;
+
+    for(int index = 0; index < tokenList.size(); index++)
+    {
+        string += tokenList[index]->getString();
 
         if(tokenNeedsSubsequentSeparation(tokenList, index))
         {

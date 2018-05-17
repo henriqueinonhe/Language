@@ -338,21 +338,8 @@ TEST_CASE("ParsingErrorException")
         }
 
         TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
-
-        try
-        {
-            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator fails parenthesis matching!",
-                                                         6,
-                                                         9,
-                                                         str2);
-        }
-        catch(const ParsingErrorException<TypeTokenString> &e)
-        {
-            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator fails parenthesis matching!\n"
-                                               "[Aflisis,Aflosis]->(a->b\n"
-                                               "                   ^^^^^"));
-        }
     }
+
 }
 
 TEST_CASE("Punctuation Token")
@@ -435,14 +422,14 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
 
         SECTION("Lexing is working properly")
         {
-            CHECK(lexer.lex("(P a)").toString() == QString("(P a)"));
-            CHECK(lexer.lex("(a P)").toString() == QString("(a P)"));
+            CHECK(lexer.lex("(P a)").formattedString() == QString("(P a)"));
+            CHECK(lexer.lex("(a P)").formattedString() == QString("(a P)"));
         }
 
         SECTION("Whitespace is handled properly")
         {
-            CHECK(lexer.lex("P        a()").toString() == QString("P a ()"));
-            CHECK(lexer.lex("(P a a a a P         P  ) ()()()").toString() == QString("(P a a a a P P) () () ()"));
+            CHECK(lexer.lex("P        a()").formattedString() == QString("P a ()"));
+            CHECK(lexer.lex("(P a a a a P         P  ) ()()()").formattedString() == QString("(P a a a a P P) () () ()"));
         }
     }
 }
@@ -571,4 +558,36 @@ TEST_CASE("ParsingTrees")
     }
 }
 
+TEST_CASE("Parser")
+{
+    //SETUP
+    TableSignature signature;
 
+    PunctuationToken leftP("(");
+    PunctuationToken rightP(")");
+
+    CoreToken t1("P", TypeParser::parse("o")), t2("Q", TypeParser::parse("o")), t3("And", TypeParser::parse("[o,o]->o")), t4("Not", TypeParser::parse("[o,o]->o"));
+
+    signature.addToken(&leftP);
+    signature.addToken(&rightP);
+    signature.addToken(&t1);
+    signature.addToken(&t2);
+    signature.addToken(&t3);
+    signature.addToken(&t4);
+
+    Parser parser(&signature, TypeParser::parse("o"));
+
+    //END SETUP
+
+    SECTION("Pass")
+    {
+        CHECK_NOTHROW(parser.parse("P"));
+        CHECK_NOTHROW(parser.parse("Q"));
+        CHECK_NOTHROW(parser.parse("(And P Q)"));
+        CHECK_NOTHROW(parser.parse("(And Q P)"));
+        CHECK_NOTHROW(parser.parse("(Not P)"));
+        CHECK_NOTHROW(parser.parse("(Not Q)"));
+        CHECK_NOTHROW(parser.parse("(Not (And P Q) P)"));
+        CHECK_NOTHROW(parser.parse("(And (Not Q) (Not P))"));
+    }
+}

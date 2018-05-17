@@ -2,7 +2,7 @@
 #include "parsingtreeiterator.h"
 
 ParsingTree::ParsingTree(const TokenString &string) :
-    root(this, nullptr, QVector<unsigned int>(), firstTokenIndex, lastTokenIndex),
+    root(this, nullptr, QVector<unsigned int>(), 0, string.size() - 1),
     height(0),
     tokenString(string)
 {
@@ -26,7 +26,7 @@ QString ParsingTree::print()
                       nextLevelNodes.end(),
                       [&str, &nextLevelNodes2](ParsingTreeNode *node) {
 
-            //node->printNodeToString(str);
+            node->printNodeToString(str);
 
             std::for_each(node->children.begin(),
                           node->children.end(),

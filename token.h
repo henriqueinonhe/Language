@@ -12,6 +12,8 @@ public:
     virtual bool operator==(const Token &other) const;
     virtual bool operator!=(const Token &other) const;
 
+    unsigned int getTokenCharSpan() const;
+
 protected:
     Token(const QString &string);
     QString string;

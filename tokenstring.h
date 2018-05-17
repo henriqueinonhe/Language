@@ -11,6 +11,7 @@ class TokenString
 {
 public:
     QString toString() const;
+    QString formattedString() const;
 
     unsigned int size() const;
 
