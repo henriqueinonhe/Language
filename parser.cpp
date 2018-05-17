@@ -16,6 +16,8 @@ Formula Parser::parse(const QString &sentence)
     //TODO Cache stuff and return formula
     buildParsingTree(sentence);
 
+    std::cout << parsingTree->print().toStdString();
+
     return Formula(lexer.lex(sentence));
 }
 

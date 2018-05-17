@@ -10,6 +10,7 @@
 #include "parsingtreeiterator.h"
 #include "parsingtreenode.h"
 #include "parsingauxiliarytools.h"
+#include <iostream>
 
 using namespace std;
 

@@ -26,7 +26,7 @@ void ParsingTreeNode::printNodeToString(QString &str) const //FIXME Rework Type 
     str += "){";
     //str += mainOperatorToString();
     str += ",\"";
-    //str += getString().toString();
+    str += getTokenString().formattedString();
     str += "\"} ";
 }
 

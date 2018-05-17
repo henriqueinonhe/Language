@@ -590,4 +590,10 @@ TEST_CASE("Parser")
         CHECK_NOTHROW(parser.parse("(Not (And P Q) P)"));
         CHECK_NOTHROW(parser.parse("(And (Not Q) (Not P))"));
     }
+
+    SECTION("Fail")
+    {
+
+    }
+
 }
