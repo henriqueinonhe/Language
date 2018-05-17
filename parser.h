@@ -36,6 +36,7 @@ private:
         unsigned int endOffset;
     };
 
+    //Parsing Methods
     void buildParsingTree(const QString &sentence);
 
     void parseSentence(ParsingTreeIterator iter);
@@ -48,6 +49,10 @@ private:
     bool outermostParenthesisMismatch(const TokenString &tokenString) const;
 
     QVector<ArgumentOffsets> separateArgumentOffsets(const TokenString &tokenString) const;
+
+    //Type Checking Methods
+    void performTypeChecking();
+    void checkType(ParsingTreeIterator iter);
 
     Lexer lexer;
     Type wellFormedFormulaType;

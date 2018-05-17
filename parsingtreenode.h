@@ -5,6 +5,7 @@
 #include <QVector>
 #include <memory>
 #include "tokenstring.h"
+#include "type.h"
 
 class ParsingTreeIterator;
 class ParsingTree;
@@ -31,6 +32,9 @@ public:
     unsigned int getBeginIndex() const;
     unsigned int getEndIndex() const;
 
+    Type getType() const;
+    void setType(const Type &value);
+
 private:
     ParsingTreeNode(ParsingTree *tree,
                     ParsingTreeNode *parent,
@@ -48,6 +52,7 @@ private:
     QVector<shared_ptr<ParsingTreeNode>> children;
     unsigned int beginIndex;
     unsigned int endIndex;
+    Type type;
 
 friend class ParsingTreeIterator;
 friend class ParsingTree;

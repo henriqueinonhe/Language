@@ -17,7 +17,7 @@ public:
 
 private:
 
-    QVector<Token *> tokenTable; //NOTE maybe rework this!
+    QVector<Token *> tokenTable; //FIXME Fix this URGENTLY!
 
 };
 

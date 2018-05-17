@@ -38,6 +38,16 @@ void ParsingTreeNode::updateTreeHeight()
     }
 }
 
+void ParsingTreeNode::setType(const Type &value)
+{
+    type = value;
+}
+
+Type ParsingTreeNode::getType() const
+{
+    return type;
+}
+
 unsigned int ParsingTreeNode::getEndIndex() const
 {
     return endIndex;

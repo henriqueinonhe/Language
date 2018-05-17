@@ -13,6 +13,8 @@ public:
     bool operator ==(const CoreToken &other) const;
     bool operator !=(const CoreToken &other) const;
 
+    Type getType() const;
+
 private:
     Type type;
 

@@ -60,17 +60,17 @@ TokenString TokenString::mid(const unsigned int beginIndex, const unsigned int s
     return newString;
 }
 
-Token TokenString::operator[](unsigned int index) const
+Token *TokenString::operator[](unsigned int index) const
 {
     if(!indexIsWithinBounds(index))
     {
         throw std::invalid_argument("Index is out of bounds!");
     }
 
-    return *tokenList[index];
+    return tokenList[index];
 }
 
-Token TokenString::first() const
+Token *TokenString::first() const
 {
     if(this->isEmpty())
     {
@@ -80,7 +80,7 @@ Token TokenString::first() const
     return (*this)[0];
 }
 
-Token TokenString::last() const
+Token *TokenString::last() const
 {
     if(this->isEmpty())
     {

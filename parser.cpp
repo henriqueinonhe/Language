@@ -36,7 +36,7 @@ void Parser::analyzeError(ParsingTreeIterator iter)
 {
     const TokenString tokenString = iter->getTokenString();
 
-    if(tokenString.first().getString() == ")")
+    if(tokenString.first()->getString() == ")")
     {
         throw ParsingErrorException<TokenString>("The first character cannot be a left parenthesis.",
                                                  0,
@@ -125,14 +125,14 @@ void Parser::parseSentence(ParsingTreeIterator iter)
 bool Parser::isAtomic(const TokenString &tokenString) const
 {
     return tokenString.size() == 1 &&
-           tokenString.first().getString() != "(" &&
-           tokenString.first().getString() != ")";
+           tokenString.first()->getString() != "(" &&
+           tokenString.first()->getString() != ")";
 }
 
 bool Parser::hasMolecularForm(const TokenString &tokenString) const
 {
-    return tokenString.first().getString() == "(" &&
-           tokenString.last().getString() == ")";
+    return tokenString.first()->getString() == "(" &&
+           tokenString.last()->getString() == ")";
 }
 
 bool Parser::isDelimiter(const Token &token) const
@@ -143,8 +143,8 @@ bool Parser::isDelimiter(const Token &token) const
 
 bool Parser::outermostParenthesisMismatch(const TokenString &tokenString) const
 {
-    return tokenString.first().getString() == "(" &&
-            tokenString.last().getString() == ")";
+    return tokenString.first()->getString() == "(" &&
+            tokenString.last()->getString() == ")";
 }
 
 QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenString &tokenString) const
@@ -158,14 +158,14 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenStri
 
     while(argumentBeginOffset < lastOffset)
     {
-        if(tokenString[argumentBeginOffset].getString() == ")")
+        if(tokenString[argumentBeginOffset]->getString() == ")")
         {
             throw ParsingErrorException<TokenString>("A \")\" was found where a \"(\" or a token was expected!",
                                                      argumentBeginOffset,
                                                      argumentBeginOffset,
                                                      tokenString);
         }
-        else if(tokenString[argumentBeginOffset].getString() == "(")
+        else if(tokenString[argumentBeginOffset]->getString() == "(")
         {
             try
             {
@@ -192,7 +192,53 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenStri
         argumentBeginOffset = argumentEndOffset + 1;
     }
 
-        return offsets;
+    return offsets;
+}
+
+void Parser::performTypeChecking()
+{
+    ParsingTreeIterator iter(parsingTree.get());
+
+    checkType(iter);
+
+    if(iter->getType() == wellFormedFormulaType)
+    {
+        return;
+    }
+    else
+    {
+        //FIXME Find a more suitable way to handle this! Maybe with a specialized exception
+        throw std::invalid_argument("The type of the sentence is not the type of well formed formulas!");
+    }
+}
+
+void Parser::checkType(ParsingTreeIterator iter)
+{
+    const TokenString tokenString = iter->getTokenString();
+
+    if(isAtomic(tokenString))
+    {
+        iter->setType(dynamic_cast<CoreToken>(tokenString.first())->getType());
+        return;
+    }
+    else
+    {
+        QVector<Type> argumentsTypes;
+        for(unsigned int childNumber = 1; childNumber < iter->getChildrenNumber(); childNumber++)
+        {
+            iter.goToChild(childNumber);
+            checkType(iter);
+            argumentsTypes.push_back(iter->getType());
+            iter.goToParent();
+        }
+
+        iter.goToChild(0);
+        checkType(iter);
+        const Type mainOperatorType(iter->getType());
+        iter.goToParent();
+
+        iter->setType(mainOperatorType.checkType(argumentsTypes));
+    }
 }
 
 

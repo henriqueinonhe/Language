@@ -20,3 +20,8 @@ bool CoreToken::operator !=(const CoreToken &other) const
 {
     return !(*this == other);
 }
+
+Type CoreToken::getType() const
+{
+    return type;
+}
