@@ -178,7 +178,8 @@ private:
     }
 
     PoolRecord<T> *ptr;
-    bool isSet; //To avoid using delete on a nullptr!
+    bool isSet; //To avoid using delete on a nullptr, when the PoolRecordPointer is still not set,
+                //like while passing the pointer as value, or creating a new one in a vector.
 };
 
 #endif // POOL_H

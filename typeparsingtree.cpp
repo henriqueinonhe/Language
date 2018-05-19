@@ -24,7 +24,8 @@ QString TypeParsingTree::print() //NOTE better refactor this, or at least docume
         QVector<TypeParsingTreeNode *> nextLevelNodes2;
         std::for_each(nextLevelNodes.begin(),
                       nextLevelNodes.end(),
-                      [&str, &nextLevelNodes2](TypeParsingTreeNode *node) {
+                      [&str, &nextLevelNodes2](TypeParsingTreeNode *node)
+        {
 
             node->printNodeToString(str);
 

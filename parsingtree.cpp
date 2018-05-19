@@ -19,22 +19,20 @@ QString ParsingTree::print()
     QVector<ParsingTreeNode *> nextLevelNodes{&(*iter)};
     QString str;
 
-    for(int currentLevel = 0; currentLevel <= (int) this->getHeight(); currentLevel++)
+    for(int currentLevel = 0; currentLevel <= static_cast<int>(this->getHeight()); currentLevel++)
     {
         QVector<ParsingTreeNode *> nextLevelNodes2;
-        std::for_each(nextLevelNodes.begin(),
-                      nextLevelNodes.end(),
-                      [&str, &nextLevelNodes2](ParsingTreeNode *node) {
+        std::for_each(nextLevelNodes.begin(), nextLevelNodes.end(), [&str, &nextLevelNodes2](ParsingTreeNode *node)
+        {
 
             node->printNodeToString(str);
 
-            std::for_each(node->children.begin(),
-                          node->children.end(),
-                          [&nextLevelNodes2](const shared_ptr<ParsingTreeNode> &node)
+            std::for_each(node->children.begin(), node->children.end(), [&nextLevelNodes2](const shared_ptr<ParsingTreeNode> &node)
             {
                 nextLevelNodes2.push_back(node.get());
             });
         });
+
         str += "\n\n";
         nextLevelNodes.swap(nextLevelNodes2);
     }

@@ -11,12 +11,19 @@ ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, con
     updateTreeHeight();
 }
 
-void ParsingTreeNode::printNodeToString(QString &str) const //FIXME Rework Type Considerations
+void ParsingTreeNode::printNodeToString(QString &str) const
 {
+    /* There are three informations to be printed:
+     * 1st - "(Parent Node Index, This Node Index)" According to coordinate system
+     * 2nd - The formula's type
+     * 3rd - The formula iself. */
+
     str += "(";
     if(coordinates.size() >= 2)
     {
-        str += QString::number(coordinates[coordinates.size() - 2]);
+        const unsigned int zeroIndexCompensation = 1;
+        const unsigned int fatherNodeCompensation = 1;
+        str += QString::number(coordinates[coordinates.size() - zeroIndexCompensation - fatherNodeCompensation]);
     }
     if(!coordinates.isEmpty())
     {

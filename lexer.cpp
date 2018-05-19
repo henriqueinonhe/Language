@@ -52,7 +52,7 @@ bool Lexer::isSeparator(const QChar &character) const
 {
     return character == '(' ||
            character == ')' ||
-            character == ' ';
+           character == ' ';
 }
 
 bool Lexer::stringHasEnded(const QString &string, const int index) const

@@ -7,7 +7,7 @@ ParsingTreeIterator::ParsingTreeIterator(ParsingTree *tree) :
 
 }
 
-void ParsingTreeIterator::goToChild(unsigned int index)
+ParsingTreeIterator &ParsingTreeIterator::goToChild(unsigned int index)
 {
     if(index >= (uint) currentNode->children.size())
     {
@@ -17,17 +17,21 @@ void ParsingTreeIterator::goToChild(unsigned int index)
     currentNode = currentNode->children[index].get();
 }
 
-void ParsingTreeIterator::goToParent()
+ParsingTreeIterator &ParsingTreeIterator::goToParent()
 {
     currentNode = currentNode->parent;
+
+    return *this;
 }
 
-void ParsingTreeIterator::goToRoot()
+ParsingTreeIterator &ParsingTreeIterator::goToRoot()
 {
     currentNode = &tree->root;
+
+    return *this;
 }
 
-void ParsingTreeIterator::travelPath(const QString &path)
+ParsingTreeIterator &ParsingTreeIterator::travelPath(const QString &path)
 {
     if(!checkPathStringValidity(path))
     {
@@ -40,17 +44,21 @@ void ParsingTreeIterator::travelPath(const QString &path)
     {
         this->goToChild(index);
     });
+
+    return *this;
 }
 
-void ParsingTreeIterator::travelPath(const QVector<unsigned int> &path)
+ParsingTreeIterator &ParsingTreeIterator::travelPath(const QVector<unsigned int> &path)
 {
     std::for_each(path.begin(), path.end(), [&](unsigned int index)
     {
         this->goToChild(index);
     });
+
+    return *this;
 }
 
-void ParsingTreeIterator::goToCoordinates(const QString &coordinates)
+ParsingTreeIterator &ParsingTreeIterator::goToCoordinates(const QString &coordinates)
 {
     if(!checkPathStringValidity(coordinates))
     {
@@ -60,6 +68,8 @@ void ParsingTreeIterator::goToCoordinates(const QString &coordinates)
     goToRoot();
 
     travelPath(coordinates);
+
+    return *this;
 }
 
 ParsingTree &ParsingTreeIterator::getTree() const
@@ -103,5 +113,6 @@ QVector<unsigned int> ParsingTreeIterator::convertStringToPath(const QString &pa
 
 QString ParsingTreeIterator::removeOuterParenthesis(const QString &path) const
 {
-    return path.mid(1, path.size() - 2);
+    const unsigned int parenthesisPadding = 1;
+    return path.mid(parenthesisPadding, path.size() - 2 * parenthesisPadding);
 }

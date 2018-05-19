@@ -24,6 +24,7 @@ Type Type::checkType(const QVector<TypeTokenString> &argumentsTypes) const
     else
     {
         throw std::invalid_argument("The types of the arguments don't match the types that this type takes!"); //FIXME
+        //I need to intregrate this somehow with the parser itself, so messages become more informative!
     }
 }
 

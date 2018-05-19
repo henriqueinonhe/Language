@@ -18,7 +18,6 @@ public:
         errorString(errorString),
         explanatoryString(str)
     {
-        //NOTE Maybe should take some precautionary measures with indexes and error string size!
     }
 
     virtual const char *what() noexcept

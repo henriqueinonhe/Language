@@ -37,31 +37,32 @@ void Parser::buildParsingTree(const QString &sentence)
 void Parser::analyzeError(ParsingTreeIterator iter)
 {
     const TokenString tokenString = iter->getTokenString();
+    const unsigned int beginIndex = iter->getBeginIndex();
 
     if(tokenString.first().getString() == ")")
     {
         throw ParsingErrorException<TokenString>("The first character cannot be a left parenthesis.",
-                                                 0,
-                                                 0,
-                                                 tokenString);
+                                                 beginIndex,
+                                                 beginIndex,
+                                                 iter.goToRoot()->getTokenString());
     }
     else if(outermostParenthesisMismatch(tokenString))
     {
         const unsigned int zeroIndexCompensation = 1;
-
+        const unsigned int endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
         throw ParsingErrorException<TokenString>("The outermost parenthesis doesn't match!",
-                                                 0,
-                                                 tokenString.size() - zeroIndexCompensation,
-                                                 tokenString);
+                                                 beginIndex,
+                                                 endIndex,
+                                                 iter.goToRoot()->getTokenString());
     }
     else if(!isDelimiter(tokenString.first()) && tokenString.size() != 1)
     {
         const unsigned int zeroIndexCompensation = 1;
-
+        const unsigned int endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
         throw ParsingErrorException<TokenString>("A string with more than one token should be an application, which uses parenthesis!",
-                                                 0,
-                                                 tokenString.size() - zeroIndexCompensation,
-                                                 tokenString);
+                                                 beginIndex,
+                                                 endIndex,
+                                                 iter.goToRoot()->getTokenString());
     }
     else
     {
@@ -72,7 +73,7 @@ void Parser::analyzeError(ParsingTreeIterator iter)
 void Parser::parseApplication(ParsingTreeIterator iter)
 {
     const TokenString tokenString = iter->getTokenString();
-    QVector<ArgumentOffsets> offsets = separateArgumentOffsets(tokenString);
+    QVector<ArgumentOffsets> offsets = separateArgumentOffsets(iter);
 
     if(offsets.size() < 2)
     {
@@ -149,10 +150,11 @@ bool Parser::outermostParenthesisMismatch(const TokenString &tokenString) const
            tokenString.last().getString() == ")";
 }
 
-QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenString &tokenString) const
+QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIterator iter) const
 {
     QVector<ArgumentOffsets> offsets;
 
+    const TokenString tokenString = iter->getTokenString();
     const unsigned int firstDelimiterCompensation = 1;
     const unsigned int lastOffset = tokenString.size() - firstDelimiterCompensation;
     unsigned int argumentBeginOffset = firstDelimiterCompensation;
@@ -162,10 +164,11 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenStri
     {
         if(tokenString[argumentBeginOffset].getString() == ")")
         {
+            const unsigned int argumentBeginIndex = iter->getBeginIndex() + argumentBeginOffset;
             throw ParsingErrorException<TokenString>("A \")\" was found where a \"(\" or a token was expected!",
-                                                     argumentBeginOffset,
-                                                     argumentBeginOffset,
-                                                     tokenString);
+                                                     argumentBeginIndex,
+                                                     argumentBeginIndex,
+                                                     iter.goToRoot()->getTokenString());
         }
         else if(tokenString[argumentBeginOffset].getString() == "(")
         {
@@ -181,7 +184,7 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenStri
                 throw ParsingErrorException<TokenString>("There are unmatched parenthesis!",
                                             argumentBeginOffset,
                                             argumentBeginOffset,
-                                            tokenString);
+                                            iter.goToRoot()->getTokenString());
             }
         }
         else

@@ -15,9 +15,9 @@ Token *TableSignature::getTokenPointer(const QString &token)
         }
     }
 
-    QString errorMsg = "This token \"";
+    QString errorMsg = "This token (\"";
     errorMsg += token;
-    errorMsg += "\" is absent from this signature! Which means that this token was not declared!";
+    errorMsg += "\") is absent from this signature! Which means that this token was not declared!";
 
     throw std::invalid_argument(errorMsg.toStdString().data());
 }

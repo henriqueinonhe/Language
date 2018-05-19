@@ -9,12 +9,12 @@ class TypeParsingTreeIterator
 public:
     TypeParsingTreeIterator(TypeParsingTree *tree);
 
-    void goToChild(unsigned int index);
-    void goToParent();
-    void goToRoot();
-    void travelPath(const QString &path);
-    void travelPath(const QVector<unsigned int> &coordinates);
-    void goToCoordinates(const QString &coordinates);
+    TypeParsingTreeIterator &goToChild(unsigned int index);
+    TypeParsingTreeIterator &goToParent();
+    TypeParsingTreeIterator &goToRoot();
+    TypeParsingTreeIterator &travelPath(const QString &path);
+    TypeParsingTreeIterator &travelPath(const QVector<unsigned int> &coordinates);
+    TypeParsingTreeIterator &goToCoordinates(const QString &coordinates);
 
     TypeParsingTree &getTree() const;
 

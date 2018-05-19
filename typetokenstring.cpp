@@ -146,7 +146,7 @@ void TypeTokenString::lexString(const QString &string)
                 throw std::invalid_argument("The composition operator is not complete.");
             }
         }
-        else //TODO explain this shit!
+        else
         {
             int startIndex = index;
 

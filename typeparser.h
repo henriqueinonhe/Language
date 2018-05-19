@@ -35,8 +35,8 @@ private:
 
      static void buildParsingTree(const QString &typeString);
      static void parseType(TypeParsingTreeIterator iter);
-     static void parseProductType(const TypeTokenString &tokenString, TypeParsingTreeIterator &iter);
-     static void parseCompositeType(TypeParsingTreeIterator &iter, const TypeTokenString &tokenString);
+     static void parseProductType(TypeParsingTreeIterator iter);
+     static void parseCompositeType(TypeParsingTreeIterator iter);
      static void setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, TypeParsingTreeIterator &iter, TypeTokenString  &returnType);
 
      static bool typeIsEmpty(const TypeTokenString &typeString);
@@ -46,9 +46,9 @@ private:
      static bool isProductArgumentBreakPoint(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token);
      static bool isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount);
 
-     static void separateProductArguments(const TypeTokenString &tokenString, QVector<ProductArgumentOffsets> &offsetList);
-     static unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString);
-     static void validateCompositionRightSideArgument(const TypeTokenString &tokenString, const unsigned int compositionOperatorOffset);
+     static void separateProductArguments(TypeParsingTreeIterator iter, QVector<ProductArgumentOffsets> &offsetList);
+     static unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString, TypeParsingTreeIterator iter);
+     static void validateCompositionRightSideArgument(TypeParsingTreeIterator iter, const unsigned int compositionOperatorOffset);
 
      static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 

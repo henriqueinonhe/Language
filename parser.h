@@ -48,7 +48,7 @@ private:
     bool isDelimiter(const Token &token) const;
     bool outermostParenthesisMismatch(const TokenString &tokenString) const;
 
-    QVector<ArgumentOffsets> separateArgumentOffsets(const TokenString &tokenString) const;
+    QVector<ArgumentOffsets> separateArgumentOffsets(ParsingTreeIterator iter) const;
     void setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &iter);
 
     //Type Checking Methods

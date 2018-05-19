@@ -16,7 +16,6 @@ private:
     Formula(const TokenString &tokenString);
 
     TokenString tokenString;
-    //Type -> Should this have a type?
 
     friend class Parser;
 };
