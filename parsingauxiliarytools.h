@@ -10,7 +10,6 @@ unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
                                         const CharClass &rightDelimiter,
                                         const unsigned int startPos = 0)
 {
-    const unsigned int tokenLookaheadCompensation = 1;
     unsigned int leftDelimiterCount = 0;
     unsigned int rightDelimiterCount = 0;
     unsigned int index = startPos;
@@ -42,6 +41,9 @@ unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
         }
 
     } while(leftDelimiterCount != rightDelimiterCount);
+
+
+    const unsigned int tokenLookaheadCompensation = 1;
 
     return index - tokenLookaheadCompensation;
 }

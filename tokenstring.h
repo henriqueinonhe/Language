@@ -17,9 +17,12 @@ public:
 
     TokenString mid(const unsigned int beginIndex, const unsigned int size) const;
 
-    Token &operator[](unsigned int index);
+    Token &operator[](const unsigned int index);
+    Token &operator[](const unsigned int index) const;
     Token &first();
+    Token &first() const;
     Token &last();
+    Token &last() const;
 
     bool isLastIndex(const unsigned int index) const;
     bool indexIsWithinBounds(const unsigned int index) const;

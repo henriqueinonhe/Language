@@ -60,7 +60,12 @@ TokenString TokenString::mid(const unsigned int beginIndex, const unsigned int s
     return newString;
 }
 
-Token &TokenString::operator[](unsigned int index)
+Token &TokenString::operator[](const unsigned int index)
+{
+    return const_cast<Token &>(static_cast<const TokenString &>(*this)[index]);
+}
+
+Token &TokenString::operator[](const unsigned int index) const
 {
     if(!indexIsWithinBounds(index))
     {
@@ -72,6 +77,11 @@ Token &TokenString::operator[](unsigned int index)
 
 Token &TokenString::first()
 {
+    return const_cast<Token &>(static_cast<const TokenString &>(*this).first());
+}
+
+Token &TokenString::first() const
+{
     if(this->isEmpty())
     {
         throw std::invalid_argument("Token String is empty!");
@@ -81,6 +91,11 @@ Token &TokenString::first()
 }
 
 Token &TokenString::last()
+{
+    return const_cast<Token &>(static_cast<const TokenString &>(*this).last());
+}
+
+Token &TokenString::last() const
 {
     if(this->isEmpty())
     {
