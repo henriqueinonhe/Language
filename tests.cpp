@@ -574,7 +574,7 @@ TEST_CASE("ParsingTrees")
     }
 }
 
-TEST_CASE("Parser 1")
+TEST_CASE("Parser Propositional Logic")
 {
     //SETUP
     TableSignature signature;

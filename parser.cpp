@@ -240,8 +240,6 @@ const Type Parser::setMainOperatorType(ParsingTreeIterator iter)
 
 void Parser::checkType(ParsingTreeIterator iter)
 {
-    //NOTE Maybe refactor this, not quite sure though!
-
     const TokenString tokenString = iter->getTokenString();
 
     if(isAtomic(tokenString))
