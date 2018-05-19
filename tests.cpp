@@ -305,6 +305,7 @@ TEST_CASE("Type")
     SECTION("Fail")
     {
         CHECK_THROWS(TypeParser::parse(""));
+        CHECK_THROWS(TypeParser::parse(" "));
         CHECK_THROWS(TypeParser::parse("[[o]->o]->o"));
         CHECK_THROWS(TypeParser::parse("[Proposition]->([Proposition]->Proposition)"));
         CHECK_THROWS(TypeParser::parse("[Proposition]->Proposition"));
@@ -317,6 +318,12 @@ TEST_CASE("Type")
         CHECK_THROWS(TypeParser::parse("o->(o]"));
         CHECK_THROWS(TypeParser::parse("o->[i,i]"));
         CHECK_THROWS(TypeParser::parse("[0,1]"));
+        CHECK_THROWS(TypeParser::parse("[[o,o]]->o"));
+        CHECK_THROWS(TypeParser::parse("((o->o))->o"));
+        CHECK_THROWS(TypeParser::parse("()->o"));
+        CHECK_THROWS(TypeParser::parse("o->(o)")); //FIXME!
+        CHECK_THROWS(TypeParser::parse("o->([a,b,c->d])")); //This REALLY should throw!
+        CHECK_THROWS(TypeParser::parse("o->(o,a,ds,r)"));
     }
 
     SECTION("Other Methods")
@@ -567,7 +574,7 @@ TEST_CASE("ParsingTrees")
     }
 }
 
-TEST_CASE("Parser")
+TEST_CASE("Parser 1")
 {
     //SETUP
     TableSignature signature;

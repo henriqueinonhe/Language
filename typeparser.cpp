@@ -37,26 +37,26 @@ bool TypeParser::isProductArgumentsScopeEnd(const unsigned int leftSquareBracket
 
 unsigned int TypeParser::findCompositionOperatorOffset(const TypeTokenString &tokenString)
 {
-    unsigned int mainOperatorOffset;
-    const unsigned int mainOperatorCompensation = 1;
+    unsigned int compositionOperatorOffset;
+    const unsigned int compositionOperatorCompensation = 1;
 
     if(tokenString.first().getSort() == TypeToken::Sort::PrimitiveType)
     {
-        mainOperatorOffset = 1;
+        compositionOperatorOffset = 1;
     }
     else if(tokenString.first().getSort() == TypeToken::Sort::LeftParenthesis)
     {
-        mainOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
+        compositionOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
                                                                                TypeToken("("),
                                                                                TypeToken(")")) +
-                                                                               mainOperatorCompensation;
+                                                                               compositionOperatorCompensation;
     }
     else if(tokenString.first().getSort() == TypeToken::Sort::LeftSquareBracket)
     {
-        mainOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
+        compositionOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
                                                                                TypeToken("["),
                                                                                TypeToken("]")) +
-                                                                               mainOperatorCompensation;
+                                                                               compositionOperatorCompensation;
     }
     else
     {
@@ -66,15 +66,15 @@ unsigned int TypeParser::findCompositionOperatorOffset(const TypeTokenString &to
                                     tokenString);
     }
 
-    if(!(tokenString[mainOperatorOffset].getSort() == TypeToken::Sort::CompositionOperator))
+    if(!(tokenString[compositionOperatorOffset].getSort() == TypeToken::Sort::CompositionOperator))
     {
         throw ParsingErrorException<TypeTokenString>("Composition operator (->) was expected here!",
-                                        mainOperatorOffset,
-                                        mainOperatorOffset,
+                                        compositionOperatorOffset,
+                                        compositionOperatorOffset,
                                         tokenString);
     }
 
-    return mainOperatorOffset;
+    return compositionOperatorOffset;
 }
 
 void TypeParser::validateCompositionRightSideArgument(const TypeTokenString &tokenString, const unsigned int compositionOperatorOffset)
@@ -100,6 +100,15 @@ void TypeParser::validateCompositionRightSideArgument(const TypeTokenString &tok
                                                          compositionOperatorOffset,
                                                          tokenString.size() - zeroIndexCompensation,
                                                          tokenString);
+        }
+        else
+        {
+            const unsigned int tokenLookaheadCompensation = 1;
+            const unsigned int argumentParenthesisPadding = 1;
+            const unsigned int argumentBeginIndex = compositionOperatorOffset + argumentParenthesisPadding + tokenLookaheadCompensation;
+            const unsigned int argumentSize = tokenString.size() - argumentBeginIndex - argumentParenthesisPadding;
+            const TypeTokenString rightSideArgument = tokenString.mid(argumentBeginIndex, argumentSize);
+            findCompositionOperatorOffset(rightSideArgument); //NOTE Not perfect yet!
         }
     }
     else
