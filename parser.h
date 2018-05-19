@@ -44,11 +44,12 @@ private:
     void analyzeError(ParsingTreeIterator iter);
 
     bool isAtomic(const TokenString &tokenString) const;
-    bool hasMolecularForm(TokenString &tokenString) const;
-    bool isDelimiter(Token &token) const;
-    bool outermostParenthesisMismatch(TokenString &tokenString) const;
+    bool hasMolecularForm(const TokenString &tokenString) const;
+    bool isDelimiter(const Token &token) const;
+    bool outermostParenthesisMismatch(const TokenString &tokenString) const;
 
-    QVector<ArgumentOffsets> separateArgumentOffsets(TokenString &tokenString) const;
+    QVector<ArgumentOffsets> separateArgumentOffsets(const TokenString &tokenString) const;
+    void setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &iter);
 
     //Type Checking Methods
     void performTypeChecking();
@@ -57,6 +58,7 @@ private:
     Lexer lexer;
     Type wellFormedFormulaType;
     unique_ptr<ParsingTree> parsingTree;
+    const Type setMainOperatorType(ParsingTreeIterator iter);
 };
 
 #endif // PARSER_H

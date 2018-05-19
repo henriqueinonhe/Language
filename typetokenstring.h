@@ -10,6 +10,7 @@
 class TypeTokenString
 {
 public:
+    TypeTokenString();
     TypeTokenString(const QString &string);
 
     QString toString() const;

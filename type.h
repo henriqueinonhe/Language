@@ -2,6 +2,7 @@
 #define TOKENTYPE_H
 
 #include "typetokenstring.h"
+#include <memory>
 
 class TypeParser;
 class ParsingTreeNode;
@@ -19,15 +20,21 @@ public:
 
     QString toString() const;
 
-    Type checkType(const QVector<Type> argumentsTypes) const;
+    Type checkType(const QVector<TypeTokenString> &argumentsTypes) const;
+
+    TypeTokenString getTypeString() const;
 
 private:
     Type();
-    Type(const TypeTokenString &typeString);
+    Type(const TypeTokenString &typeString,
+         const QVector<TypeTokenString> argumentsTypes,
+         const TypeTokenString &returnType);
 
     void setTypeString(const TypeTokenString &value);
 
     TypeTokenString typeString;
+    QVector<TypeTokenString> argumentsTypes;
+    TypeTokenString returnType;
 
     friend class TypeParser;
     friend class ParsingTreeNode;

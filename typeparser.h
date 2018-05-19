@@ -37,6 +37,7 @@ private:
      static void parseType(TypeParsingTreeIterator iter);
      static void parseProductType(const TypeTokenString &tokenString, TypeParsingTreeIterator &iter);
      static void parseCompositeType(TypeParsingTreeIterator &iter, const TypeTokenString &tokenString);
+     static void setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, TypeParsingTreeIterator &iter, TypeTokenString  &returnType);
 
      static bool typeIsEmpty(const TypeTokenString &typeString);
      static bool isPrimitiveType(const TypeTokenString &typeString);
@@ -51,7 +52,7 @@ private:
 
      static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 
-     static TypeParsingTree *parsingTree; //FIXME
+     static TypeParsingTree *parsingTree;
 };
 
 #endif // TYPEPARSER_H

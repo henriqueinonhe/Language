@@ -175,6 +175,10 @@ TEST_CASE("TypeToken")
         CHECK_THROWS(TypeToken("sd]ad"));
         CHECK_THROWS(TypeToken("sd{ad"));
         CHECK_THROWS(TypeToken("sd}ad"));
+        CHECK_THROWS(TypeToken(""));
+        CHECK_THROWS(TypeToken(" "));
+
+        CHECK_NOTHROW(TypeToken());
     }
 
     SECTION("Other Tests")
@@ -188,6 +192,7 @@ TEST_CASE("TypeToken")
         CHECK(TypeToken(",") == TypeToken(","));
 
         CHECK(TypeToken("asdasd") != TypeToken("dsa"));
+
     }
 }
 
@@ -243,6 +248,10 @@ TEST_CASE("TypeTokenString")
 
     CHECK(TypeTokenString("A") != TypeTokenString("B"));
 
+    CHECK_THROWS(TypeTokenString(" "));
+
+    CHECK_NOTHROW(TypeTokenString());
+    CHECK_NOTHROW(TypeTokenString(""));
 }
 
 TEST_CASE("TypeParsingTree Printer") //Re check this whole thing
@@ -566,7 +575,13 @@ TEST_CASE("Parser")
     PunctuationToken leftP("(");
     PunctuationToken rightP(")");
 
-    CoreToken t1("P", TypeParser::parse("o")), t2("Q", TypeParser::parse("o")), t3("And", TypeParser::parse("[o,o]->o")), t4("Not", TypeParser::parse("[o,o]->o"));
+    CoreToken t1("P", TypeParser::parse("o")),
+              t2("Q", TypeParser::parse("o")),
+              t3("And", TypeParser::parse("[o,o]->o")),
+              t4("Not", TypeParser::parse("o->o")),
+              t5("Implies", TypeParser::parse("[o,o]->o")),
+              t6("Or", TypeParser::parse("[o,o]->o")),
+              t7("Equivalent", TypeParser::parse("[o,o]->o"));
 
     signature.addToken(&leftP);
     signature.addToken(&rightP);
@@ -574,6 +589,9 @@ TEST_CASE("Parser")
     signature.addToken(&t2);
     signature.addToken(&t3);
     signature.addToken(&t4);
+    signature.addToken(&t5);
+    signature.addToken(&t6);
+    signature.addToken(&t7);
 
     Parser parser(&signature, TypeParser::parse("o"));
 
@@ -587,8 +605,14 @@ TEST_CASE("Parser")
         CHECK_NOTHROW(parser.parse("(And Q P)"));
         CHECK_NOTHROW(parser.parse("(Not P)"));
         CHECK_NOTHROW(parser.parse("(Not Q)"));
-        CHECK_NOTHROW(parser.parse("(Not (And P Q) P)"));
         CHECK_NOTHROW(parser.parse("(And (Not Q) (Not P))"));
+
+        CHECK_NOTHROW(parser.parse("(Equivalent (And P Q) (And Q P))"));
+        CHECK_NOTHROW(parser.parse("(Implies (And P Q) P)"));
+        CHECK_NOTHROW(parser.parse("(Implies (And P Q) Q)"));
+        CHECK_NOTHROW(parser.parse("(Implies (And (Or P Q) (Not Q) ) P)"));
+        CHECK_NOTHROW(parser.parse("(Implies (And (Or P Q) (Not P) ) Q)"));
+        CHECK_NOTHROW(parser.parse("(Implies (And (Implies P Q) P)  Q )"));
     }
 
     SECTION("Fail Due To Structure")
@@ -605,6 +629,11 @@ TEST_CASE("Parser")
         CHECK_THROWS(parser.parse("((Not P))"));
         CHECK_THROWS(parser.parse("(Not (P))"));
         CHECK_THROWS(parser.parse(")Not P("));
+    }
+
+    SECTION("Fail Due To Type Checking")
+    {
+        CHECK_THROWS(parser.parse("(Not (And P Q) P)"));
     }
 
 }

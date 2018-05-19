@@ -2,6 +2,11 @@
 
 Pool<TypeToken> TypeTokenString::pool;
 
+TypeTokenString::TypeTokenString()
+{
+
+}
+
 TypeTokenString::TypeTokenString(const QString &string)
 {
     lexString(string);

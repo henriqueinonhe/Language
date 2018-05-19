@@ -16,6 +16,8 @@ Formula Parser::parse(const QString &sentence)
     //TODO Cache stuff and return formula and type stuff
     buildParsingTree(sentence);
 
+    performTypeChecking();
+
     std::cout << parsingTree->print().toStdString();
 
     return Formula(lexer.lex(sentence));
@@ -23,7 +25,7 @@ Formula Parser::parse(const QString &sentence)
 
 void Parser::buildParsingTree(const QString &sentence)
 {
-    TokenString tokenString(lexer.lex(sentence));
+    const TokenString tokenString(lexer.lex(sentence));
 
     parsingTree.reset(new ParsingTree(tokenString));
 
@@ -34,7 +36,7 @@ void Parser::buildParsingTree(const QString &sentence)
 
 void Parser::analyzeError(ParsingTreeIterator iter)
 {
-    TokenString tokenString = iter->getTokenString();
+    const TokenString tokenString = iter->getTokenString();
 
     if(tokenString.first().getString() == ")")
     {
@@ -69,7 +71,7 @@ void Parser::analyzeError(ParsingTreeIterator iter)
 
 void Parser::parseApplication(ParsingTreeIterator iter)
 {
-    TokenString tokenString = iter->getTokenString();
+    const TokenString tokenString = iter->getTokenString();
     QVector<ArgumentOffsets> offsets = separateArgumentOffsets(tokenString);
 
     if(offsets.size() < 2)
@@ -101,7 +103,7 @@ void Parser::parseApplication(ParsingTreeIterator iter)
 
 void Parser::parseSentence(ParsingTreeIterator iter)
 {
-    TokenString tokenString = iter->getTokenString();
+    const TokenString tokenString = iter->getTokenString();
 
     if(tokenString.isEmpty())
     {
@@ -129,25 +131,25 @@ bool Parser::isAtomic(const TokenString &tokenString) const
            tokenString.first().getString() != ")";
 }
 
-bool Parser::hasMolecularForm(TokenString &tokenString) const
+bool Parser::hasMolecularForm(const TokenString &tokenString) const
 {
     return tokenString.first().getString() == "(" &&
            tokenString.last().getString() == ")";
 }
 
-bool Parser::isDelimiter(Token &token) const
+bool Parser::isDelimiter(const Token &token) const
 {
     return token.getString() == "(" ||
            token.getString() == ")";
 }
 
-bool Parser::outermostParenthesisMismatch(TokenString &tokenString) const
+bool Parser::outermostParenthesisMismatch(const TokenString &tokenString) const
 {
     return tokenString.first().getString() == "(" &&
            tokenString.last().getString() == ")";
 }
 
-QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(TokenString &tokenString) const
+QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(const TokenString &tokenString) const
 {
     QVector<ArgumentOffsets> offsets;
 
@@ -212,9 +214,32 @@ void Parser::performTypeChecking()
     }
 }
 
+void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &iter)
+{
+    for(unsigned int childNumber = 1; childNumber < iter->getChildrenNumber(); childNumber++)
+    {
+        iter.goToChild(childNumber);
+        checkType(iter);
+        argumentsTypes.push_back(iter->getType().getTypeString());
+        iter.goToParent();
+    }
+}
+
+const Type Parser::setMainOperatorType(ParsingTreeIterator iter)
+{
+    iter.goToChild(0);
+    checkType(iter);
+    const Type mainOperatorType(iter->getType());
+    iter.goToParent();
+
+    return mainOperatorType;
+}
+
 void Parser::checkType(ParsingTreeIterator iter)
 {
-    TokenString tokenString = iter->getTokenString();
+    //NOTE Maybe refactor this, not quite sure though!
+
+    const TokenString tokenString = iter->getTokenString();
 
     if(isAtomic(tokenString))
     {
@@ -223,19 +248,10 @@ void Parser::checkType(ParsingTreeIterator iter)
     }
     else
     {
-        QVector<Type> argumentsTypes;
-        for(unsigned int childNumber = 1; childNumber < iter->getChildrenNumber(); childNumber++)
-        {
-            iter.goToChild(childNumber);
-            checkType(iter);
-            argumentsTypes.push_back(iter->getType());
-            iter.goToParent();
-        }
+        QVector<TypeTokenString> argumentsTypes;
+        const Type mainOperatorType = setMainOperatorType(iter);
 
-        iter.goToChild(0);
-        checkType(iter);
-        const Type mainOperatorType(iter->getType());
-        iter.goToParent();
+        setArgumentsTypes(argumentsTypes, iter);
 
         iter->setType(mainOperatorType.checkType(argumentsTypes));
     }

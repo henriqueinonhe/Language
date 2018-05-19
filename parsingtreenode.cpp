@@ -23,9 +23,9 @@ void ParsingTreeNode::printNodeToString(QString &str) const //FIXME Rework Type 
         str += ",";
         str += QString::number(coordinates.back());
     }
-    str += "){";
-    //str += mainOperatorToString();
-    str += ",\"";
+    str += "){\"";
+    str += type.toString();
+    str += "\",\"";
     str += getTokenString().formattedString();
     str += "\"} ";
 }

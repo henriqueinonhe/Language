@@ -15,19 +15,27 @@ QString Type::toString() const
     return typeString.toString();
 }
 
-Type Type::checkType(const QVector<Type> argumentsTypes) const
+Type Type::checkType(const QVector<TypeTokenString> &argumentsTypes) const
+{
+    if(argumentsTypes == this->argumentsTypes)
+    {
+        return Type(returnType, QVector<TypeTokenString>(), returnType);
+    }
+    else
+    {
+        throw std::invalid_argument("The types of the arguments don't match the types that this type takes!"); //FIXME
+    }
+}
+
+Type::Type()
 {
 
 }
 
-Type::Type() :
-    typeString(TypeTokenString(""))
-{
-
-}
-
-Type::Type(const TypeTokenString &typeString) :
-    typeString(typeString)
+Type::Type(const TypeTokenString &typeString, const QVector<TypeTokenString> argumentsTypes, const TypeTokenString &returnType) :
+    typeString(typeString),
+    argumentsTypes(argumentsTypes),
+    returnType(returnType)
 {
 
 }
@@ -35,5 +43,10 @@ Type::Type(const TypeTokenString &typeString) :
 void Type::setTypeString(const TypeTokenString &value)
 {
     typeString = value;
+}
+
+TypeTokenString Type::getTypeString() const
+{
+    return typeString;
 }
 

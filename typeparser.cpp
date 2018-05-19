@@ -248,6 +248,7 @@ void TypeParser::parseCompositeType(TypeParsingTreeIterator &iter, const TypeTok
     iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
 }
 
+
 void TypeParser::parseType(TypeParsingTreeIterator iter)
 {
     const TypeTokenString tokenString = iter->getTypeString();
@@ -275,11 +276,47 @@ void TypeParser::parseType(TypeParsingTreeIterator iter)
     }
 }
 
+void TypeParser::setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, TypeParsingTreeIterator &iter, TypeTokenString &returnType)
+{
+    if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
+    {
+        returnType = iter->getTypeString();
+    }
+    else if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Composition)
+    {
+        iter.goToChild(1);
+        returnType = iter->getTypeString();
+        iter.goToParent();
+
+        iter.goToChild(0);
+
+        if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
+        {
+            argumentsTypes.push_back(iter->getTypeString());
+        }
+        else
+        {
+            for(unsigned int childNumber = 0; childNumber < iter->getChildrenNumber(); childNumber++)
+            {
+                iter.goToChild(childNumber);
+                argumentsTypes.push_back(iter->getTypeString());
+                iter.goToParent();
+            }
+        }
+    }
+}
+
 Type TypeParser::parse(const QString &type)
 {
     buildParsingTree(type);
 
-    return Type(type);
+    TypeParsingTreeIterator iter(parsingTree);
+    QVector<TypeTokenString> argumentsTypes;
+    TypeTokenString returnType;
+
+    setReturnAndArgumentsTypes(argumentsTypes, iter, returnType);
+
+    return Type(type, argumentsTypes, returnType);
 }
 
 TypeParsingTree *TypeParser::getParsingTree(const QString &type)
