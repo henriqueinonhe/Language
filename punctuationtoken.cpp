@@ -13,3 +13,8 @@ PunctuationToken::PunctuationToken(const QString &string) :
         this->string = string;
     }
 }
+
+QString PunctuationToken::tokenClass() const
+{
+    return "PunctuationToken";
+}

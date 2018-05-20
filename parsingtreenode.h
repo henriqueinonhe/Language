@@ -1,11 +1,13 @@
 ﻿#ifndef PARSINGTREENODE_H
 #define PARSINGTREENODE_H
 
+#include <QSet>
 #include <QString>
 #include <QVector>
 #include <memory>
 #include "tokenstring.h"
 #include "type.h"
+#include "variabletoken.h"
 
 class ParsingTreeIterator;
 class ParsingTree;
@@ -53,6 +55,8 @@ private:
     unsigned int beginIndex;
     unsigned int endIndex;
     Type type;
+    QSet<VariableToken *> freeVariables;
+    QSet<VariableToken *> boundVariables;
 
 friend class ParsingTreeIterator;
 friend class ParsingTree;

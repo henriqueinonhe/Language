@@ -25,3 +25,8 @@ Type CoreToken::getType() const
 {
     return type;
 }
+
+QString CoreToken::tokenClass() const
+{
+    return "CoreToken";
+}

@@ -14,6 +14,8 @@ public:
 
     unsigned int getTokenCharSpan() const;
 
+    virtual QString tokenClass() const;
+
 protected:
     Token(const QString &string);
     QString string;

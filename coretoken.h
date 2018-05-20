@@ -15,7 +15,9 @@ public:
 
     Type getType() const;
 
-private:
+    virtual QString tokenClass() const;
+
+protected:
     Type type;
 
 };

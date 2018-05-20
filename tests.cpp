@@ -6,7 +6,6 @@
 #include "token.h"
 #include "pool.h"
 #include "typetokenstring.h"
-#include <QRegularExpression>
 #include <iostream>
 #include "parsingerrorexception.hpp"
 #include "tokenstring.h"
@@ -21,6 +20,9 @@
 #include "typeparser.h"
 #include "formula.h"
 #include "parser.h"
+#include "containerauxiliarytools.h"
+#include "variabletoken.h"
+#include "bindingtoken.h"
 
 TEST_CASE("TypeParsingTrees")
 {
@@ -643,4 +645,52 @@ TEST_CASE("Parser Propositional Logic")
         CHECK_THROWS(parser.parse("(Not (And P Q) P)"));
     }
 
+}
+
+TEST_CASE("Container Auxiliary Tools")
+{
+    SECTION("Check For Duplicates")
+    {
+        QVector<int> v1{1,1,2,3,4};
+        QVector<int> v2{3,5,2,5432,6,5432};
+        QVector<int> v3{0,1,2,3,4};
+        QVector<int> v4{23,1,2,3,4};
+
+        CHECK(ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v1));
+        CHECK(ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v2));
+        CHECK(!ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v3));
+        CHECK(!ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v4));
+    }
+
+    SECTION("Containers Are Disjoint")
+    {
+        QVector<int> v1{1,2,3,4,5};
+        QVector<int> v2{5,6,7,8};
+        QVector<int> v3{2,3,4};
+
+        CHECK(!ContainerAuxiliaryTools<QVector<int>>::containersAreDisjoint(v1,v2));
+        CHECK(!ContainerAuxiliaryTools<QVector<int>>::containersAreDisjoint(v1,v3));
+        CHECK(ContainerAuxiliaryTools<QVector<int>>::containersAreDisjoint(v2,v3));
+    }
+
+}
+
+TEST_CASE("Binding and Variable Tokens")
+{
+
+    SECTION("Variable Token")
+    {
+        VariableToken v1("Aflisis", TypeParser::parse("Prop->Prop"));
+        CHECK(v1.tokenClass() == "VariableToken");
+    }
+
+    SECTION("Binding Token")
+    {
+        QVector<BindingToken::BindingRecord> records;
+
+        BindingToken::BindingRecord record1(0, QVector<unsigned int>{1});
+        records.push_back(record1);
+
+        CHECK_NOTHROW(BindingToken("Forall", TypeParser::parse("[i,o]->o"), records));
+    }
 }

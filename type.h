@@ -24,6 +24,9 @@ public:
 
     TypeTokenString getTypeString() const;
 
+    QVector<TypeTokenString> getArgumentsTypes() const;
+    TypeTokenString getReturnType() const;
+
 private:
     Type();
     Type(const TypeTokenString &typeString,

@@ -25,3 +25,8 @@ unsigned int Token::getTokenCharSpan() const
 {
     return string.size();
 }
+
+QString Token::tokenClass() const
+{
+    return "Token";
+}

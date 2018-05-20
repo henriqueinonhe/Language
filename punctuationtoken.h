@@ -7,6 +7,8 @@ class PunctuationToken : public Token
 {
 public:
     PunctuationToken(const QString &string);
+
+    virtual QString tokenClass() const;
 };
 
 #endif // PUNCTUATIONTOKEN_H

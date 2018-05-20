@@ -15,6 +15,8 @@ ParsingTreeIterator &ParsingTreeIterator::goToChild(unsigned int index)
     }
 
     currentNode = currentNode->children[index].get();
+
+    return *this;
 }
 
 ParsingTreeIterator &ParsingTreeIterator::goToParent()

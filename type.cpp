@@ -46,6 +46,16 @@ void Type::setTypeString(const TypeTokenString &value)
     typeString = value;
 }
 
+TypeTokenString Type::getReturnType() const
+{
+    return returnType;
+}
+
+QVector<TypeTokenString> Type::getArgumentsTypes() const
+{
+    return argumentsTypes;
+}
+
 TypeTokenString Type::getTypeString() const
 {
     return typeString;
