@@ -258,6 +258,29 @@ void Parser::checkType(ParsingTreeIterator iter)
     }
 }
 
+void Parser::performVariableBindingChecking()
+{
+    QVector<QVector<ParsingTreeNode *>> nodesMatrix;
+    ParsingTreeIterator iter(parsingTree.get());
+    ParsingTreeNode *root = &(*iter);
+
+    //Laying down nodes ordered by level!
+    const unsigned int startAtBeforeLastRowCompensation = 1;
+    for(unsigned int currentHeight = 0; currentHeight < parsingTree->height - startAtBeforeLastRowCompensation; currentHeight++)
+    {
+        QVector<ParsingTreeNode *> nodesRow;
+        std::for_each(root->children.begin(),
+                      root->children.end(),
+                      [&nodesRow](shared_ptr<ParsingTreeNode> node)
+        {
+            nodesRow.push_back(node.get());
+        });
+        nodesMatrix.push_back(nodesRow);
+    }
+
+
+}
+
 
 
 

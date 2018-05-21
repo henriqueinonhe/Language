@@ -55,6 +55,9 @@ private:
     void performTypeChecking();
     void checkType(ParsingTreeIterator iter);
 
+    //Variable Binding Checking Methods
+    void performVariableBindingChecking();
+
     Lexer lexer;
     Type wellFormedFormulaType;
     unique_ptr<ParsingTree> parsingTree;
