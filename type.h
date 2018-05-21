@@ -6,14 +6,14 @@
 
 class TypeParser;
 class ParsingTreeNode;
+class TypeParsingTree;
 
 using namespace std;
-
-//TODO Implement pseudo-parsing and manipulation methods!
 
 class Type
 {
 public:
+    Type(const QString &type);
 
     bool operator==(const Type &other) const;
     bool operator!=(const Type &other) const;
@@ -26,6 +26,8 @@ public:
 
     QVector<TypeTokenString> getArgumentsTypes() const;
     TypeTokenString getReturnType() const;
+
+    shared_ptr<TypeParsingTree> getParsingTree() const;
 
 private:
     Type();
@@ -41,7 +43,6 @@ private:
 
     friend class TypeParser;
     friend class ParsingTreeNode;
-    friend class QVector<Type>;
 };
 
 #endif // TOKENTYPE_H

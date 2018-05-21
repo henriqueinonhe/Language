@@ -34,7 +34,8 @@ SOURCES += main.cpp \
     parser.cpp \
     formula.cpp \
     variabletoken.cpp \
-    bindingtoken.cpp
+    bindingtoken.cpp \
+    dirtyfix.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -73,4 +74,5 @@ HEADERS += \
     formula.h \
     variabletoken.h \
     bindingtoken.h \
-    containerauxiliarytools.h
+    containerauxiliarytools.h \
+    dirtyfix.h

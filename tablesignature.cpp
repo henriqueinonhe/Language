@@ -22,16 +22,6 @@ Token *TableSignature::getTokenPointer(const QString &token)
     throw std::invalid_argument(errorMsg.toStdString().data());
 }
 
-QVector<Token *> TableSignature::getTokenTable() const
-{
-    return tokenTable;
-}
-
-void TableSignature::setTokenTable(const QVector<Token *> &value)
-{
-    tokenTable = value;
-}
-
 void TableSignature::addToken(Token *token)
 {
     const bool tokenAlreadyPresent = std::any_of(tokenTable.begin(), tokenTable.end(), [token](const Token *tableToken)

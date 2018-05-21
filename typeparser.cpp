@@ -1,6 +1,6 @@
 ﻿#include "typeparser.h"
 
-TypeParsingTree *TypeParser::parsingTree;
+shared_ptr<TypeParsingTree> TypeParser::parsingTree;
 
 bool TypeParser::typeIsEmpty(const TypeTokenString &typeString)
 {
@@ -120,7 +120,7 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
             const unsigned int argumentBeginIndex = compositionOperatorOffset + argumentParenthesisPadding + tokenLookaheadCompensation;
             const unsigned int argumentSize = tokenString.size() - argumentBeginIndex - argumentParenthesisPadding;
             const TypeTokenString rightSideArgument = tokenString.mid(argumentBeginIndex, argumentSize);
-            findCompositionOperatorOffset(rightSideArgument, iter); //NOTE Not perfect yet!
+            findCompositionOperatorOffset(rightSideArgument, iter);
         }
     }
     else
@@ -329,43 +329,40 @@ void TypeParser::setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsT
     }
 }
 
-Type TypeParser::parse(const QString &type)
+void TypeParser::parse(const TypeTokenString &type, Type *newType)
 {
     buildParsingTree(type);
 
-    TypeParsingTreeIterator iter(parsingTree);
+    TypeParsingTreeIterator iter(parsingTree.get());
     QVector<TypeTokenString> argumentsTypes;
     TypeTokenString returnType;
 
     setReturnAndArgumentsTypes(argumentsTypes, iter, returnType);
 
-    return Type(type, argumentsTypes, returnType);
+    newType->typeString = type;
+    newType->returnType = returnType;
+    newType->argumentsTypes = argumentsTypes;
 }
 
-TypeParsingTree *TypeParser::getParsingTree(const QString &type)
+shared_ptr<TypeParsingTree> TypeParser::getParsingTree(const QString &type)
 {
     buildParsingTree(type);
 
     return parsingTree;
 }
 
-void TypeParser::buildParsingTree(const QString &typeString) //FIXME Implement caching policy
+void TypeParser::buildParsingTree(const TypeTokenString &typeString) //FIXME Implement caching policy
 {
     TypeTokenString tokenString(typeString);
 
-    if(parsingTreeCacheCheck(parsingTree, tokenString))
+    if(parsingTreeCacheCheck(parsingTree.get(), tokenString))
     {
         return;
     }
     else
     {
-        if(parsingTree != nullptr)
-        {
-            delete parsingTree;
-        }
-
-        parsingTree = new TypeParsingTree(tokenString);
-        TypeParsingTreeIterator iter(parsingTree);
+        parsingTree.reset(new TypeParsingTree(tokenString));
+        TypeParsingTreeIterator iter(parsingTree.get());
 
         if(hasProductTypeForm(tokenString))
         {

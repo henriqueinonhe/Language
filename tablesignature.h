@@ -10,9 +10,6 @@ public:
     TableSignature();
     Token *getTokenPointer(const QString &token);
 
-    QVector<Token *> getTokenTable() const;
-    void setTokenTable(const QVector<Token *> &value);
-
     void addToken(Token *token);
 
 private:

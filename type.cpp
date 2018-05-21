@@ -1,5 +1,12 @@
 ﻿#include "type.h"
 
+#include "typeparser.h"
+
+Type::Type(const QString &type)
+{
+    TypeParser::parse(TypeTokenString(type), this);
+}
+
 bool Type::operator==(const Type &other) const
 {
     return this->typeString == other.typeString;
@@ -19,7 +26,10 @@ Type Type::checkType(const QVector<TypeTokenString> &argumentsTypes) const
 {
     if(argumentsTypes == this->argumentsTypes)
     {
-        return Type(returnType, QVector<TypeTokenString>(), returnType);
+        Type newType;
+        TypeParser::parse(returnType, &newType);
+
+        return newType;
     }
     else
     {
@@ -49,6 +59,11 @@ void Type::setTypeString(const TypeTokenString &value)
 TypeTokenString Type::getReturnType() const
 {
     return returnType;
+}
+
+shared_ptr<TypeParsingTree> Type::getParsingTree() const
+{
+    return TypeParser::getParsingTree(this->toString());
 }
 
 QVector<TypeTokenString> Type::getArgumentsTypes() const

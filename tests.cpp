@@ -23,6 +23,7 @@
 #include "containerauxiliarytools.h"
 #include "variabletoken.h"
 #include "bindingtoken.h"
+#include "dirtyfix.h"
 
 TEST_CASE("TypeParsingTrees")
 {
@@ -227,7 +228,7 @@ TEST_CASE("Pool")
 }
 
 TEST_CASE("TypeTokenString")
-{   
+{
 
     TypeTokenString string = TypeTokenString("[i,o]->o");
 
@@ -291,48 +292,53 @@ TEST_CASE("Type")
 {
     SECTION("Pass")
     {
-        CHECK_NOTHROW(TypeParser::parse("AFLUSISS"));
-        CHECK_NOTHROW(TypeParser::parse("Proposition->Proposition"));
-        CHECK_NOTHROW(TypeParser::parse("[Proposition,Proposition]->Proposition"));
-        CHECK_NOTHROW(TypeParser::parse("[IndividualVariable,IndividualConstant,"
+        CHECK_NOTHROW(Type("AFLUSISS"));
+        CHECK_NOTHROW(Type("Proposition->Proposition"));
+        CHECK_NOTHROW(Type("[Proposition,Proposition]->Proposition"));
+        CHECK_NOTHROW(Type("[IndividualVariable,IndividualConstant,"
                            "IndividualVariable,IndividualConstant]->Proposition"));
-        CHECK_NOTHROW(TypeParser::parse("[IndividualVariable,Proposition]->Proposition"));
-        CHECK_NOTHROW(TypeParser::parse("Proposition->(Proposition->Proposition)"));
-        CHECK_NOTHROW(TypeParser::parse("(o->o)->o"));
-        CHECK_NOTHROW(TypeParser::parse("[o->o,o->o]->o"));
-        CHECK_NOTHROW(TypeParser::parse("[a,b,c,d,e,f,g,h,i,j]->k"));
-        CHECK_NOTHROW(TypeParser::parse("A->(A->(A->(A->B)))"));
+        CHECK_NOTHROW(Type("[IndividualVariable,Proposition]->Proposition"));
+        CHECK_NOTHROW(Type("Proposition->(Proposition->Proposition)"));
+        CHECK_NOTHROW(Type("(o->o)->o"));
+        CHECK_NOTHROW(Type("[o->o,o->o]->o"));
+        CHECK_NOTHROW(Type("[a,b,c,d,e,f,g,h,i,j]->k"));
+        CHECK_NOTHROW(Type("A->(A->(A->(A->B)))"));
     }
 
     SECTION("Fail")
     {
-        CHECK_THROWS(TypeParser::parse(""));
-        CHECK_THROWS(TypeParser::parse(" "));
-        CHECK_THROWS(TypeParser::parse("[[o]->o]->o"));
-        CHECK_THROWS(TypeParser::parse("[Proposition]->([Proposition]->Proposition)"));
-        CHECK_THROWS(TypeParser::parse("[Proposition]->Proposition"));
-        CHECK_THROWS(TypeParser::parse("Proposition->([Proposition]->Proposition)"));
-        CHECK_THROWS(TypeParser::parse("[o->o]->o"));
-        CHECK_THROWS(TypeParser::parse("(o]->o)"));
-        CHECK_THROWS(TypeParser::parse("[,]->o"));
-        CHECK_THROWS(TypeParser::parse("[o,a)->a"));
-        CHECK_THROWS(TypeParser::parse("o->[i,i]"));
-        CHECK_THROWS(TypeParser::parse("o->(o]"));
-        CHECK_THROWS(TypeParser::parse("o->[i,i]"));
-        CHECK_THROWS(TypeParser::parse("[0,1]"));
-        CHECK_THROWS(TypeParser::parse("[[o,o]]->o"));
-        CHECK_THROWS(TypeParser::parse("((o->o))->o"));
-        CHECK_THROWS(TypeParser::parse("()->o"));
-        CHECK_THROWS(TypeParser::parse("o->(o)")); //FIXME!
-        CHECK_THROWS(TypeParser::parse("o->([a,b,c->d])")); //This REALLY should throw!
-        CHECK_THROWS(TypeParser::parse("o->(o,a,ds,r)"));
+        CHECK_THROWS(Type(""));
+        CHECK_THROWS(Type(" "));
+        CHECK_THROWS(Type("[[o]->o]->o"));
+        CHECK_THROWS(Type("[Proposition]->([Proposition]->Proposition)"));
+        CHECK_THROWS(Type("[Proposition]->Proposition"));
+        CHECK_THROWS(Type("Proposition->([Proposition]->Proposition)"));
+        CHECK_THROWS(Type("[o->o]->o"));
+        CHECK_THROWS(Type("(o]->o)"));
+        CHECK_THROWS(Type("[,]->o"));
+        CHECK_THROWS(Type("[o,a)->a"));
+        CHECK_THROWS(Type("o->[i,i]"));
+        CHECK_THROWS(Type("o->(o]"));
+        CHECK_THROWS(Type("o->[i,i]"));
+        CHECK_THROWS(Type("[0,1]"));
+        CHECK_THROWS(Type("[[o,o]]->o"));
+        CHECK_THROWS(Type("((o->o))->o"));
+        CHECK_THROWS(Type("()->o"));
+        CHECK_THROWS(Type("o->(o)")); //FIXME!
+        CHECK_THROWS(Type("o->([a,b,c->d])")); //This REALLY should throw!
+        CHECK_THROWS(Type("o->(o,a,ds,r)"));
     }
 
     SECTION("Other Methods")
     {
-        CHECK(TypeParser::parse("o->o") == TypeParser::parse("o->o"));
+        CHECK(Type("o->o") == Type("o->o"));
 
-        CHECK(TypeParser::parse("o") != TypeParser::parse("a->([c,d]->g)"));
+        CHECK(Type("o") != Type("a->([c,d]->g)"));
+
+        shared_ptr<TypeParsingTree> tree = Type("o").getParsingTree();
+        Type("i").getParsingTree();
+
+        CHECK_NOTHROW(tree.get()->getHeight());
     }
 }
 
@@ -341,21 +347,21 @@ TEST_CASE("ParsingErrorException")
     SECTION("Type Parsing Error Exception")
     {
         TypeTokenString str("[o,o]->[o,o]");
-        try
-        {
-            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator cannot be a product type!",
-                                                         6,
-                                                         10,
-                                                         str);
-        }
-        catch(ParsingErrorException<TypeTokenString> &e)
-        {
-            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
-                              "[o,o]->[o,o]\n"
-                              "       ^^^^^"));
-        }
+//        try
+//        {
+//            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator cannot be a product type!",
+//                                                         6,
+//                                                         10,
+//                                                         str);
+//        }
+//        catch(ParsingErrorException<TypeTokenString> &e)
+//        {
+//            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
+//                              "[o,o]->[o,o]\n"
+//                              "       ^^^^^"));
+//        }
 
-        TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
+//        TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
     }
 
 }
@@ -378,7 +384,7 @@ TEST_CASE("Punctuation Token")
 
 TEST_CASE("Core Token")
 {
-    Type a(TypeParser::parse("o"));
+    Type a(Type("o"));
 
     CHECK_NOTHROW(CoreToken("asdsad", a));
     CHECK_NOTHROW(CoreToken("Abacate", a));
@@ -418,8 +424,8 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
     }
 
     //Some Core Tokens
-    Type type1 = TypeParser::parse("i->o");
-    Type type2 = TypeParser::parse("i");
+    Type type1 = Type("i->o");
+    Type type2 = Type("i");
 
     CoreToken t4("P", type1);
     CoreToken t5("a", type2);
@@ -454,7 +460,7 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
 
 TEST_CASE("ParsingTrees")
 {
-    Type type = TypeParser::parse("i");
+    Type type = Type("i");
     CoreToken token("A", type);
 
     TableSignature signature;
@@ -584,13 +590,13 @@ TEST_CASE("Parser Propositional Logic")
     PunctuationToken leftP("(");
     PunctuationToken rightP(")");
 
-    CoreToken t1("P", TypeParser::parse("o")),
-              t2("Q", TypeParser::parse("o")),
-              t3("And", TypeParser::parse("[o,o]->o")),
-              t4("Not", TypeParser::parse("o->o")),
-              t5("Implies", TypeParser::parse("[o,o]->o")),
-              t6("Or", TypeParser::parse("[o,o]->o")),
-              t7("Equivalent", TypeParser::parse("[o,o]->o"));
+    CoreToken t1("P", Type("o")),
+              t2("Q", Type("o")),
+              t3("And", Type("[o,o]->o")),
+              t4("Not", Type("o->o")),
+              t5("Implies", Type("[o,o]->o")),
+              t6("Or", Type("[o,o]->o")),
+              t7("Equivalent", Type("[o,o]->o"));
 
     signature.addToken(&leftP);
     signature.addToken(&rightP);
@@ -602,7 +608,7 @@ TEST_CASE("Parser Propositional Logic")
     signature.addToken(&t6);
     signature.addToken(&t7);
 
-    Parser parser(&signature, TypeParser::parse("o"));
+    Parser parser(&signature, Type("o"));
 
     //END SETUP
 
@@ -680,7 +686,7 @@ TEST_CASE("Binding and Variable Tokens")
 
     SECTION("Variable Token")
     {
-        VariableToken v1("Aflisis", TypeParser::parse("Prop->Prop"));
+        VariableToken v1("Aflisis", Type("Prop->Prop"));
         CHECK(v1.tokenClass() == "VariableToken");
     }
 
@@ -691,6 +697,15 @@ TEST_CASE("Binding and Variable Tokens")
         BindingToken::BindingRecord record1(0, QVector<unsigned int>{1});
         records.push_back(record1);
 
-        CHECK_NOTHROW(BindingToken("Forall", TypeParser::parse("[i,o]->o"), records));
+        CHECK_NOTHROW(BindingToken("Forall", Type("[i,o]->o"), records));
+
+        CHECK_THROWS(BindingToken("P", Type("i->o"), records));
+        CHECK_THROWS(BindingToken("Q", Type("o"), records));
     }
 }
+
+TEST_CASE("Dirty Fix")
+{
+    DirtyFix::fix();
+}
+
