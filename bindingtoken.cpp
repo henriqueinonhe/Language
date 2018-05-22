@@ -32,6 +32,11 @@ QVector<unsigned int> BindingToken::gatherBoundArgumentsIndexes(const QVector<Bi
     return boundArgumentsIndexes;
 }
 
+QVector<BindingRecord> BindingToken::getBindingRecords() const
+{
+    return bindingRecords;
+}
+
 void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
 {
     //NOTE Maybe this can still be better refactored!

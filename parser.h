@@ -10,6 +10,8 @@
 #include "parsingtreeiterator.h"
 #include "parsingtreenode.h"
 #include "parsingauxiliarytools.h"
+#include "variabletoken.h"
+#include "bindingtoken.h"
 #include <iostream>
 
 using namespace std;

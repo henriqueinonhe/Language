@@ -41,12 +41,15 @@ public:
                  const Type &type,
                  const QVector<BindingRecord> &bindingRecords);
 
+    QVector<BindingRecord> getBindingRecords() const;
+
 private:
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 
-    QVector<BindingRecord> bindingRecords;
     QVector<unsigned int> gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
     QVector<unsigned int> gatherBoundArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
+
+    QVector<BindingRecord> bindingRecords;
 };
 
 #endif // BINDINGTOKEN_H
