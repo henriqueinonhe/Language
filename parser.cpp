@@ -265,19 +265,63 @@ void Parser::performVariableBindingChecking()
     ParsingTreeNode *root = &(*iter);
 
     //Laying down nodes ordered by level!
-    const unsigned int startAtBeforeLastRowCompensation = 1;
-    for(unsigned int currentHeight = 0; currentHeight < parsingTree->height - startAtBeforeLastRowCompensation; currentHeight++)
+
+    //First Row
+    QVector<ParsingTreeNode *> firstRow;
+    firstRow.push_back(root);
+    nodesMatrix.push_back(firstRow);
+
+    for(unsigned int currentHeight = 1; currentHeight < parsingTree->height; currentHeight++)
     {
-        QVector<ParsingTreeNode *> nodesRow;
-        std::for_each(root->children.begin(),
-                      root->children.end(),
-                      [&nodesRow](shared_ptr<ParsingTreeNode> node)
+        QVector<ParsingTreeNode *> currentRow;
+        std::for_each(nodesMatrix[currentHeight - 1].begin(),
+                      nodesMatrix[currentHeight - 1].end(),
+                      [&nodesRow](ParsingTreeNode *parentNode)
         {
-            nodesRow.push_back(node.get());
+            std::for_each(parentNode->children.begin(),
+                          parentNode->children.end(),
+                          [&nodesRow](const shared_ptr<ParsingTreeNode> &childNode)
+            {
+                currentRow.push_back(childNode.get());
+            });
         });
-        nodesMatrix.push_back(nodesRow);
+        nodesMatrix.push_back(currentRow);
     }
 
+    //The algorithm itself
+
+    //Check Last Row Free Variables
+
+    QVector<ParsingTreeNode *> lastRow = nodesMatrix.back();
+
+    std::for_each(lastRow.begin(), lastRow.end(), [](ParsingTreeNode *node)
+    {
+        //Birth of new Free Variables
+        if(node->getTokenString().size() == 1 && node->getTokenString().first().tokenClass() == "VariableToken")
+        {
+            node->freeVariables.insert(dynamic_cast<VariableToken *>(node->getTokenString().first()));
+        }
+    });
+
+    //Remaining Rows
+    std::for_each(nodesMatrix.rbegin() + 1, nodesMatrix.rend(), [](QVector<ParsingTreeNode *> &nodeRow)
+    {
+        //Propagation
+        std::for_each(nodeRow.begin(), nodeRow.end(), [](ParsingTreeNode *node)
+        {
+            if(!node->children.isEmpty() &&
+                node->children.first()->getTokenString().size() == 1 &&
+                node->children.first()->getTokenString().first().tokenClass() == "BinderToken")
+            {
+                //Binds Tokens accordingly
+            }
+            else
+            {
+                //Propagates Free Variables
+            }
+        });
+
+    });
 
 }
 
