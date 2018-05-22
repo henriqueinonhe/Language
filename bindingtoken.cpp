@@ -37,6 +37,11 @@ QVector<BindingToken::BindingRecord> BindingToken::getBindingRecords() const
     return bindingRecords;
 }
 
+QString BindingToken::tokenClass() const
+{
+    return "BindingToken";
+}
+
 void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
 {
     //NOTE Maybe this can still be better refactored!

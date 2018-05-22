@@ -704,6 +704,63 @@ TEST_CASE("Binding and Variable Tokens")
     }
 }
 
+TEST_CASE("First Order Logic (With TableSignature)")
+{
+    TableSignature signature;
+
+    PunctuationToken t1("(");
+    PunctuationToken t2(")");
+
+    CoreToken t3("And", Type("[o,o]->o"));
+    CoreToken t4("Or", Type("[o,o]->o"));
+    CoreToken t5("Implies", Type("[o,o]->o"));
+    CoreToken t6("Equivalent", Type("[o,o]->o"));
+    CoreToken t7("Not", Type("o->o"));
+    CoreToken t8("P", Type("i->o"));
+    CoreToken t9("G", Type("i->o"));
+    CoreToken t10("R", Type("[i,i]->o"));
+    CoreToken t11("a", Type("i"));
+    CoreToken t12("b", Type("i"));
+
+    VariableToken t13("x", Type("i"));
+    VariableToken t14("y", Type("i"));
+
+    QVector<BindingToken::BindingRecord> records;
+    records.push_back(BindingToken::BindingRecord(0, QVector<unsigned int>{1}));
+
+    BindingToken t15("Forall", Type("[i,o]->o"), records);
+    BindingToken t16("Exists", Type("[i,o]->o"), records);
+
+    signature.addToken(&t1);
+    signature.addToken(&t2);
+    signature.addToken(&t3);
+    signature.addToken(&t4);
+    signature.addToken(&t5);
+    signature.addToken(&t6);
+    signature.addToken(&t7);
+    signature.addToken(&t8);
+    signature.addToken(&t9);
+    signature.addToken(&t10);
+    signature.addToken(&t11);
+    signature.addToken(&t12);
+    signature.addToken(&t13);
+    signature.addToken(&t14);
+    signature.addToken(&t15);
+    signature.addToken(&t16);
+
+    Parser parser(&signature, Type("o"));
+
+    SECTION("Pass")
+    {
+        CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (P x)))"));
+    }
+
+    SECTION("Fail")
+    {
+        CHECK_THROWS(parser.parse("(Forall y (Implies (P x) (P x)))"));
+    }
+}
+
 TEST_CASE("Dirty Fix")
 {
     DirtyFix::fix();

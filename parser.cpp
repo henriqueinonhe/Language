@@ -264,20 +264,24 @@ void Parser::performVariableBindingChecking()
 {
     QVector<QVector<ParsingTreeNode *>> nodesMatrix = orderNodesByLevel();
 
-    //Check Last Row Free Variables
-    QVector<ParsingTreeNode *> lastRow = nodesMatrix.back();
-    std::for_each(lastRow.begin(), lastRow.end(), [this](ParsingTreeNode *node)
+    //Check Last Row Free Variables //FIXME Should check EVERY ROW!
+
+    std::for_each(nodesMatrix.begin(), nodesMatrix.end(), [this](QVector<ParsingTreeNode *> &nodesRow)
     {
-        const TokenString currentNodeTokenString = node->getTokenString();
-        if(isVariableToken(currentNodeTokenString))
+        std::for_each(nodesRow.begin(), nodesRow.end(), [this](ParsingTreeNode *node)
         {
-            node->freeVariables.insert(dynamic_cast<VariableToken *>(&currentNodeTokenString.first()));
-        }
+            const TokenString currentNodeTokenString = node->getTokenString();
+            if(isVariableToken(currentNodeTokenString))
+            {
+                node->freeVariables.insert(dynamic_cast<VariableToken *>(&currentNodeTokenString.first()));
+            }
+        });
     });
 
 
     //Remaining Rows
     //We go from the Bottom -> Up (Reverse Iterator)
+    //FIXME REFACTOR THIS +1
     std::for_each(nodesMatrix.rbegin() + 1, nodesMatrix.rend(), [this](QVector<ParsingTreeNode *> &nodeRow)
     {
         //Propagation
@@ -285,11 +289,18 @@ void Parser::performVariableBindingChecking()
         {
             if(nodeHasBindingTokenAtChildren(parentNode))
             {
-                performTokenBinding(parentNode);
+                performVariableBinding(parentNode);
             }
             propagateFreeAndBoundVariables(parentNode);
         });
     });
+
+    const ParsingTreeNode *root = &(*ParsingTreeIterator(parsingTree.get()));
+
+    if(!root->freeVariables.isEmpty())
+    {
+        throw std::invalid_argument("There are free variables at the top level!");
+    }
 
 }
 
@@ -304,9 +315,8 @@ QVector<QVector<ParsingTreeNode *> > Parser::orderNodesByLevel() const
     firstRow.push_back(root);
     nodesMatrix.push_back(firstRow);
 
-    //FIXME Refactor!
     //Remaining Rows
-    for(unsigned int currentHeight = 1; currentHeight < parsingTree->getHeight(); currentHeight++)
+    for(unsigned int currentHeight = 1; currentHeight <= parsingTree->getHeight(); currentHeight++)
     {
         const unsigned int parentRowCompensation = 1;
         QVector<ParsingTreeNode *> currentRow;
@@ -339,39 +349,43 @@ bool Parser::nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const
             node->children.first()->getTokenString().first().tokenClass() == "BindingToken";
 }
 
-void Parser::performTokenBinding(ParsingTreeNode *parentNode)
+void Parser::performVariableBinding(ParsingTreeNode *parentNode)
 {
     const BindingToken *bindingToken = dynamic_cast<BindingToken *>(&parentNode->children.first()->getTokenString().first());
     QVector<std::shared_ptr<ParsingTreeNode>> &children = parentNode->children;
+    QVector<BindingToken::BindingRecord> records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
 
-    std::for_each(bindingToken->getBindingRecords().begin(),
-                  bindingToken->getBindingRecords().end(),
+    std::for_each(records.begin(),
+                  records.end(),
                   [&parentNode, &children, this](const BindingToken::BindingRecord &record)
     {
-        if(!isVariableToken(children[record.bindingArgumentIndex]->getTokenString()))
+        const unsigned int firstChildIsBindingTokenItselfCompensation = 1;
+        const unsigned int bindingArgumentChildIndex = record.bindingArgumentIndex + firstChildIsBindingTokenItselfCompensation;
+        if(!isVariableToken(children[bindingArgumentChildIndex]->getTokenString()))
         {
-            throw std::invalid_argument("");
+            throw std::invalid_argument("Variable Token expected here!");
         }
         else
         {
-            VariableToken *currentBindingVariable = dynamic_cast<VariableToken *>(&children[record.bindingArgumentIndex]->getTokenString().first());
+            VariableToken *currentBindingVariable = dynamic_cast<VariableToken *>(&children[bindingArgumentChildIndex]->getTokenString().first());
 
             std::for_each(record.boundArgumentsIndexes.begin(),
                           record.boundArgumentsIndexes.end(),
                           [&currentBindingVariable, &parentNode, &children](const unsigned int boundArgumentIndex)
             {
-                if(children[boundArgumentIndex]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
+                const unsigned int firstChildIsBindingTokenItselfCompensation = 1;
+                const unsigned int boundArgumentChildIndex = boundArgumentIndex + firstChildIsBindingTokenItselfCompensation;
+                if(children[boundArgumentChildIndex]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
                 {
-                    throw std::invalid_argument(""); //Variable is already bound!
+                    throw std::invalid_argument("Variable is already bound!"); //Variable is already bound!
                 }
-                else if(!children[boundArgumentIndex]->freeVariables.contains(currentBindingVariable))
+                else if(!children[boundArgumentChildIndex]->freeVariables.contains(currentBindingVariable))
                 {
-                    throw std::invalid_argument(""); //Variable is not free in this context!
+                    throw std::invalid_argument("This variable doesn't exist in this context!"); //Variable is not free in this context!
                 }
                 else
                 {
-                    children[boundArgumentIndex]->freeVariables.remove(currentBindingVariable);
-                    children[boundArgumentIndex]->boundVariables.insert(currentBindingVariable);
+                    parentNode->boundVariables.insert(currentBindingVariable);
                 }
             });
         }
@@ -382,10 +396,12 @@ void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode)
 {
     std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](std::shared_ptr<ParsingTreeNode> childNode)
     {
-         parentNode->freeVariables.unite(childNode->freeVariables);
-         parentNode->boundVariables.unite(childNode->boundVariables);
+        //NOTE Check for operation order!
+        parentNode->freeVariables.unite(childNode->freeVariables.subtract(parentNode->boundVariables));
+        parentNode->boundVariables.unite(childNode->boundVariables);
     });
 }
+
 
 
 

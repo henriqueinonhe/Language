@@ -36,8 +36,37 @@ void ParsingTreeNode::printNodeToString(QString &str) const
     str += type.toString();
     str += "\",\"";
     str += getTokenString().formattedString();
-    //str += "\",\"";
-    str += "\"} ";
+    str += "\",FV=";
+    str += printVariableSet(freeVariables);
+    str += ",BV=";
+    str += printVariableSet(boundVariables);
+    str += "} ";
+}
+
+QString ParsingTreeNode::printVariableSet(const QSet<VariableToken *> &set) const
+{
+    if(set.isEmpty())
+    {
+        return "{}";
+    }
+    else
+    {
+        QString setString;
+        setString += "{\"";
+
+        QList<VariableToken *> list = set.toList();
+        const unsigned int lastIndexCompensation = 1;
+        std::for_each(list.begin(), list.end() - lastIndexCompensation, [&setString](const VariableToken *token)
+        {
+            setString += token->getString();
+            setString += "\",\"";
+        });
+
+        setString += list.last()->getString();
+        setString += "\"}";
+
+        return setString;
+    }
 }
 
 void ParsingTreeNode::updateTreeHeight()

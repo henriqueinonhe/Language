@@ -47,6 +47,8 @@ private:
 
     void printNodeToString(QString &str) const;
 
+    QString printVariableSet(const QSet<VariableToken *> &set) const;
+
     void updateTreeHeight();
 
     ParsingTree *tree;

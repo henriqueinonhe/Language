@@ -43,6 +43,8 @@ public:
 
     QVector<BindingRecord> getBindingRecords() const;
 
+    virtual QString tokenClass() const;
+
 private:
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 
