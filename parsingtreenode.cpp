@@ -13,10 +13,12 @@ ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, con
 
 void ParsingTreeNode::printNodeToString(QString &str) const
 {
-    /* There are three informations to be printed:
-     * 1st - "(Parent Node Index, This Node Index)" According to coordinate system
-     * 2nd - The formula's type
-     * 3rd - The formula iself. */
+    /* There are five informations to be printed:
+     * 1st - "(Parent Node Index, This Node Index)" According to coordinate system.
+     * 2nd - The formula's type.
+     * 3rd - The formula iself.
+     * 4th - The Free Variable Set.
+     * 5th - The Bound Variable Set. */
 
     str += "(";
     if(coordinates.size() >= 2)
@@ -34,6 +36,7 @@ void ParsingTreeNode::printNodeToString(QString &str) const
     str += type.toString();
     str += "\",\"";
     str += getTokenString().formattedString();
+    //str += "\",\"";
     str += "\"} ";
 }
 

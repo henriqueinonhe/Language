@@ -32,7 +32,7 @@ QVector<unsigned int> BindingToken::gatherBoundArgumentsIndexes(const QVector<Bi
     return boundArgumentsIndexes;
 }
 
-QVector<BindingRecord> BindingToken::getBindingRecords() const
+QVector<BindingToken::BindingRecord> BindingToken::getBindingRecords() const
 {
     return bindingRecords;
 }

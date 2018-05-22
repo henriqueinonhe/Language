@@ -18,6 +18,8 @@ Formula Parser::parse(const QString &sentence)
 
     performTypeChecking();
 
+    performVariableBindingChecking();
+
     std::cout << parsingTree->print().toStdString();
 
     return Formula(lexer.lex(sentence));
@@ -275,7 +277,7 @@ void Parser::performVariableBindingChecking()
 
 
     //Remaining Rows
-    //We go from the Bottom -> Up
+    //We go from the Bottom -> Up (Reverse Iterator)
     std::for_each(nodesMatrix.rbegin() + 1, nodesMatrix.rend(), [this](QVector<ParsingTreeNode *> &nodeRow)
     {
         //Propagation
@@ -306,9 +308,10 @@ QVector<QVector<ParsingTreeNode *> > Parser::orderNodesByLevel() const
     //Remaining Rows
     for(unsigned int currentHeight = 1; currentHeight < parsingTree->getHeight(); currentHeight++)
     {
+        const unsigned int parentRowCompensation = 1;
         QVector<ParsingTreeNode *> currentRow;
-        std::for_each(nodesMatrix[currentHeight - 1].begin(),
-                      nodesMatrix[currentHeight - 1].end(),
+        std::for_each(nodesMatrix[currentHeight - parentRowCompensation].begin(),
+                      nodesMatrix[currentHeight - parentRowCompensation].end(),
                       [&currentRow](ParsingTreeNode *parentNode)
         {
             std::for_each(parentNode->children.begin(),
@@ -336,27 +339,26 @@ bool Parser::nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const
             node->children.first()->getTokenString().first().tokenClass() == "BindingToken";
 }
 
-void Parser::performTokenBinding(const ParsingTreeNode *parentNode)
+void Parser::performTokenBinding(ParsingTreeNode *parentNode)
 {
-    //FIXME Refactor this shit PLEASE!
-    const BindingToken *bindingToken = dynamic_cast<BindingToken *>(&parentNode->children.first());
+    const BindingToken *bindingToken = dynamic_cast<BindingToken *>(&parentNode->children.first()->getTokenString().first());
     QVector<std::shared_ptr<ParsingTreeNode>> &children = parentNode->children;
 
     std::for_each(bindingToken->getBindingRecords().begin(),
                   bindingToken->getBindingRecords().end(),
-                  [&parentNode, &children](const BindingToken::BindingRecord &record)
+                  [&parentNode, &children, this](const BindingToken::BindingRecord &record)
     {
-        if(!isVariable(children[record.bindingArgumentIndex]->getTokenString()))
+        if(!isVariableToken(children[record.bindingArgumentIndex]->getTokenString()))
         {
             throw std::invalid_argument("");
         }
         else
         {
-            VariableToken *currentBindingVariable = children[record.bindingArgumentIndex]->getTokenString().first();
+            VariableToken *currentBindingVariable = dynamic_cast<VariableToken *>(&children[record.bindingArgumentIndex]->getTokenString().first());
 
             std::for_each(record.boundArgumentsIndexes.begin(),
                           record.boundArgumentsIndexes.end(),
-                          [&currentBindingVariable, &parentNode](const unsigned int boundArgumentIndex)
+                          [&currentBindingVariable, &parentNode, &children](const unsigned int boundArgumentIndex)
             {
                 if(children[boundArgumentIndex]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
                 {
@@ -376,10 +378,9 @@ void Parser::performTokenBinding(const ParsingTreeNode *parentNode)
     });
 }
 
-void Parser::propagateFreeAndBoundVariables(const ParsingTreeNode *parentNode)
+void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode)
 {
-    //Something Wrong HERE!
-    std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](ParsingTreeNode *childNode)
+    std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](std::shared_ptr<ParsingTreeNode> childNode)
     {
          parentNode->freeVariables.unite(childNode->freeVariables);
          parentNode->boundVariables.unite(childNode->boundVariables);

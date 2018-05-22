@@ -62,8 +62,8 @@ private:
     QVector<QVector<ParsingTreeNode *>> orderNodesByLevel() const;
     bool isVariableToken(const TokenString &tokenString) const;
     bool nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const;
-    void performTokenBinding(const ParsingTreeNode *parentNode);
-    void propagateFreeAndBoundVariables(const ParsingTreeNode *parentNode);
+    void performTokenBinding(ParsingTreeNode *parentNode);
+    void propagateFreeAndBoundVariables(ParsingTreeNode *parentNode);
 
     const Type setMainOperatorType(ParsingTreeIterator iter);
 
