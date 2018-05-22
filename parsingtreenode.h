@@ -11,6 +11,7 @@
 
 class ParsingTreeIterator;
 class ParsingTree;
+class Parser;
 
 using namespace std;
 
@@ -60,6 +61,7 @@ private:
 
 friend class ParsingTreeIterator;
 friend class ParsingTree;
+friend class Parser;
 
 };
 

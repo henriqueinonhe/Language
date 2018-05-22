@@ -59,11 +59,17 @@ private:
 
     //Variable Binding Checking Methods
     void performVariableBindingChecking();
+    QVector<QVector<ParsingTreeNode *>> orderNodesByLevel() const;
+    bool isVariableToken(const TokenString &tokenString) const;
+    bool nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const;
+    void performTokenBinding(const ParsingTreeNode *parentNode);
+    void propagateFreeAndBoundVariables(const ParsingTreeNode *parentNode);
+
+    const Type setMainOperatorType(ParsingTreeIterator iter);
 
     Lexer lexer;
     Type wellFormedFormulaType;
     unique_ptr<ParsingTree> parsingTree;
-    const Type setMainOperatorType(ParsingTreeIterator iter);
 };
 
 #endif // PARSER_H
