@@ -260,12 +260,8 @@ void Parser::checkType(ParsingTreeIterator iter)
     }
 }
 
-void Parser::performVariableBindingChecking()
+void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
 {
-    QVector<QVector<ParsingTreeNode *>> nodesMatrix = orderNodesByLevel();
-
-    //Check Last Row Free Variables //FIXME Should check EVERY ROW!
-
     std::for_each(nodesMatrix.begin(), nodesMatrix.end(), [this](QVector<ParsingTreeNode *> &nodesRow)
     {
         std::for_each(nodesRow.begin(), nodesRow.end(), [this](ParsingTreeNode *node)
@@ -277,14 +273,17 @@ void Parser::performVariableBindingChecking()
             }
         });
     });
+}
 
+void Parser::performVariableBindingChecking()
+{
+    QVector<QVector<ParsingTreeNode *>> nodesMatrix = orderNodesByLevel();
+    setVariablesNodes(nodesMatrix);
 
-    //Remaining Rows
     //We go from the Bottom -> Up (Reverse Iterator)
     //FIXME REFACTOR THIS +1
     std::for_each(nodesMatrix.rbegin() + 1, nodesMatrix.rend(), [this](QVector<ParsingTreeNode *> &nodeRow)
     {
-        //Propagation
         std::for_each(nodeRow.begin(), nodeRow.end(), [this](ParsingTreeNode *parentNode)
         {
             if(nodeHasBindingTokenAtChildren(parentNode))
@@ -373,7 +372,6 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode)
                           record.boundArgumentsIndexes.end(),
                           [&currentBindingVariable, &parentNode, &children](const unsigned int boundArgumentIndex)
             {
-                const unsigned int firstChildIsBindingTokenItselfCompensation = 1;
                 const unsigned int boundArgumentChildIndex = boundArgumentIndex + firstChildIsBindingTokenItselfCompensation;
                 if(children[boundArgumentChildIndex]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
                 {
@@ -396,8 +394,9 @@ void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode)
 {
     std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](std::shared_ptr<ParsingTreeNode> childNode)
     {
-        //NOTE Check for operation order!
-        parentNode->freeVariables.unite(childNode->freeVariables.subtract(parentNode->boundVariables));
+        QSet<VariableToken *> childFreeVariablesCopy = childNode->freeVariables; //So operation doesn't affect the original object
+
+        parentNode->freeVariables.unite(childFreeVariablesCopy.subtract(parentNode->boundVariables));
         parentNode->boundVariables.unite(childNode->boundVariables);
     });
 }

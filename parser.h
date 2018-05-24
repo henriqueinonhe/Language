@@ -70,6 +70,7 @@ private:
     Lexer lexer;
     Type wellFormedFormulaType;
     unique_ptr<ParsingTree> parsingTree;
+    void setVariablesNodes(QVector<QVector<ParsingTreeNode *> > &nodesMatrix);
 };
 
 #endif // PARSER_H

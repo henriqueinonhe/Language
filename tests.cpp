@@ -731,6 +731,66 @@ TEST_CASE("First Order Logic (With TableSignature)")
     BindingToken t15("Forall", Type("[i,o]->o"), records);
     BindingToken t16("Exists", Type("[i,o]->o"), records);
 
+    VariableToken t17("z", Type("i"));
+    CoreToken t18("Equals", Type("[i,i]->o"));
+
+    signature.addToken(&t1);
+    signature.addToken(&t2);
+    signature.addToken(&t3);
+    signature.addToken(&t4);
+    signature.addToken(&t5);
+    signature.addToken(&t6);
+    signature.addToken(&t7);
+    signature.addToken(&t8);
+    signature.addToken(&t9);
+    signature.addToken(&t10);
+    signature.addToken(&t11);
+    signature.addToken(&t12);
+    signature.addToken(&t13);
+    signature.addToken(&t14);
+    signature.addToken(&t15);
+    signature.addToken(&t16);
+    signature.addToken(&t17);
+    signature.addToken(&t18);
+
+    Parser parser(&signature, Type("o"));
+
+    SECTION("Pass")
+    {
+        CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (P x)))"));
+        CHECK_NOTHROW(parser.parse("(Forall x (Exists y (R x y)))"));
+        CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (Exists y (And (R x y) (Forall z (Implies (R x z) (Equals z y)))   ) ) ) )"));
+    }
+
+    SECTION("Fail")
+    {
+        CHECK_THROWS(parser.parse("(Forall y (Implies (P x) (P x)))"));
+        CHECK_THROWS(parser.parse("(Forall x (Forall x (P x)))"));
+    }
+}
+
+TEST_CASE("Elementary Arithmetic (Table Signature)")
+{
+    TableSignature signature;
+
+    PunctuationToken t1("(");
+    PunctuationToken t2(")");
+
+    CoreToken t3("0", Type("i"));
+    CoreToken t4("1", Type("i"));
+    CoreToken t5("2", Type("i"));
+    CoreToken t6("3", Type("i"));
+    CoreToken t7("4", Type("i"));
+    CoreToken t8("5", Type("i"));
+    CoreToken t9("6", Type("i"));
+    CoreToken t10("7", Type("i"));
+    CoreToken t11("8", Type("i"));
+    CoreToken t12("9", Type("i"));
+    CoreToken t13("Plus", Type("[i,i]->i"));
+    CoreToken t14("Minus", Type("[i,i]->i"));
+    CoreToken t15("Times", Type("[i,i]->i"));
+    CoreToken t16("Div", Type("[i,i]->i"));
+
     signature.addToken(&t1);
     signature.addToken(&t2);
     signature.addToken(&t3);
@@ -748,17 +808,24 @@ TEST_CASE("First Order Logic (With TableSignature)")
     signature.addToken(&t15);
     signature.addToken(&t16);
 
-    Parser parser(&signature, Type("o"));
+    Parser parser(&signature, Type("i"));
 
     SECTION("Pass")
     {
-        CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (P x)))"));
+        CHECK_NOTHROW(parser.parse("1"));
+        CHECK_NOTHROW(parser.parse("7"));
+        CHECK_NOTHROW(parser.parse("9"));
+
+        CHECK_NOTHROW(parser.parse("(Plus 1 3)"));
+        CHECK_NOTHROW(parser.parse("(Times (Plus 2 3) (Plus 4 7))"));
+        CHECK_NOTHROW(parser.parse("(Div (Times (Plus 3 4) 5) (Plus (Times 0 2) (Minus 3 5)))"));
     }
 
     SECTION("Fail")
     {
-        CHECK_THROWS(parser.parse("(Forall y (Implies (P x) (P x)))"));
+
     }
+
 }
 
 TEST_CASE("Dirty Fix")
