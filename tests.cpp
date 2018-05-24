@@ -404,11 +404,8 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
     TableSignature signature;
 
     //Setting up Signature
-    PunctuationToken t1("(");
-    PunctuationToken t2(")");
-
-    signature.addToken(&t1);
-    signature.addToken(&t2);
+    signature.addToken(PunctuationToken("("));
+    signature.addToken(PunctuationToken(")"));
 
     SECTION("Token pointers work")
     {
@@ -419,19 +416,13 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
         CHECK_THROWS(signature.getTokenPointer("P"));
         CHECK_THROWS(signature.getTokenPointer("Int"));
 
-        CHECK_THROWS(signature.addToken(&t1));
-        CHECK_THROWS(signature.addToken(&t2));
+        CHECK_THROWS(signature.addToken(PunctuationToken("(")));
+        CHECK_THROWS(signature.addToken(PunctuationToken(")")));
     }
 
     //Some Core Tokens
-    Type type1 = Type("i->o");
-    Type type2 = Type("i");
-
-    CoreToken t4("P", type1);
-    CoreToken t5("a", type2);
-
-    signature.addToken(&t4);
-    signature.addToken(&t5);
+    signature.addToken(CoreToken("P", Type("i->o")));
+    signature.addToken(CoreToken("a", Type("i")));
 
     //Setting Up Lexer
     Lexer lexer(&signature);
@@ -460,11 +451,8 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
 
 TEST_CASE("ParsingTrees")
 {
-    Type type = Type("i");
-    CoreToken token("A", type);
-
     TableSignature signature;
-    signature.addToken(&token);
+    signature.addToken(CoreToken("A", Type("i")));
 
     Lexer lexer(&signature);
 
@@ -587,26 +575,15 @@ TEST_CASE("Parser Propositional Logic")
     //SETUP
     TableSignature signature;
 
-    PunctuationToken leftP("(");
-    PunctuationToken rightP(")");
-
-    CoreToken t1("P", Type("o")),
-              t2("Q", Type("o")),
-              t3("And", Type("[o,o]->o")),
-              t4("Not", Type("o->o")),
-              t5("Implies", Type("[o,o]->o")),
-              t6("Or", Type("[o,o]->o")),
-              t7("Equivalent", Type("[o,o]->o"));
-
-    signature.addToken(&leftP);
-    signature.addToken(&rightP);
-    signature.addToken(&t1);
-    signature.addToken(&t2);
-    signature.addToken(&t3);
-    signature.addToken(&t4);
-    signature.addToken(&t5);
-    signature.addToken(&t6);
-    signature.addToken(&t7);
+    signature.addToken(PunctuationToken("("));
+    signature.addToken(PunctuationToken(")"));
+    signature.addToken(CoreToken("P", Type("o")));
+    signature.addToken(CoreToken("Q", Type("o")));
+    signature.addToken(CoreToken("And", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Not", Type("o->o")));
+    signature.addToken(CoreToken("Implies", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Or", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Equivalent", Type("[o,o]->o")));
 
     Parser parser(&signature, Type("o"));
 
@@ -708,50 +685,31 @@ TEST_CASE("First Order Logic (With TableSignature)")
 {
     TableSignature signature;
 
-    PunctuationToken t1("(");
-    PunctuationToken t2(")");
+    signature.addToken(PunctuationToken("("));
+    signature.addToken(PunctuationToken(")"));
 
-    CoreToken t3("And", Type("[o,o]->o"));
-    CoreToken t4("Or", Type("[o,o]->o"));
-    CoreToken t5("Implies", Type("[o,o]->o"));
-    CoreToken t6("Equivalent", Type("[o,o]->o"));
-    CoreToken t7("Not", Type("o->o"));
-    CoreToken t8("P", Type("i->o"));
-    CoreToken t9("G", Type("i->o"));
-    CoreToken t10("R", Type("[i,i]->o"));
-    CoreToken t11("a", Type("i"));
-    CoreToken t12("b", Type("i"));
+    signature.addToken(CoreToken("And", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Or", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Implies", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Equivalent", Type("[o,o]->o")));
+    signature.addToken(CoreToken("Not", Type("o->o")));
+    signature.addToken(CoreToken("P", Type("i->o")));
+    signature.addToken(CoreToken("G", Type("i->o")));
+    signature.addToken(CoreToken("R", Type("[i,i]->o")));
+    signature.addToken(CoreToken("a", Type("i")));
+    signature.addToken(CoreToken("b", Type("i")));
 
-    VariableToken t13("x", Type("i"));
-    VariableToken t14("y", Type("i"));
+    signature.addToken(VariableToken("x", Type("i")));
+    signature.addToken(VariableToken("y", Type("i")));
 
     QVector<BindingToken::BindingRecord> records;
     records.push_back(BindingToken::BindingRecord(0, QVector<unsigned int>{1}));
 
-    BindingToken t15("Forall", Type("[i,o]->o"), records);
-    BindingToken t16("Exists", Type("[i,o]->o"), records);
+    signature.addToken(BindingToken("Forall", Type("[i,o]->o"), records));
+    signature.addToken(BindingToken("Exists", Type("[i,o]->o"), records));
 
-    VariableToken t17("z", Type("i"));
-    CoreToken t18("Equals", Type("[i,i]->o"));
-
-    signature.addToken(&t1);
-    signature.addToken(&t2);
-    signature.addToken(&t3);
-    signature.addToken(&t4);
-    signature.addToken(&t5);
-    signature.addToken(&t6);
-    signature.addToken(&t7);
-    signature.addToken(&t8);
-    signature.addToken(&t9);
-    signature.addToken(&t10);
-    signature.addToken(&t11);
-    signature.addToken(&t12);
-    signature.addToken(&t13);
-    signature.addToken(&t14);
-    signature.addToken(&t15);
-    signature.addToken(&t16);
-    signature.addToken(&t17);
-    signature.addToken(&t18);
+    signature.addToken(VariableToken("z", Type("i")));
+    signature.addToken(CoreToken("Equals", Type("[i,i]->o")));
 
     Parser parser(&signature, Type("o"));
 
@@ -773,40 +731,23 @@ TEST_CASE("Elementary Arithmetic (Table Signature)")
 {
     TableSignature signature;
 
-    PunctuationToken t1("(");
-    PunctuationToken t2(")");
+    signature.addToken(PunctuationToken("("));
+    signature.addToken(PunctuationToken(")"));
 
-    CoreToken t3("0", Type("i"));
-    CoreToken t4("1", Type("i"));
-    CoreToken t5("2", Type("i"));
-    CoreToken t6("3", Type("i"));
-    CoreToken t7("4", Type("i"));
-    CoreToken t8("5", Type("i"));
-    CoreToken t9("6", Type("i"));
-    CoreToken t10("7", Type("i"));
-    CoreToken t11("8", Type("i"));
-    CoreToken t12("9", Type("i"));
-    CoreToken t13("Plus", Type("[i,i]->i"));
-    CoreToken t14("Minus", Type("[i,i]->i"));
-    CoreToken t15("Times", Type("[i,i]->i"));
-    CoreToken t16("Div", Type("[i,i]->i"));
-
-    signature.addToken(&t1);
-    signature.addToken(&t2);
-    signature.addToken(&t3);
-    signature.addToken(&t4);
-    signature.addToken(&t5);
-    signature.addToken(&t6);
-    signature.addToken(&t7);
-    signature.addToken(&t8);
-    signature.addToken(&t9);
-    signature.addToken(&t10);
-    signature.addToken(&t11);
-    signature.addToken(&t12);
-    signature.addToken(&t13);
-    signature.addToken(&t14);
-    signature.addToken(&t15);
-    signature.addToken(&t16);
+    signature.addToken(CoreToken("0", Type("i")));
+    signature.addToken(CoreToken("1", Type("i")));
+    signature.addToken(CoreToken("2", Type("i")));
+    signature.addToken(CoreToken("3", Type("i")));
+    signature.addToken(CoreToken("4", Type("i")));
+    signature.addToken(CoreToken("5", Type("i")));
+    signature.addToken(CoreToken("6", Type("i")));
+    signature.addToken(CoreToken("7", Type("i")));
+    signature.addToken(CoreToken("8", Type("i")));
+    signature.addToken(CoreToken("9", Type("i")));
+    signature.addToken(CoreToken("Plus", Type("[i,i]->i")));
+    signature.addToken(CoreToken("Minus", Type("[i,i]->i")));
+    signature.addToken(CoreToken("Times", Type("[i,i]->i")));
+    signature.addToken(CoreToken("Div", Type("[i,i]->i")));
 
     Parser parser(&signature, Type("i"));
 

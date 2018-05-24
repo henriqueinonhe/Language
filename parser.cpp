@@ -13,7 +13,7 @@ Parser::Parser(Signature *signature, const Type &wellFormedFormulaType) :
 Formula Parser::parse(const QString &sentence)
 {
 
-    //TODO Cache stuff and return formula and type stuff
+    //TODO Cache stuff
     buildParsingTree(sentence);
 
     performTypeChecking();

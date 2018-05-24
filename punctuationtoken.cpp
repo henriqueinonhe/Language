@@ -18,3 +18,13 @@ QString PunctuationToken::tokenClass() const
 {
     return "PunctuationToken";
 }
+
+Token *PunctuationToken::allocatedClone() const
+{
+    return new PunctuationToken(*this);
+}
+
+bool PunctuationToken::isEqual(const Token &other) const
+{
+    return Token::isEqual(other);
+}

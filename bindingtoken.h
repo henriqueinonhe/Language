@@ -45,6 +45,11 @@ public:
 
     virtual QString tokenClass() const;
 
+    virtual Token *allocatedClone() const;
+
+protected:
+    virtual bool isEqual(const Token &other) const;
+
 private:
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 

@@ -6,6 +6,11 @@ Token::Token(const QString &string) :
 
 }
 
+bool Token::isEqual(const Token &other) const
+{
+    return this->string == other.string;
+}
+
 QString Token::getString() const
 {
     return string;
@@ -13,7 +18,14 @@ QString Token::getString() const
 
 bool Token::operator==(const Token &other) const
 {
-    return other.string == this->string;
+    if(typeid(*this) != typeid(other))
+    {
+        return false;
+    }
+    else
+    {
+        return this->isEqual(other);
+    }
 }
 
 bool Token::operator!=(const Token &other) const
@@ -29,4 +41,9 @@ unsigned int Token::getTokenCharSpan() const
 QString Token::tokenClass() const
 {
     return "Token";
+}
+
+Token *Token::allocatedClone() const
+{
+    return new Token(*this);
 }

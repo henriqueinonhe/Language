@@ -10,17 +10,6 @@ CoreToken::CoreToken(const QString &string, const Type &type) :
     }
 }
 
-bool CoreToken::operator ==(const CoreToken &other) const
-{
-    return this->string == other.string &&
-           this->type == other.type;
-}
-
-bool CoreToken::operator !=(const CoreToken &other) const
-{
-    return !(*this == other);
-}
-
 Type CoreToken::getType() const
 {
     return type;
@@ -29,4 +18,15 @@ Type CoreToken::getType() const
 QString CoreToken::tokenClass() const
 {
     return "CoreToken";
+}
+
+Token *CoreToken::allocatedClone() const
+{
+    return new CoreToken(*this);
+}
+
+bool CoreToken::isEqual(const Token &other) const
+{
+    return Token::isEqual(other) &&
+           this->type == dynamic_cast<const CoreToken &>(other).type;
 }

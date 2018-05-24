@@ -11,7 +11,7 @@ Token *TableSignature::getTokenPointer(const QString &token)
     {
         if(token == tokenTable[index]->getString())
         {
-            return tokenTable[index];
+            return tokenTable[index].get();
         }
     }
 
@@ -22,11 +22,11 @@ Token *TableSignature::getTokenPointer(const QString &token)
     throw std::invalid_argument(errorMsg.toStdString().data());
 }
 
-void TableSignature::addToken(Token *token)
+void TableSignature::addToken(const Token &token)
 {
-    const bool tokenAlreadyPresent = std::any_of(tokenTable.begin(), tokenTable.end(), [token](const Token *tableToken)
+    const bool tokenAlreadyPresent = std::any_of(tokenTable.begin(), tokenTable.end(), [&token](const shared_ptr<Token> &tableToken)
     {
-        return *token == *tableToken;
+        return token == *tableToken;
     });
 
     if(tokenAlreadyPresent)
@@ -35,6 +35,9 @@ void TableSignature::addToken(Token *token)
     }
     else
     {
-        tokenTable.push_back(token);
+        shared_ptr<Token> ptr;
+        ptr.reset(token.allocatedClone());
+
+        tokenTable.push_back(ptr);
     }
 }

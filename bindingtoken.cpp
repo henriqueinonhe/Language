@@ -42,6 +42,17 @@ QString BindingToken::tokenClass() const
     return "BindingToken";
 }
 
+Token *BindingToken::allocatedClone() const
+{
+    return new BindingToken(*this);
+}
+
+bool BindingToken::isEqual(const Token &other) const
+{
+    return CoreToken::isEqual(other) &&
+           this->bindingRecords == dynamic_cast<const BindingToken &>(other).bindingRecords;
+}
+
 void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
 {
     //NOTE Maybe this can still be better refactored!

@@ -2,6 +2,9 @@
 #define TABLESIGNATURE_H
 
 #include "signature.h"
+#include <memory>
+
+using namespace std;
 
 class TableSignature : public Signature
 {
@@ -10,11 +13,11 @@ public:
     TableSignature();
     Token *getTokenPointer(const QString &token);
 
-    void addToken(Token *token);
+    void addToken(const Token &token);
 
 private:
 
-    QVector<Token *> tokenTable; //FIXME Fix this URGENTLY!
+    QVector<shared_ptr<Token>> tokenTable;
 
 };
 

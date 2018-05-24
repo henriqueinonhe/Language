@@ -10,15 +10,16 @@ class CoreToken : public Token
 public:
     CoreToken(const QString &string, const Type &type);
 
-    bool operator ==(const CoreToken &other) const;
-    bool operator !=(const CoreToken &other) const;
-
     Type getType() const;
 
     virtual QString tokenClass() const;
 
+    virtual Token *allocatedClone() const;
+
 protected:
     Type type;
+
+    virtual bool isEqual(const Token &other) const;
 
 };
 
