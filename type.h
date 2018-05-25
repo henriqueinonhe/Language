@@ -29,6 +29,9 @@ public:
 
     shared_ptr<TypeParsingTree> getParsingTree() const;
 
+    unsigned int getNumberOfArguments() const;
+    bool isOperator() const;
+
 private:
     Type();
     Type(const TypeTokenString &typeString,

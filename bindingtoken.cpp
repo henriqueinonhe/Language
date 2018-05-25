@@ -55,7 +55,6 @@ bool BindingToken::isEqual(const Token &other) const
 
 void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
 {
-    //NOTE Maybe this can still be better refactored!
     if(bindingRecords.isEmpty())
     {
         throw std::invalid_argument("The Binding Records cannot be empty!");

@@ -37,7 +37,11 @@ SOURCES += main.cpp \
     bindingtoken.cpp \
     dirtyfix.cpp \
     stringprocessor.cpp \
-    formatter.cpp
+    formatter.cpp \
+    basicpreprocessor.cpp \
+    basicpostprocessor.cpp \
+    basicprocessortokenrecord.cpp \
+    basicprocessor.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -79,4 +83,8 @@ HEADERS += \
     containerauxiliarytools.h \
     dirtyfix.h \
     stringprocessor.h \
-    formatter.h
+    formatter.h \
+    basicpreprocessor.h \
+    basicpostprocessor.h \
+    basicprocessortokenrecord.h \
+    basicprocessor.h

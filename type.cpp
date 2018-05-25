@@ -66,6 +66,16 @@ shared_ptr<TypeParsingTree> Type::getParsingTree() const
     return TypeParser::getParsingTree(this->toString());
 }
 
+unsigned int Type::getNumberOfArguments() const
+{
+    return argumentsTypes.size();
+}
+
+bool Type::isOperator() const
+{
+    return !argumentsTypes.isEmpty();
+}
+
 QVector<TypeTokenString> Type::getArgumentsTypes() const
 {
     return argumentsTypes;

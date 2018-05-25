@@ -9,7 +9,7 @@
 class Lexer
 {
 public:
-    Lexer(Signature *signature);
+    Lexer(Signature * const signature);
     TokenString lex(const QString &string);
 
 private:

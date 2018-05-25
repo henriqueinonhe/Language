@@ -1,6 +1,6 @@
 ﻿#include "lexer.h"
 
-Lexer::Lexer(Signature *signature) :
+Lexer::Lexer(Signature * const signature) :
     signature(signature)
 {
     if(signature == nullptr)

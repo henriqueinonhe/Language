@@ -1,6 +1,2 @@
-#include "stringprocessor.h"
+﻿#include "stringprocessor.h"
 
-StringProcessor::StringProcessor()
-{
-
-}

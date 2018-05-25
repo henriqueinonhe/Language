@@ -2,7 +2,9 @@
 
 TableSignature::TableSignature()
 {
-
+    //Initializing
+    addToken(PunctuationToken("("));
+    addToken(PunctuationToken(")"));
 }
 
 Token *TableSignature::getTokenPointer(const QString &token)
@@ -26,7 +28,7 @@ void TableSignature::addToken(const Token &token)
 {
     const bool tokenAlreadyPresent = std::any_of(tokenTable.begin(), tokenTable.end(), [&token](const shared_ptr<Token> &tableToken)
     {
-        return token == *tableToken;
+        return token.getString() == tableToken->getString();
     });
 
     if(tokenAlreadyPresent)

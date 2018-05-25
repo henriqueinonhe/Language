@@ -23,6 +23,9 @@
 #include "containerauxiliarytools.h"
 #include "variabletoken.h"
 #include "bindingtoken.h"
+#include "basicpreprocessor.h"
+#include "stringprocessor.h"
+#include "formatter.h"
 #include "dirtyfix.h"
 
 TEST_CASE("TypeParsingTrees")
@@ -403,10 +406,6 @@ TEST_CASE("Lexer, Table Signature and Type Token String")
 {
     TableSignature signature;
 
-    //Setting up Signature
-    signature.addToken(PunctuationToken("("));
-    signature.addToken(PunctuationToken(")"));
-
     SECTION("Token pointers work")
     {
         CHECK(signature.getTokenPointer("(") == signature.getTokenPointer("("));
@@ -575,8 +574,6 @@ TEST_CASE("Parser Propositional Logic")
     //SETUP
     TableSignature signature;
 
-    signature.addToken(PunctuationToken("("));
-    signature.addToken(PunctuationToken(")"));
     signature.addToken(CoreToken("P", Type("o")));
     signature.addToken(CoreToken("Q", Type("o")));
     signature.addToken(CoreToken("And", Type("[o,o]->o")));
@@ -685,9 +682,6 @@ TEST_CASE("First Order Logic (With TableSignature)")
 {
     TableSignature signature;
 
-    signature.addToken(PunctuationToken("("));
-    signature.addToken(PunctuationToken(")"));
-
     signature.addToken(CoreToken("And", Type("[o,o]->o")));
     signature.addToken(CoreToken("Or", Type("[o,o]->o")));
     signature.addToken(CoreToken("Implies", Type("[o,o]->o")));
@@ -730,9 +724,6 @@ TEST_CASE("First Order Logic (With TableSignature)")
 TEST_CASE("Elementary Arithmetic (Table Signature)")
 {
     TableSignature signature;
-
-    signature.addToken(PunctuationToken("("));
-    signature.addToken(PunctuationToken(")"));
 
     signature.addToken(CoreToken("0", Type("i")));
     signature.addToken(CoreToken("1", Type("i")));

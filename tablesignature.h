@@ -2,6 +2,7 @@
 #define TABLESIGNATURE_H
 
 #include "signature.h"
+#include "punctuationtoken.h"
 #include <memory>
 
 using namespace std;
