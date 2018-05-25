@@ -2,6 +2,7 @@
 #define BASICPREPROCESSOR_H
 
 #include "basicprocessor.h"
+#include "parsingauxiliarytools.h"
 
 class BasicPreProcessor : public BasicProcessor
 {

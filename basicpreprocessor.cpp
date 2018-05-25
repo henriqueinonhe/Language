@@ -56,15 +56,84 @@ QString BasicPreProcessor::processString(QString string) const
             {
                 if(tokenString[tokenIndex].getString() == record.record->token)
                 {
-
-
                     //Commence rearranging
+                    const unsigned int tokenLookaheadCompensation = 1;
 
-                    unsigned int leftParenthesisIndex = tokenIndex;
-                    unsigned int rightParenthesisIndex = tokenIndex;
+                    //Count Backwards
+                    const unsigned int numberOfArgumentsBeforeOperator = record.record->operatorPosition;
+                    unsigned int argumentsBeforeOperatorCount = 0;
+                    unsigned int backwardsScannerIndex = tokenIndex - tokenLookaheadCompensation;
+                    while(argumentsBeforeOperatorCount != numberOfArgumentsBeforeOperator)
+                    {
+                        if(!tokenString.indexIsWithinBounds(backwardsScannerIndex))
+                        {
+                            throw std::invalid_argument("There are arguments missing!"); //FIXME Needs Specialized Exception!
+                        }
+
+                        if(tokenString[backwardsScannerIndex].getString() == ")")
+                        {
+                            //Parenthesis Analysis
+                            try
+                            {
+                                backwardsScannerIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
+                                                                                                          PunctuationToken("("),
+                                                                                                          PunctuationToken(")"),
+                                                                                                          backwardsScannerIndex,
+                                                                                                          ParsingAuxiliaryTools::ParsingDirection::RightToLeft);
+                                backwardsScannerIndex++;
+                            }
+                            catch(const std::invalid_argument &)
+                            {
+                                throw std::invalid_argument("Parenthesis doesn't match!"); //FIXME Needs Specialized Exception!
+                            }
+
+                        }
+                        else if(tokenString[backwardsScannerIndex].getString() == "(")
+                        {
+                            throw std::invalid_argument("Encountered an unexpected '('!"); //FIXME Needs Specialized Exception!
+                        }
+                        else
+                        {
+                            backwardsScannerIndex--;
+                        }
+                        argumentsBeforeOperatorCount++;
+                    }
+                    const unsigned int leftParenthesisIndex = backwardsScannerIndex;
 
 
+                    //Count Afterwards
+                    const unsigned int numberOfArgumentsAfterOperator = record.record->numberOfArguments - record.record->operatorPosition;
+                    unsigned int argumentsAfterOperatorCount = 0;
+                    unsigned int afterwardsScannerIndex = tokenIndex + tokenLookaheadCompensation;
 
+                    while(argumentsAfterOperatorCount != numberOfArgumentsAfterOperator)
+                    {
+                        if(!tokenString.indexIsWithinBounds(afterwardsScannerIndex))
+                        {
+                            throw std::invalid_argument("Index is out of bounds!"); //FIXME Needs Specialized Exception!
+                        }
+
+                        if(tokenString[afterwardsScannerIndex].getString() == "(")
+                        {
+                            //Parenthesis Analysis
+                            afterwardsScannerIndex = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
+                                                                                                       PunctuationToken("("),
+                                                                                                       PunctuationToken(")"),
+                                                                                                       afterwardsScannerIndex,
+                                                                                                       ParsingAuxiliaryTools::ParsingDirection::LeftToRight);
+                            afterwardsScannerIndex++;
+                        }
+                        else if(tokenString[afterwardsScannerIndex].getString() == ")")
+                        {
+                            throw std::invalid_argument("Encountered an unexpected ')'!"); //FIXME Needs Specialized Exception!
+                        }
+                        else
+                        {
+                            afterwardsScannerIndex++;
+                        }
+                        argumentsAfterOperatorCount++;
+                    }
+                    const unsigned int rightParenthesisIndex = afterwardsScannerIndex;
 
                 }
             }
@@ -72,7 +141,7 @@ QString BasicPreProcessor::processString(QString string) const
         else if(record.record->associativity == BasicProcessorTokenRecord::Associativity::Right)
         {
             const unsigned int zeroIndexCompensation = 1;
-            for(unsigned int tokenIndex = tokenString.size() - zeroIndexCompensation; tokenIndex >= 0; tokenIndex--)
+            for(int tokenIndex = tokenString.size() - zeroIndexCompensation; tokenIndex >= 0; tokenIndex--)
             {
                 if(tokenString[tokenIndex].getString() == record.record->token)
                 {
@@ -82,7 +151,7 @@ QString BasicPreProcessor::processString(QString string) const
         }
         else
         {
-            std::throw logic_error("This shouldn't be happening!");
+            throw std::logic_error("This shouldn't be happening!");
         }
     });
 

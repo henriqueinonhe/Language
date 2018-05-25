@@ -4,11 +4,18 @@
 namespace ParsingAuxiliaryTools
 {
 
+enum class ParsingDirection
+{
+    LeftToRight,
+    RightToLeft
+};
+
 template<class StringClass, class CharClass>
 unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
                                         const CharClass &leftDelimiter,
                                         const CharClass &rightDelimiter,
-                                        const unsigned int startPos = 0)
+                                        const unsigned int startPos = 0,
+                                        const ParsingDirection direction = ParsingDirection::LeftToRight)
 {
     unsigned int leftDelimiterCount = 0;
     unsigned int rightDelimiterCount = 0;
@@ -26,18 +33,27 @@ unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
             rightDelimiterCount++;
         }
 
-        index++;
+        if(direction == ParsingDirection::LeftToRight)
+        {
+            index++;
+        }
+        else if(direction == ParsingDirection::RightToLeft)
+        {
+            index--;
+        }
+        else
+        {
+            throw std::logic_error("This shouldn't be happening!");
+        }
 
-        if(index == sentence.size())
+
+        if((index == sentence.size() && direction == ParsingDirection::LeftToRight) ||
+           (index == 0 && direction == ParsingDirection::RightToLeft))
         {
             if(leftDelimiterCount != rightDelimiterCount)
             {
                 throw std::invalid_argument("Delimiters count do not match!");
             }
-//            else
-//            {
-//                throw std::invalid_argument("The sentence ends exactly at the delimiter!");
-//            } This check should be done by other means!
         }
 
     } while(leftDelimiterCount != rightDelimiterCount);
@@ -45,7 +61,14 @@ unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
 
     const unsigned int tokenLookaheadCompensation = 1;
 
-    return index - tokenLookaheadCompensation;
+    if(direction == ParsingDirection::LeftToRight)
+    {
+        return index - tokenLookaheadCompensation;
+    }
+    else
+    {
+        return index + tokenLookaheadCompensation;
+    }
 }
 
 
