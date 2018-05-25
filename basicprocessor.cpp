@@ -6,13 +6,12 @@ BasicProcessor::BasicProcessor(Signature * const signature) :
 
 }
 
-void BasicProcessor::addTokenRecord(CoreToken * const token, const unsigned int position, const BasicProcessorTokenRecord::Associativity associativity, const unsigned int precedenceRank)
+void BasicProcessor::addTokenRecord(const CoreToken &token, const unsigned int position, const BasicProcessorTokenRecord::Associativity associativity, const int precedenceRank)
 {
     const BasicProcessorTokenRecord newRecord(token, position, associativity);
-
     bool conflictingRecord = std::any_of(tokenRecords.begin(), tokenRecords.end(), [&newRecord](const BasicProcessorTokenRecord &record)
     {
-        return newRecord.token->getString() == record.token->getString();
+        return newRecord.token == record.token;
     });
 
     if(conflictingRecord)
@@ -20,9 +19,16 @@ void BasicProcessor::addTokenRecord(CoreToken * const token, const unsigned int 
         throw std::invalid_argument("There is already a record with this token!");
     }
 
-    auto insertPosition = tokenRecords.begin();
-    insertPosition += precedenceRank;
-    tokenRecords.insert(insertPosition, newRecord);
+    if(precedenceRank >= 0)
+    {
+        auto insertPosition = tokenRecords.begin();
+        insertPosition += precedenceRank;
+        tokenRecords.insert(insertPosition, newRecord);
+    }
+    else
+    {
+        tokenRecords.push_back(newRecord);
+    }
 }
 
 void BasicProcessor::removeTokenRecord(const QString &tokenString)
@@ -31,10 +37,11 @@ void BasicProcessor::removeTokenRecord(const QString &tokenString)
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
     {
-        if(iter->token->getString() == tokenString)
+        if(iter->token == tokenString)
         {
             tokenRecords.erase(iter);
             tokenFound = true;
+            break;
         }
     }
 
@@ -52,7 +59,7 @@ unsigned int BasicProcessor::getPrecendeRank(const QString &tokenString) const
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++, precedenceRank++)
     {
-        if(iter->token->getString() == tokenString)
+        if(iter->token == tokenString)
         {
             tokenFound = true;
             break;

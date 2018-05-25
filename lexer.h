@@ -10,7 +10,7 @@ class Lexer
 {
 public:
     Lexer(Signature * const signature);
-    TokenString lex(const QString &string);
+    TokenString lex(const QString &string) const;
 
 private:
     bool isSeparator(const QChar &character) const;

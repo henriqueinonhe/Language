@@ -10,10 +10,10 @@ class BasicProcessor : virtual public StringProcessor
 public:
     BasicProcessor(Signature * const signature);
 
-    void addTokenRecord(CoreToken * const token,
+    void addTokenRecord(const CoreToken &token,
                         const unsigned int position,
                         const BasicProcessorTokenRecord::Associativity associativity,
-                        const unsigned int precedenceRank);
+                        const int precedenceRank);
     void removeTokenRecord(const QString &tokenString);
 
     unsigned int getPrecendeRank(const QString &tokenString) const;
@@ -22,7 +22,20 @@ public:
 
     QString toString() const = 0;
 
-private:
+protected:
+    struct EnhancedRecord
+    {
+        EnhancedRecord(){}
+        EnhancedRecord(BasicProcessorTokenRecord * const record,
+                       const unsigned int precedenceRank) :
+            record(record),
+            precedenceRank(precedenceRank)
+        {}
+
+        BasicProcessorTokenRecord *record;
+        unsigned int precedenceRank;
+    };
+
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
     Lexer lexer;
 };

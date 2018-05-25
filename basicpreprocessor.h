@@ -12,6 +12,10 @@ public:
 
     QString toString() const;
 
+private:
+    bool tokenAlreadyConsidered(const Token &token, const QVector<EnhancedRecord> &necessaryRecords) const;
+
+    void considerToken(const Token &currentToken, QVector<EnhancedRecord> &necessaryRecords) const;
 };
 
 #endif // BASICPREPROCESSOR_H

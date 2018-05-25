@@ -9,7 +9,7 @@ Lexer::Lexer(Signature * const signature) :
     }
 }
 
-TokenString Lexer::lex(const QString &string)
+TokenString Lexer::lex(const QString &string) const
 {
     //There are two phases in lexing:
     //1st - Token separation.

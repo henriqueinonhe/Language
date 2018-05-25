@@ -760,6 +760,33 @@ TEST_CASE("Elementary Arithmetic (Table Signature)")
 
 }
 
+TEST_CASE("BasicProcessorTokenRecord")
+{
+    CHECK_THROWS(BasicProcessorTokenRecord(CoreToken("A", Type("i")), 0, BasicProcessorTokenRecord::Associativity::Left));
+    CHECK_THROWS(BasicProcessorTokenRecord(CoreToken("A", Type("i->o")), 2, BasicProcessorTokenRecord::Associativity::Left));
+    CHECK_THROWS(BasicProcessorTokenRecord(CoreToken("A", Type("[i,i,i]")), 4, BasicProcessorTokenRecord::Associativity::Left));
+
+    CHECK_NOTHROW(BasicProcessorTokenRecord(CoreToken("A", Type("i->(i->o)")), 1, BasicProcessorTokenRecord::Associativity::Right));
+}
+
+TEST_CASE("BasicPreProcessor")
+{
+    TableSignature signature;
+
+    BasicPreProcessor processor(&signature);
+
+    CHECK_NOTHROW(processor.addTokenRecord(CoreToken("Operator", Type("i->o")), 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_NOTHROW(processor.addTokenRecord(CoreToken("YubbaDubba", Type("[i,i,i]->o")), 3, BasicProcessorTokenRecord::Associativity::Left, 2));
+
+    CHECK_THROWS(processor.addTokenRecord(CoreToken("Operator", Type("i->o")), 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_THROWS(processor.addTokenRecord(CoreToken("a", Type("i")), 0, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_THROWS(processor.addTokenRecord(CoreToken("YabbaDabba", Type("[i,i,i]->o")), 4, BasicProcessorTokenRecord::Associativity::Left, 2));
+
+    processor.removeTokenRecord("Operator");
+
+    CHECK_NOTHROW(processor.addTokenRecord(CoreToken("Operator", Type("i->o")), 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+}
+
 TEST_CASE("Dirty Fix")
 {
     DirtyFix::fix();

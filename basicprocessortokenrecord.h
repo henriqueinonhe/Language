@@ -17,13 +17,14 @@ public:
     };
 
     BasicProcessorTokenRecord();
-    BasicProcessorTokenRecord(CoreToken * const token,
+    BasicProcessorTokenRecord(const CoreToken &token,
                               const unsigned int operatorPosition,
                               const Associativity associativity);
 
 private:
-    CoreToken *token;
+    QString token;
     unsigned int operatorPosition;
+    unsigned int numberOfArguments;
     Associativity associativity;
 
     friend class BasicProcessor;
