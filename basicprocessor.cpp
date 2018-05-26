@@ -1,14 +1,15 @@
 ﻿#include "basicprocessor.h"
 
 BasicProcessor::BasicProcessor(Signature * const signature) :
-    lexer(signature)
+    signature(signature)
 {
 
 }
 
-void BasicProcessor::addTokenRecord(const CoreToken &token, const unsigned int position, const BasicProcessorTokenRecord::Associativity associativity, const int precedenceRank)
+void BasicProcessor::addTokenRecord(const QString &token, const unsigned int position, const BasicProcessorTokenRecord::Associativity associativity, const int precedenceRank)
 {
-    const BasicProcessorTokenRecord newRecord(token, position, associativity);
+    const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
+    const BasicProcessorTokenRecord newRecord(coreToken, position, associativity);
     bool conflictingRecord = std::any_of(tokenRecords.begin(), tokenRecords.end(), [&newRecord](const BasicProcessorTokenRecord &record)
     {
         return newRecord.token == record.token;

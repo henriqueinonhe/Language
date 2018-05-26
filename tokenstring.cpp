@@ -60,10 +60,10 @@ TokenString TokenString::mid(const unsigned int beginIndex, const unsigned int s
     return newString;
 }
 
-Token &TokenString::operator[](const unsigned int index)
-{
-    return const_cast<Token &>(static_cast<const TokenString &>(*this)[index]);
-}
+//Token &TokenString::operator[](const unsigned int index)
+//{
+//    return const_cast<Token &>(static_cast<const TokenString &>(*this)[index]);
+//}
 
 Token &TokenString::operator[](const unsigned int index) const
 {
@@ -75,10 +75,10 @@ Token &TokenString::operator[](const unsigned int index) const
     return *(tokenList[index]);
 }
 
-Token &TokenString::first()
-{
-    return const_cast<Token &>(static_cast<const TokenString &>(*this).first());
-}
+//Token &TokenString::first()
+//{
+//    return const_cast<Token &>(static_cast<const TokenString &>(*this).first());
+//}
 
 Token &TokenString::first() const
 {
@@ -90,10 +90,10 @@ Token &TokenString::first() const
     return (*this)[0];
 }
 
-Token &TokenString::last()
-{
-    return const_cast<Token &>(static_cast<const TokenString &>(*this).last());
-}
+//Token &TokenString::last()
+//{
+//    return const_cast<Token &>(static_cast<const TokenString &>(*this).last());
+//}
 
 Token &TokenString::last() const
 {
@@ -105,6 +105,42 @@ Token &TokenString::last() const
     const unsigned int zeroIndexCompensation = 1;
 
     return (*this)[this->size() - zeroIndexCompensation];
+}
+
+TokenString &TokenString::insert(const unsigned int index, const QString &token)
+{
+    //NOTE This is more complex than it seems, must be tested!
+    if(index > size())
+    {
+        throw std::invalid_argument("Index is out of bounds!");
+    }
+
+    const unsigned int insertedTokenCompensation = 1;
+    const unsigned int afterInsertListSize = tokenList.size() - index;
+    QVector<Token *> afterInsertList = tokenList.mid(index, afterInsertListSize);
+
+    tokenList.resize(tokenList.size() + insertedTokenCompensation);
+    tokenList[index] = signature->getTokenPointer(token);
+    for(int tokenListIndex = index + insertedTokenCompensation, afterInsertListIndex = 0; afterInsertListIndex < afterInsertList.size(); tokenListIndex++, afterInsertListIndex++)
+    {
+        tokenList[tokenListIndex] = afterInsertList[afterInsertListIndex];
+    }
+
+    return *this;
+}
+
+TokenString &TokenString::swapTokens(const unsigned int index1, const unsigned int index2)
+{
+    if(!indexIsWithinBounds(index1) || !indexIsWithinBounds(index2))
+    {
+        throw std::invalid_argument("Index is out of bounds!");
+    }
+
+    Token *temp = tokenList[index1];
+    tokenList[index1] = tokenList[index2];
+    tokenList[index2] = temp;
+
+    return *this;
 }
 
 bool TokenString::indexIsWithinBounds(const unsigned int index) const

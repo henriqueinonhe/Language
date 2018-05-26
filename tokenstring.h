@@ -2,7 +2,7 @@
 #define TOKENSTRING_H
 
 #include "token.h"
-#include "pool.h"
+#include "signature.h"
 
 class Lexer;
 class Parser;
@@ -17,12 +17,12 @@ public:
 
     TokenString mid(const unsigned int beginIndex, const unsigned int size) const;
 
-    Token &operator[](const unsigned int index);
     Token &operator[](const unsigned int index) const;
-    Token &first();
     Token &first() const;
-    Token &last();
     Token &last() const;
+
+    TokenString &insert(const unsigned int index, const QString &token);
+    TokenString &swapTokens(const unsigned int index1, const unsigned int index2);
 
     bool isLastIndex(const unsigned int index) const;
     bool indexIsWithinBounds(const unsigned int index) const;
@@ -33,9 +33,15 @@ public:
 
 private:
     TokenString();
+
+    //Token &operator[](const unsigned int index);
+    //Token &first();
+    //Token &last();
+
     bool tokenNeedsSubsequentSeparation(const QVector<Token *> &tokenList, const int index) const;
 
     QVector<Token *> tokenList;
+    Signature *signature;
 
     friend class Lexer;
 };

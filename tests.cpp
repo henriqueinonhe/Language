@@ -773,18 +773,44 @@ TEST_CASE("BasicPreProcessor")
 {
     TableSignature signature;
 
+    signature.addToken(CoreToken("Operator", Type("i->o")));
+    signature.addToken(CoreToken("YubbaDubba", Type("[i,i,i]->o")));
+    signature.addToken(CoreToken("a", Type("i")));
+    signature.addToken(CoreToken("YabbaDabba", Type("[i,i,i]->o")));
+
     BasicPreProcessor processor(&signature);
 
-    CHECK_NOTHROW(processor.addTokenRecord(CoreToken("Operator", Type("i->o")), 1, BasicProcessorTokenRecord::Associativity::Left, 0));
-    CHECK_NOTHROW(processor.addTokenRecord(CoreToken("YubbaDubba", Type("[i,i,i]->o")), 3, BasicProcessorTokenRecord::Associativity::Left, 2));
+    CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_NOTHROW(processor.addTokenRecord("YubbaDubba", 3, BasicProcessorTokenRecord::Associativity::Left, 2));
 
-    CHECK_THROWS(processor.addTokenRecord(CoreToken("Operator", Type("i->o")), 1, BasicProcessorTokenRecord::Associativity::Left, 0));
-    CHECK_THROWS(processor.addTokenRecord(CoreToken("a", Type("i")), 0, BasicProcessorTokenRecord::Associativity::Left, 0));
-    CHECK_THROWS(processor.addTokenRecord(CoreToken("YabbaDabba", Type("[i,i,i]->o")), 4, BasicProcessorTokenRecord::Associativity::Left, 2));
+    CHECK_THROWS(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_THROWS(processor.addTokenRecord("a", 0, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_THROWS(processor.addTokenRecord("YabbaDabba", 4, BasicProcessorTokenRecord::Associativity::Left, 2));
 
     processor.removeTokenRecord("Operator");
 
-    CHECK_NOTHROW(processor.addTokenRecord(CoreToken("Operator", Type("i->o")), 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+}
+
+TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
+{
+    TableSignature signature;
+
+    signature.addToken(CoreToken("0", Type("i")));
+    signature.addToken(CoreToken("1", Type("i")));
+    signature.addToken(CoreToken("Plus", Type("[i,i]->i")));
+    signature.addToken(CoreToken("Minus", Type("i->i")));
+    signature.addToken(CoreToken("Times", Type("[i,i]->i")));
+
+    Parser parser(&signature, Type("i"));
+
+    BasicPreProcessor preProcessor(&signature);
+
+    preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Left, 0);
+    preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Left, 1);
+    preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Left, 2);
+
+    CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
 }
 
 TEST_CASE("Dirty Fix")

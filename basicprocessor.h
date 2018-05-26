@@ -10,7 +10,7 @@ class BasicProcessor : virtual public StringProcessor
 public:
     BasicProcessor(Signature * const signature);
 
-    void addTokenRecord(const CoreToken &token,
+    void addTokenRecord(const QString &token,
                         const unsigned int position,
                         const BasicProcessorTokenRecord::Associativity associativity,
                         const int precedenceRank);
@@ -37,7 +37,7 @@ protected:
     };
 
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
-    Lexer lexer;
+    Signature *signature;
 };
 
 #endif // BASICPROCESSOR_H
