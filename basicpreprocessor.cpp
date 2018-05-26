@@ -81,7 +81,7 @@ unsigned int BasicPreProcessor::findOperatorLeftParenthesisIndex(const TokenStri
         argumentsBeforeOperatorCount++;
     }
 
-    return backwardsScannerIndex;
+    return backwardsScannerIndex + tokenLookaheadCompensation;
 }
 
 unsigned int BasicPreProcessor::findOperatorRightParenthesisIndex(const TokenString &tokenString, const unsigned int numberOfArgumentsAfterOperator, unsigned int tokenIndex) const

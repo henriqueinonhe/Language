@@ -792,6 +792,28 @@ TEST_CASE("BasicPreProcessor")
     CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
 }
 
+TEST_CASE("Token String Methods")
+{
+    TableSignature signature;
+
+    signature.addToken(CoreToken("0", Type("i")));
+    signature.addToken(CoreToken("1", Type("i")));
+    signature.addToken(CoreToken("2", Type("i")));
+    signature.addToken(CoreToken("3", Type("i")));
+    signature.addToken(CoreToken("4", Type("i")));
+    signature.addToken(CoreToken("5", Type("i")));
+    signature.addToken(CoreToken("6", Type("i")));
+    signature.addToken(CoreToken("7", Type("i")));
+    signature.addToken(CoreToken("8", Type("i")));
+    signature.addToken(CoreToken("9", Type("i")));
+
+    Lexer lexer(&signature);
+
+    TokenString tokenString = lexer.lex("0 1 2 3 4 6 7 8 9");
+    tokenString.insert(5, "5");
+    CHECK(tokenString.toString() == "0123456789");
+}
+
 TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
 {
     TableSignature signature;
