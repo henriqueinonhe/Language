@@ -42,11 +42,11 @@ void BasicPreProcessor::setupNecessaryRecords(const TokenString &tokenString, QV
 
 unsigned int BasicPreProcessor::findOperatorLeftParenthesisIndex(const TokenString &tokenString, const unsigned int numberOfArgumentsBeforeOperator, const unsigned int tokenIndex) const
 {
-    const unsigned int tokenLookaheadCompensation = 1;
     unsigned int argumentsBeforeOperatorCount = 0;
-    unsigned int backwardsScannerIndex = tokenIndex - tokenLookaheadCompensation;
+    unsigned int backwardsScannerIndex = tokenIndex;
     while(argumentsBeforeOperatorCount != numberOfArgumentsBeforeOperator)
     {
+        backwardsScannerIndex--;
         if(!tokenString.indexIsWithinBounds(backwardsScannerIndex))
         {
             throw std::invalid_argument("There are arguments missing!"); //FIXME Needs Specialized Exception!
@@ -62,7 +62,6 @@ unsigned int BasicPreProcessor::findOperatorLeftParenthesisIndex(const TokenStri
                                                                                           PunctuationToken(")"),
                                                                                           backwardsScannerIndex,
                                                                                           ParsingAuxiliaryTools::ParsingDirection::RightToLeft);
-                backwardsScannerIndex++;
             }
             catch(const std::invalid_argument &)
             {
@@ -76,22 +75,21 @@ unsigned int BasicPreProcessor::findOperatorLeftParenthesisIndex(const TokenStri
         }
         else
         {
-            backwardsScannerIndex--;
         }
         argumentsBeforeOperatorCount++;
     }
 
-    return backwardsScannerIndex + tokenLookaheadCompensation;
+    return backwardsScannerIndex;
 }
 
 unsigned int BasicPreProcessor::findOperatorRightParenthesisIndex(const TokenString &tokenString, const unsigned int numberOfArgumentsAfterOperator, unsigned int tokenIndex) const
 {
-    const unsigned int tokenLookaheadCompensation = 1;
     unsigned int argumentsAfterOperatorCount = 0;
-    unsigned int afterwardsScannerIndex = tokenIndex + tokenLookaheadCompensation;
+    unsigned int afterwardsScannerIndex = tokenIndex;
 
     while(argumentsAfterOperatorCount != numberOfArgumentsAfterOperator)
     {
+        afterwardsScannerIndex++;
         if(!tokenString.indexIsWithinBounds(afterwardsScannerIndex))
         {
             throw std::invalid_argument("Index is out of bounds!"); //FIXME Needs Specialized Exception!
@@ -120,17 +118,17 @@ unsigned int BasicPreProcessor::findOperatorRightParenthesisIndex(const TokenStr
         }
         else
         {
-            afterwardsScannerIndex++;
         }
         argumentsAfterOperatorCount++;
     }
 
-    //const unsigned int insertIndexCompensation = 1;
-    return afterwardsScannerIndex/* + insertIndexCompensation*/;
+    const unsigned int insertIndexCompensation = 1;
+    return afterwardsScannerIndex + insertIndexCompensation;
 }
 
 bool BasicPreProcessor::operatorParenthesisAreAlreadyPlaced(const TokenString &tokenString, const unsigned int leftParenthesisIndex, const unsigned int rightParenthesisIndex) const
 {
+    //Problem Here!
     bool leftParenthesisIndexIsStringStart = leftParenthesisIndex == 0;
     bool rightParenthesisIndexIsStringEnd = rightParenthesisIndex == tokenString.size();
 
@@ -156,14 +154,16 @@ bool BasicPreProcessor::operatorParenthesisAreAlreadyPlaced(const TokenString &t
 void BasicPreProcessor::insertOperatorParenthesis(TokenString &tokenString, const unsigned int rightParenthesisInsertIndex, const unsigned int leftParenthesisInsertIndex) const
 {
     tokenString.insert(leftParenthesisInsertIndex, "(");
-    tokenString.insert(rightParenthesisInsertIndex, ")");
+    const unsigned int leftParenthesisInsertedCompensation = 1;
+    tokenString.insert(rightParenthesisInsertIndex + leftParenthesisInsertedCompensation, ")");
 }
 
 void BasicPreProcessor::moveOperator(TokenString &tokenString, const unsigned int leftParenthesisInsertIndex, const unsigned int tokenIndex) const
 {
     const unsigned int insertedTokenCompensation = 1;
+    const unsigned int newTokenIndex = tokenIndex + insertedTokenCompensation;
     const unsigned int firstArgumentIndex = leftParenthesisInsertIndex + insertedTokenCompensation;
-    tokenString.swapTokens(tokenIndex, firstArgumentIndex);
+    tokenString.swapTokens(newTokenIndex, firstArgumentIndex);
 }
 
 void BasicPreProcessor::processToken(TokenString &tokenString, const unsigned int tokenIndex, const EnhancedRecord &record) const
