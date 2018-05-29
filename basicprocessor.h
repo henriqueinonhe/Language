@@ -23,10 +23,10 @@ public:
     QString toString() const = 0;
 
 protected:
-    struct EnhancedRecord
+    struct AuxiliaryTokenRecord
     {
-        EnhancedRecord(){}
-        EnhancedRecord(BasicProcessorTokenRecord * const record,
+        AuxiliaryTokenRecord(){}
+        AuxiliaryTokenRecord(BasicProcessorTokenRecord * const record,
                        const unsigned int precedenceRank) :
             record(record),
             precedenceRank(precedenceRank)
@@ -36,8 +36,27 @@ protected:
         unsigned int precedenceRank;
     };
 
+    struct TokenWrapper
+    {
+        TokenWrapper();
+        TokenWrapper(const QString &token) :
+            token(token),
+            alreadyScanned(false)
+        {}
+
+        bool operator==(const TokenWrapper &other) const
+        {
+            return this->token == other.token;
+        }
+
+        QString token;
+        bool alreadyScanned;
+
+    };
+
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
     Signature *signature;
+
 };
 
 #endif // BASICPROCESSOR_H
