@@ -53,7 +53,7 @@ void BasicProcessor::removeTokenRecord(const QString &tokenString)
 
 }
 
-unsigned int BasicProcessor::getPrecendeRank(const QString &tokenString) const
+unsigned int BasicProcessor::getPrecedenceRank(const QString &tokenString) const
 {
     unsigned int precedenceRank = 0;
     bool tokenFound = false;
@@ -73,4 +73,30 @@ unsigned int BasicProcessor::getPrecendeRank(const QString &tokenString) const
     }
 
     return precedenceRank;
+}
+
+const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString &token) const
+{
+    for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
+    {
+        if(iter->token == token)
+        {
+            return &(*iter);
+        }
+    }
+
+    throw std::invalid_argument("There is no record associated with this token!");
+}
+
+QString BasicProcessor::tokenStringWrapperToString(const BasicProcessor::TokenStringWrapper &tokenString) const
+{
+    QString string;
+
+    std::for_each(tokenString.begin(), tokenString.end(), [&string](const TokenWrapper &token)
+    {
+        string += token.token;
+        string += " ";
+    });
+
+    return string;
 }

@@ -826,13 +826,29 @@ TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
 
     Parser parser(&signature, Type("i"));
 
-    BasicPreProcessor preProcessor(&signature);
+    SECTION("Left Associativity")
+    {
+        BasicPreProcessor preProcessor(&signature);
 
-    preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Left, 0);
-    preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Left, 1);
-    preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Left, 2);
+        preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Left, 0);
+        preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Left, 1);
+        preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Left, 2);
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
+    }
 
-    CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
+
+    SECTION("Right Associativity")
+    {
+        BasicPreProcessor preProcessor(&signature);
+
+        preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Right, 0);
+        preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Right, 1);
+        preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Right, 2);
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
+    }
+
+
+
 }
 
 TEST_CASE("Dirty Fix")

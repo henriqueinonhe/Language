@@ -8,6 +8,8 @@
 class BasicProcessor : virtual public StringProcessor
 {
 public:
+
+
     BasicProcessor(Signature * const signature);
 
     void addTokenRecord(const QString &token,
@@ -16,26 +18,14 @@ public:
                         const int precedenceRank);
     void removeTokenRecord(const QString &tokenString);
 
-    unsigned int getPrecendeRank(const QString &tokenString) const;
+    unsigned int getPrecedenceRank(const QString &tokenString) const;
+
 
     QString processString(QString string) const = 0;
 
     QString toString() const = 0;
 
 protected:
-    struct AuxiliaryTokenRecord
-    {
-        AuxiliaryTokenRecord(){}
-        AuxiliaryTokenRecord(BasicProcessorTokenRecord * const record,
-                       const unsigned int precedenceRank) :
-            record(record),
-            precedenceRank(precedenceRank)
-        {}
-
-        BasicProcessorTokenRecord *record;
-        unsigned int precedenceRank;
-    };
-
     struct TokenWrapper
     {
         TokenWrapper();
@@ -51,8 +41,29 @@ protected:
 
         QString token;
         bool alreadyScanned;
-
     };
+
+    struct AuxiliaryTokenRecord
+    {
+        AuxiliaryTokenRecord(){}
+        AuxiliaryTokenRecord(BasicProcessorTokenRecord * const record,
+                       const unsigned int precedenceRank) :
+            record(record),
+            precedenceRank(precedenceRank)
+        {}
+
+        BasicProcessorTokenRecord *record;
+        unsigned int precedenceRank;
+        QVector<QLinkedList<TokenWrapper>::iterator> tokenIterators;
+    };
+
+    typedef QLinkedList<TokenWrapper> TokenStringWrapper;
+    typedef QLinkedList<TokenWrapper>::iterator TokenStringWrapperIterator;
+    typedef QLinkedList<TokenWrapper>::reverse_iterator TokenStringWrapperReverseIterator;
+
+    const BasicProcessorTokenRecord *getTokenRecordPtr(const QString &token) const;
+
+    QString tokenStringWrapperToString(const TokenStringWrapper &tokenString) const;
 
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
     Signature *signature;

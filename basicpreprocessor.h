@@ -7,10 +7,6 @@
 class BasicPreProcessor : public BasicProcessor
 {
 public:
-    typedef QLinkedList<TokenWrapper> TokenStringWrapper;
-    typedef QLinkedList<TokenWrapper>::iterator TokenStringWrapperIterator;
-    typedef QLinkedList<TokenWrapper>::reverse_iterator TokenStringWrapperReverseIterator;
-
     BasicPreProcessor(Signature * const signature);
 
     QString processString(QString string) const;
@@ -19,26 +15,28 @@ public:
 
 private:
 
-    QLinkedList<TokenWrapper> wrapTokenString(const QString &string) const;
-    void setupAuxiliaryRecords(const TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const;
-    bool tokenAlreadyConsidered(const TokenWrapper &token, const QVector<AuxiliaryTokenRecord> &necessaryRecords) const;
-    void considerToken(const TokenWrapper &currentToken, QVector<AuxiliaryTokenRecord> &necessaryRecords) const;
+    TokenStringWrapper wrapTokenString(const QString &string) const;
+    void setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const;
+    void considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &necessaryRecords) const;
 
-    bool tokenMatchesRecordAndHasntBeenScanned(const TokenStringWrapperIterator &tokenStringIter, const AuxiliaryTokenRecord &record) const;
     TokenStringWrapperIterator findOperatorLeftParenthesisIterator(const TokenStringWrapper &tokenString,
-                                                                const unsigned int numberOfArgumentsBeforeOperator,
-                                                                const TokenStringWrapperIterator &tokenStringIter) const;
+                                                                   const unsigned int numberOfArgumentsBeforeOperator,
+                                                                   const TokenStringWrapperIterator &tokenStringIter) const;
     TokenStringWrapperIterator findOperatorRightParenthesisIterator(const TokenStringWrapper &tokenString,
-                                                                 const unsigned int numberOfArgumentsAfterOperator,
-                                                                 TokenStringWrapperIterator tokenStringIter) const;
+                                                                    const unsigned int numberOfArgumentsAfterOperator,
+                                                                    const TokenStringWrapperIterator &tokenStringIter) const;
+    void findDelimiterScopeEndIterator(const TokenStringWrapper &tokenString,
+                                       TokenStringWrapperIterator &iter) const;
+    void findDelimiterScopeEndReverseIterator(const TokenStringWrapper &tokenString,
+                                              TokenStringWrapperReverseIterator &iter) const;
     bool operatorParenthesisAreAlreadyPlaced(const TokenStringWrapper &tokenString,
                                              const TokenStringWrapperIterator &leftParenthesisIterator,
                                              const TokenStringWrapperIterator &rightParenthesisIterator) const;
-    void insertOperatorParenthesis(TokenStringWrapper &tokenString, TokenStringWrapperIterator rightParenthesisInsertIterator,
-                                   TokenStringWrapperIterator rightParenthesisInsertIndex) const;
-    void moveOperator(const TokenStringWrapperIterator &leftParenthesisInsertIterator,
-                      TokenStringWrapperIterator &tokenStringIter) const;
-    void processToken(TokenStringWrapper &tokenString, TokenStringWrapperIterator &tokenStringIter, const AuxiliaryTokenRecord &record) const;
+    void insertOperatorParenthesis(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &rightParenthesisInsertIterator,
+                                   const TokenStringWrapperIterator &rightParenthesisInsertIndex) const;
+    void moveOperator(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &leftParenthesisInsertIterator,
+                      const TokenStringWrapperIterator &tokenStringIter) const;
+    void processToken(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &tokenStringIter, const AuxiliaryTokenRecord &record) const;
 };
 
 #endif // BASICPREPROCESSOR_H
