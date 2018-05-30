@@ -140,7 +140,6 @@ void BasicPreProcessor::findDelimiterScopeEndIterator(const BasicProcessor::Toke
             rightParenthesisCount++;
         }
 
-        iter->alreadyScanned = true;
         iter++;
 
         if(iter == tokenString.end())
@@ -173,7 +172,6 @@ void BasicPreProcessor::findDelimiterScopeEndReverseIterator(const BasicProcesso
             rightParenthesisCount++;
         }
 
-        iter->alreadyScanned = true;
         iter++;
 
         if(iter == tokenString.rend())
@@ -192,7 +190,6 @@ void BasicPreProcessor::findDelimiterScopeEndReverseIterator(const BasicProcesso
 
 bool BasicPreProcessor::operatorParenthesisAreAlreadyPlaced(const TokenStringWrapper &tokenString, const TokenStringWrapperIterator &leftParenthesisIterator, const TokenStringWrapperIterator &rightParenthesisIterator) const
 {
-    //FIXME Not the right way to do! Example: "(2 + 3) + (4 + 5)"
     bool leftParenthesisIndexIsStringStart = leftParenthesisIterator == tokenString.begin();
     bool rightParenthesisIndexIsStringEnd = rightParenthesisIterator == tokenString.end();
 
@@ -203,10 +200,15 @@ bool BasicPreProcessor::operatorParenthesisAreAlreadyPlaced(const TokenStringWra
     else
     {
         const unsigned int beforeIteratorInsertCompensation = 1;
-        if((leftParenthesisIterator - beforeIteratorInsertCompensation)->token == "(" &&
+        const TokenStringWrapperIterator leftParenthesisActualIterator = leftParenthesisIterator - beforeIteratorInsertCompensation;
+        if(leftParenthesisActualIterator->token == "(" &&
            rightParenthesisIterator->token == ")")
         {
-            return true;
+            TokenStringWrapperIterator endScopeIterator = ParsingAuxiliaryTools::findDelimiterScopeEndIterator(tokenString,
+                                                                                                               TokenWrapper("("),
+                                                                                                               TokenWrapper(")"),
+                                                                                                               leftParenthesisActualIterator);
+            return endScopeIterator == rightParenthesisIterator;
         }
         else
         {
@@ -260,6 +262,7 @@ BasicProcessor::TokenStringWrapper BasicPreProcessor::wrapTokenString(const QStr
     return tokenString;
 }
 
+#include <iostream>
 QString BasicPreProcessor::processString(QString string) const
 {
     //1. Lexing
@@ -297,6 +300,8 @@ QString BasicPreProcessor::processString(QString string) const
             throw std::logic_error("This shouldn't be happening!");
         }
     });
+
+    std::cout << tokenStringWrapperToString(tokenString).toStdString();
 
     return tokenStringWrapperToString(tokenString);
 }

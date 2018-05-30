@@ -833,7 +833,33 @@ TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
         preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Left, 0);
         preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Left, 1);
         preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Left, 2);
+
         CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus (Minus 0)")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus (1 Plus (Minus 0))")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times (0 Plus (1 Plus (Minus 0)))")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("(1 Times (0 Plus (1 Plus (Minus 0))))")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("(1 Times 0) Plus 1 Plus Minus 0")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("((1 Times 0) Plus 1) Plus Minus 0")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Plus 0 Plus 1 Plus 1 Times 0")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Plus Minus 0 Times 1")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Plus (Minus 0) Times 1")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("(1 Plus Minus 1) Times 1")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("Minus 1 Plus (Minus 0) Times 1")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("(Minus 1 Plus Minus 1) Times 0")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 1 Times 0")));
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("(1 Times 1) Times 0")));
+
+        CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times (0 Times 1)")));
+
+
+
     }
 
 
