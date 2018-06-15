@@ -18,10 +18,20 @@ protected:
         TokenStringWrapperIterator operatorIterator;
         TokenStringWrapperIterator firstLeftParenthesisIterator;
         TokenStringWrapperIterator lastRightParenthesisIterator;
+        bool isAtomic;
 
-        bool isAtomic() const
+        bool hasAtomicOperator() const
         {
             return operatorIterator->token != "(";
+        }
+
+        SubSentenceRecord &operator=(const SubSentenceRecord &other)
+        {
+            this->operatorIterator = other.operatorIterator;
+            this->firstLeftParenthesisIterator = other.firstLeftParenthesisIterator;
+            this->lastRightParenthesisIterator = other.lastRightParenthesisIterator;
+
+            return *this;
         }
     };
 
