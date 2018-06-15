@@ -917,6 +917,7 @@ TEST_CASE("Pre and Post Processed One Digit Arithmetic")
     postProcessor.addTokenRecord("Minus", 0);
 
     //Tests
+    std::cout << postProcessor.processString(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")).formattedString()).toStdString();
     CHECK(postProcessor.processString(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")).formattedString()) == "1 Times 0 Plus 1 Plus Minus 0");
 
 }

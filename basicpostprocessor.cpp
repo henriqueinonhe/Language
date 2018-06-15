@@ -6,6 +6,14 @@ BasicPostProcessor::BasicPostProcessor(Signature * const signature) :
 
 }
 
+void BasicPostProcessor::setupFirstRecord(SubSentenceRecord &firstRecord, TokenStringWrapper &tokenString) const
+{
+    firstRecord.firstLeftParenthesisIterator = tokenString.begin();
+    firstRecord.lastRightParenthesisIterator = tokenString.end();
+    const unsigned int parenthesisCompensation = 1;
+    firstRecord.operatorIterator = tokenString.begin() + parenthesisCompensation;
+}
+
 QString BasicPostProcessor::processString(QString string) const
 {
     //1. Lexing
@@ -13,10 +21,7 @@ QString BasicPostProcessor::processString(QString string) const
 
     //2. Processing
     SubSentenceRecord firstRecord;
-    firstRecord.firstLeftParenthesisIterator = tokenString.begin();
-    firstRecord.lastRightParenthesisIterator = tokenString.end();
-    const unsigned int parenthesisCompensation = 1;
-    firstRecord.operatorIterator = tokenString.begin() + parenthesisCompensation;
+    setupFirstRecord(firstRecord, tokenString);
 
     processSubSentence(tokenString, firstRecord);
 
@@ -38,31 +43,35 @@ void BasicPostProcessor::moveOperator(BasicProcessor::TokenStringWrapper &tokenS
     tokenString.erase(mainOperatorIter);
 }
 
-void BasicPostProcessor::addSubSentenceRecord(const TokenStringWrapperIterator &tokenStringIter, QVector<SubSentenceRecord> &subSentenceRecords, TokenStringWrapper &tokenString) const
+void BasicPostProcessor::addSubSentenceRecord(TokenStringWrapperIterator &subSentenceScannerIter, QVector<SubSentenceRecord> &subSentenceRecords, const TokenStringWrapper &tokenString) const
 {
-    SubSentenceRecord newRecord;
-    if(tokenStringIter->token == "(")
+    SubSentenceRecord subSentenceRecord;
+    if(!subSentenceIsAtomic(subSentenceScannerIter))
     {
         const unsigned int nextTokenCompensation = 1;
 
-        newRecord.firstLeftParenthesisIterator = tokenStringIter;
-        newRecord.operatorIterator = tokenStringIter + nextTokenCompensation;
-        newRecord.lastRightParenthesisIterator = findDelimiterScopeEndIterator(tokenString, tokenStringIter);
-        newRecord.isAtomic = false;
+        subSentenceRecord.firstLeftParenthesisIterator = subSentenceScannerIter;
+        subSentenceRecord.operatorIterator = subSentenceScannerIter + nextTokenCompensation;
+        subSentenceRecord.lastRightParenthesisIterator = findDelimiterScopeEndIterator(tokenString, subSentenceScannerIter);
+        subSentenceRecord.isAtomic = false;
+
+        subSentenceScannerIter = subSentenceRecord.lastRightParenthesisIterator + nextTokenCompensation;
     }
     else
     {
-        newRecord.operatorIterator = tokenStringIter;
-        newRecord.isAtomic = true;
+        subSentenceRecord.operatorIterator = subSentenceScannerIter;
+        subSentenceRecord.isAtomic = true;
+
+        subSentenceScannerIter++;
     }
 
-    subSentenceRecords.push_back(newRecord);
+    subSentenceRecords.push_back(subSentenceRecord);
 }
 
 bool BasicPostProcessor::hasHigherOverallPrecedence(const BasicProcessor::TokenStringWrapperIterator &subSentenceOperatorIter, const BasicProcessor::TokenStringWrapperIterator &mainSentenceOperatorIter, const TokenStringWrapper &tokenString) const //FIXME Fix iterator end
 {
-    const unsigned int mainSentenceOperatorPrecedenceRank = getOperatorPrecedenceRank(mainSentenceOperatorIter->token);
     const unsigned int subSentenceOperatorPrecedenceRank = getOperatorPrecedenceRank(subSentenceOperatorIter->token);
+    const unsigned int mainSentenceOperatorPrecedenceRank = getOperatorPrecedenceRank(mainSentenceOperatorIter->token);
     if(subSentenceOperatorPrecedenceRank < mainSentenceOperatorPrecedenceRank)
     {
         return true;
@@ -98,25 +107,40 @@ bool BasicPostProcessor::hasLowerIndex(const BasicProcessor::TokenStringWrapperI
     return false;
 }
 
-void BasicPostProcessor::setupSubSentenceRecords(TokenStringWrapper &tokenString, QVector<SubSentenceRecord> &subSentenceRecords, const SubSentenceRecord &sentenceRecord) const
+const unsigned int BasicPostProcessor::getOperatorArity(const SubSentenceRecord &mainSentenceRecord) const
 {
-    if(sentenceRecord.hasAtomicOperator())
+    const unsigned int operatorArity = dynamic_cast<CoreToken *>(signature->getTokenPointer(mainSentenceRecord.operatorIterator->token))->getType().getNumberOfArguments();
+
+    return operatorArity;
+}
+
+bool BasicPostProcessor::subSentenceIsAtomic(const BasicProcessor::TokenStringWrapperIterator &firstSubSentenceToken) const
+{
+    return firstSubSentenceToken->token != "(";
+}
+
+void BasicPostProcessor::setupSubSentenceRecords(TokenStringWrapper &tokenString, QVector<SubSentenceRecord> &subSentenceRecords, const SubSentenceRecord &mainSentenceRecord) const
+{
+    if(mainSentenceRecord.hasAtomicOperator())
     {
-        const unsigned int operatorArity = dynamic_cast<CoreToken *>(signature->getTokenPointer(sentenceRecord.operatorIterator->token))->getType().getNumberOfArguments();
-        for(unsigned int iterIncrement = 0; iterIncrement < operatorArity; iterIncrement++)
+        const unsigned int mainSentenceOperatorArity = getOperatorArity(mainSentenceRecord);
+        const unsigned int mainSentenceOperatorCompensation = 1;
+        TokenStringWrapperIterator subSentenceScannerIter = mainSentenceRecord.operatorIterator;
+
+        for(unsigned int subSentenceCount = 0; subSentenceCount < mainSentenceOperatorArity + mainSentenceOperatorCompensation; subSentenceCount++)
         {
-            TokenStringWrapperIterator tokenStringIter = sentenceRecord.operatorIterator + iterIncrement;
-            addSubSentenceRecord(tokenStringIter, subSentenceRecords, tokenString);
+            addSubSentenceRecord(subSentenceScannerIter, subSentenceRecords, tokenString);
         }
     }
     else
     {
         const unsigned int parenthesisCompensation = 1;
-        const TokenStringWrapperIterator firstTokenIterator = sentenceRecord.firstLeftParenthesisIterator + parenthesisCompensation;
-        const TokenStringWrapperIterator lastTokenIterator = sentenceRecord.lastRightParenthesisIterator;
-        for(TokenStringWrapperIterator tokenStringIter = firstTokenIterator; tokenStringIter != lastTokenIterator; tokenStringIter++)
+        const TokenStringWrapperIterator mainSentenceFirstTokenIterator = mainSentenceRecord.firstLeftParenthesisIterator + parenthesisCompensation;
+        const TokenStringWrapperIterator mainSentenceLastTokenIterator = mainSentenceRecord.lastRightParenthesisIterator;
+
+        for(TokenStringWrapperIterator subSentenceScannerIter = mainSentenceFirstTokenIterator; subSentenceScannerIter != mainSentenceLastTokenIterator;)
         {
-            addSubSentenceRecord(tokenStringIter, subSentenceRecords, tokenString);
+            addSubSentenceRecord(subSentenceScannerIter, subSentenceRecords, tokenString);
         }
     }
 }
@@ -127,13 +151,16 @@ void BasicPostProcessor::eraseParenthesis(const BasicProcessor::TokenStringWrapp
     tokenString.erase(lastRightParenthesisIter);
 }
 
-void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &subSentenceRecords, const SubSentenceRecord &mainOperatorRecord, TokenStringWrapper &tokenString, const unsigned int mainOperatorPrecedenceRank, const unsigned int mainOperatorCompensation) const
-{
+void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &subSentenceRecords, const SubSentenceRecord &mainOperatorRecord, TokenStringWrapper &tokenString) const
+{   
+    const unsigned int mainOperatorCompensation = 1;
     if(mainOperatorRecord.hasAtomicOperator())
     {
-        std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, mainOperatorPrecedenceRank, &tokenString, this](const SubSentenceRecord &record)
+        std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, &tokenString, this](const SubSentenceRecord &record)
         {
-            if(record.hasAtomicOperator() && hasHigherOverallPrecedence(record.operatorIterator, mainOperatorRecord.operatorIterator, tokenString))
+            if(!record.isAtomic &&
+               record.hasAtomicOperator() &&
+               hasHigherOverallPrecedence(record.operatorIterator, mainOperatorRecord.operatorIterator, tokenString))
             {
                 eraseParenthesis(record.firstLeftParenthesisIterator, record.lastRightParenthesisIterator, tokenString);
             }
@@ -141,9 +168,10 @@ void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &s
     }
     else
     {
-        std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, mainOperatorPrecedenceRank, &tokenString, this](const SubSentenceRecord &record)
+        std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, &tokenString, this](const SubSentenceRecord &record)
         {
-            if(record.hasAtomicOperator())
+            if(!record.isAtomic &&
+               record.hasAtomicOperator())
             {
                 eraseParenthesis(record.firstLeftParenthesisIterator, record.lastRightParenthesisIterator, tokenString);
             }
@@ -151,7 +179,22 @@ void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &s
     }
 }
 
-void BasicPostProcessor::processSubSentence(TokenStringWrapper &tokenString, const SubSentenceRecord &sentenceRecord) const
+void BasicPostProcessor::operatorPositionAnalysis(TokenStringWrapper &tokenString, SubSentenceRecord &mainOperatorRecord) const
+{
+    if(mainOperatorRecord.hasAtomicOperator())
+    {
+        const unsigned int mainOperatorPosition = getOperatorPosition(mainOperatorRecord.operatorIterator->token);
+        const TokenStringWrapperIterator mainOperatorInsertIterator = findOperatorRightParenthesisIterator(tokenString,
+                                                                                                           mainOperatorPosition,
+                                                                                                           mainOperatorRecord.operatorIterator);
+        moveOperator(tokenString, mainOperatorRecord.operatorIterator, mainOperatorInsertIterator);
+
+        const unsigned int insertedOperatorCompensation = 1;
+        mainOperatorRecord.operatorIterator = mainOperatorInsertIterator - insertedOperatorCompensation;
+    }
+}
+
+void BasicPostProcessor::processSubSentence(TokenStringWrapper &tokenString, const SubSentenceRecord &mainSentenceRecord) const
 {
     /* Em sequência:
      * 1. Montar lista com os iteradores dos argumentos
@@ -161,27 +204,15 @@ void BasicPostProcessor::processSubSentence(TokenStringWrapper &tokenString, con
 
     // 1 - Montando lista de Iteradores dos argumentos
     QVector<SubSentenceRecord> subSentenceRecords;
-    setupSubSentenceRecords(tokenString, subSentenceRecords, sentenceRecord);
+    setupSubSentenceRecords(tokenString, subSentenceRecords, mainSentenceRecord);
 
     // 2 - Mudar operador de lugar
     SubSentenceRecord &mainOperatorRecord = subSentenceRecords.first();
-    if(mainOperatorRecord.hasAtomicOperator())
-    {
-        const unsigned int mainOperatorPosition = getOperatorPosition(mainOperatorRecord.operatorIterator->token);
-        const TokenStringWrapperIterator mainOperatorInsertIterator = findOperatorRightParenthesisIterator(tokenString,
-                                                                                                           mainOperatorPosition,
-                                                                                                           mainOperatorRecord.operatorIterator);
-        moveOperator(tokenString, mainOperatorRecord.operatorIterator, mainOperatorInsertIterator); //FIXME Probably refactor!
-        const unsigned int insertedOperatorCompensation = 1;
-        mainOperatorRecord.operatorIterator = mainOperatorInsertIterator + insertedOperatorCompensation;
-    }
-
-    //Tem que consertar o iterador depois q ele se move!
+    operatorPositionAnalysis(tokenString, mainOperatorRecord);
 
     // 3 - Tirar os parênteses quando possível
-    const unsigned int mainOperatorCompensation = 1;
-    const unsigned int mainOperatorPrecedenceRank = getOperatorPrecedenceRank(mainOperatorRecord.operatorIterator->token);
-    parenthesisAnalysis(subSentenceRecords, mainOperatorRecord, tokenString, mainOperatorPrecedenceRank, mainOperatorCompensation);
+
+    parenthesisAnalysis(subSentenceRecords, mainOperatorRecord, tokenString);
 
     // 4 - Recursando tudo
     std::for_each(subSentenceRecords.begin(), subSentenceRecords.end(), [&tokenString, this](const SubSentenceRecord &record)
