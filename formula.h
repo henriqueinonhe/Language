@@ -12,6 +12,9 @@ public:
     bool operator==(const Formula &other) const;
     bool operator!=(const Formula &other) const;
 
+    QString toString() const;
+    QString formattedString() const;
+
 private:
     Formula(const TokenString &tokenString);
 

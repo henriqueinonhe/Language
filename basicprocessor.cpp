@@ -53,7 +53,7 @@ void BasicProcessor::removeTokenRecord(const QString &tokenString)
 
 }
 
-unsigned int BasicProcessor::getPrecedenceRank(const QString &tokenString) const
+unsigned int BasicProcessor::getOperatorPrecedenceRank(const QString &tokenString) const
 {
     unsigned int precedenceRank = 0;
     bool tokenFound = false;
@@ -73,6 +73,52 @@ unsigned int BasicProcessor::getPrecedenceRank(const QString &tokenString) const
     }
 
     return precedenceRank;
+}
+
+unsigned int BasicProcessor::getOperatorPosition(const QString &tokenString) const
+{
+    unsigned int operatorPosition = 0;
+    bool tokenFound = false;
+
+    for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
+    {
+        if(iter->token == tokenString)
+        {
+            operatorPosition = iter->operatorPosition;
+            tokenFound = true;
+            break;
+        }
+    }
+
+    if(!tokenFound)
+    {
+        throw std::invalid_argument("There is no record associated with this token!");
+    }
+
+    return operatorPosition;
+}
+
+BasicProcessorTokenRecord::Associativity BasicProcessor::getOperatorAssociativity(const QString &tokenString) const
+{
+    BasicProcessorTokenRecord::Associativity associativity;
+    bool tokenFound = false;
+
+    for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
+    {
+        if(iter->token == tokenString)
+        {
+            associativity = iter->associativity;
+            tokenFound = true;
+            break;
+        }
+    }
+
+    if(!tokenFound)
+    {
+        throw std::invalid_argument("There is no record associated with this token!");
+    }
+
+    return associativity;
 }
 
 const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString &token) const
@@ -99,4 +145,201 @@ QString BasicProcessor::tokenStringWrapperToString(const BasicProcessor::TokenSt
     });
 
     return string;
+}
+
+void BasicProcessor::setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const
+{
+    for(TokenStringWrapperIterator tokenIter = tokenString.begin(); tokenIter != tokenString.end(); tokenIter++)
+    {
+        considerToken(tokenIter, auxiliaryRecords);
+    }
+
+    std::sort(auxiliaryRecords.begin(), auxiliaryRecords.end(), [](const AuxiliaryTokenRecord &record1, const AuxiliaryTokenRecord &record2)
+    {
+        return record1.precedenceRank < record2.precedenceRank;
+    });
+}
+
+BasicProcessor::TokenStringWrapper BasicProcessor::wrapTokenString(const QString &string) const
+{
+    TokenStringWrapper tokenString;
+    TokenString tempString = Lexer(signature).lex(string);
+
+    for(unsigned int index = 0; index < tempString.size(); index++)
+    {
+        tokenString.push_back(tempString[index].getString());
+    }
+
+    return tokenString;
+}
+
+void BasicProcessor::considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const
+{
+    bool matchingRecordFound = false;
+    for(auto record = auxiliaryRecords.begin(); record != auxiliaryRecords.end(); record++)
+    {
+        if(tokenIter->token == record->record->token)
+        {
+            matchingRecordFound = true;
+            record->tokenIterators.push_back(tokenIter);
+            break;
+        }
+    }
+
+    if(!matchingRecordFound)
+    {
+        try
+        {
+            auxiliaryRecords.push_back(AuxiliaryTokenRecord(const_cast<BasicProcessorTokenRecord *>(getTokenRecordPtr(tokenIter->token)), getOperatorPrecedenceRank(tokenIter->token)));
+            auxiliaryRecords.last().tokenIterators.push_back(tokenIter);
+        }
+        catch(const std::invalid_argument &)
+        {
+
+        }
+    }
+}
+
+
+
+BasicProcessor::TokenStringWrapperIterator BasicProcessor::findDelimiterScopeEndIterator(const BasicProcessor::TokenStringWrapper &tokenString, BasicProcessor::TokenStringWrapperIterator iter) const //NOTE Maybe give a end iterator instead of a tokenString!
+{
+    unsigned int leftParenthesisCount = 0;
+    unsigned int rightParenthesisCount = 0;
+
+    do
+    {
+        if(iter->token == "(")
+        {
+            leftParenthesisCount++;
+        }
+
+        if(iter->token == ")")
+        {
+            rightParenthesisCount++;
+        }
+
+        iter++;
+
+        if(iter == tokenString.end())
+        {
+            if(leftParenthesisCount != rightParenthesisCount)
+            {
+                throw std::invalid_argument("Delimiters count do not match!");
+            }
+        }
+    } while(leftParenthesisCount != rightParenthesisCount);
+
+    const unsigned int tokenLookaheadCompensation = 1;
+    iter = iter - tokenLookaheadCompensation;
+
+    return iter;
+}
+
+void BasicProcessor::findDelimiterScopeEndReverseIterator(const BasicProcessor::TokenStringWrapper &tokenString, TokenStringWrapperReverseIterator &iter) const
+{
+    unsigned int leftParenthesisCount = 0;
+    unsigned int rightParenthesisCount = 0;
+
+    do
+    {
+        if(iter->token == "(")
+        {
+            leftParenthesisCount++;
+        }
+
+        if(iter->token == ")")
+        {
+            rightParenthesisCount++;
+        }
+
+        iter++;
+
+        if(iter == tokenString.rend())
+        {
+            if(leftParenthesisCount != rightParenthesisCount)
+            {
+                throw std::invalid_argument("Delimiters count do not match!");
+            }
+        }
+
+    } while(leftParenthesisCount != rightParenthesisCount);
+
+    const unsigned int tokenLookaheadCompensation = 1;
+    iter = iter - tokenLookaheadCompensation;
+}
+
+BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorLeftParenthesisIterator(const TokenStringWrapper &tokenString, const unsigned int numberOfArgumentsBeforeOperator, const TokenStringWrapperIterator &tokenStringIter) const
+{
+    unsigned int argumentsBeforeOperatorCount = 0;
+    unsigned int reverseIteratorCompensation = 1;
+    TokenStringWrapperReverseIterator leftParenthesisIterator(tokenStringIter + reverseIteratorCompensation);
+    while(argumentsBeforeOperatorCount != numberOfArgumentsBeforeOperator)
+    {
+        leftParenthesisIterator++;
+        if(leftParenthesisIterator == tokenString.rend())
+        {
+            throw std::invalid_argument("There are arguments missing!"); //FIXME Needs Specialized Exception!
+        }
+
+        if(leftParenthesisIterator->token == ")")
+        {
+            //Parenthesis Analysis
+            try
+            {
+                findDelimiterScopeEndReverseIterator(tokenString, leftParenthesisIterator);
+            }
+            catch(const std::invalid_argument &)
+            {
+                throw std::invalid_argument("Parenthesis doesn't match!"); //FIXME Needs Specialized Exception!
+            }
+
+        }
+        else if(leftParenthesisIterator->token == "(")
+        {
+            throw std::invalid_argument("Encountered an unexpected '('!"); //FIXME Needs Specialized Exception!
+        }
+        leftParenthesisIterator->alreadyScanned = true;
+        argumentsBeforeOperatorCount++;
+    }
+
+    return (leftParenthesisIterator + reverseIteratorCompensation).base();
+}
+
+BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorRightParenthesisIterator(const TokenStringWrapper &tokenString, const unsigned int numberOfArgumentsAfterOperator, const TokenStringWrapperIterator &tokenStringIter) const
+{
+    unsigned int argumentsAfterOperatorCount = 0;
+    TokenStringWrapperIterator rightParenthesisIterator = tokenStringIter;
+    while(argumentsAfterOperatorCount != numberOfArgumentsAfterOperator)
+    {
+        rightParenthesisIterator++;
+        if(rightParenthesisIterator == tokenString.end())
+        {
+            throw std::invalid_argument("Index is out of bounds!"); //FIXME Needs Specialized Exception!
+        }
+
+        if(rightParenthesisIterator->token == "(")
+        {
+            //Parenthesis Analysis
+            try
+            {
+                rightParenthesisIterator = findDelimiterScopeEndIterator(tokenString, rightParenthesisIterator);
+            }
+            catch(const std::invalid_argument&)
+            {
+                throw std::invalid_argument("Parenthesis doesn't match!");
+            }
+        }
+        else if(tokenStringIter->token == ")")
+        {
+            throw std::invalid_argument("Encountered an unexpected ')'!"); //FIXME Needs Specialized Exception!
+        }
+        else
+        {
+        }
+        argumentsAfterOperatorCount++;
+    }
+
+    const unsigned int beforeTokenInsertCompensation = 1;
+    return rightParenthesisIterator + beforeTokenInsertCompensation;
 }

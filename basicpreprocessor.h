@@ -14,21 +14,6 @@ public:
     QString toString() const;
 
 private:
-
-    TokenStringWrapper wrapTokenString(const QString &string) const;
-    void setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const;
-    void considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &necessaryRecords) const;
-
-    TokenStringWrapperIterator findOperatorLeftParenthesisIterator(const TokenStringWrapper &tokenString,
-                                                                   const unsigned int numberOfArgumentsBeforeOperator,
-                                                                   const TokenStringWrapperIterator &tokenStringIter) const;
-    TokenStringWrapperIterator findOperatorRightParenthesisIterator(const TokenStringWrapper &tokenString,
-                                                                    const unsigned int numberOfArgumentsAfterOperator,
-                                                                    const TokenStringWrapperIterator &tokenStringIter) const;
-    void findDelimiterScopeEndIterator(const TokenStringWrapper &tokenString,
-                                       TokenStringWrapperIterator &iter) const;
-    void findDelimiterScopeEndReverseIterator(const TokenStringWrapper &tokenString,
-                                              TokenStringWrapperReverseIterator &iter) const;
     bool operatorParenthesisAreAlreadyPlaced(const TokenStringWrapper &tokenString,
                                              const TokenStringWrapperIterator &leftParenthesisIterator,
                                              const TokenStringWrapperIterator &rightParenthesisIterator) const;

@@ -10,6 +10,16 @@ bool Formula::operator!=(const Formula &other) const
     return !(*this == other);
 }
 
+QString Formula::toString() const
+{
+    return tokenString.toString();
+}
+
+QString Formula::formattedString() const
+{
+    return tokenString.formattedString();
+}
+
 Formula::Formula(const TokenString &tokenString) :
     tokenString(tokenString)
 {

@@ -14,12 +14,13 @@ public:
 
     void addTokenRecord(const QString &token,
                         const unsigned int position,
-                        const BasicProcessorTokenRecord::Associativity associativity,
-                        const int precedenceRank);
+                        const BasicProcessorTokenRecord::Associativity associativity = BasicProcessorTokenRecord::Associativity::Left,
+                        const int precedenceRank = 0); //FIXME
     void removeTokenRecord(const QString &tokenString);
 
-    unsigned int getPrecedenceRank(const QString &tokenString) const;
-
+    unsigned int getOperatorPrecedenceRank(const QString &tokenString) const;
+    unsigned int getOperatorPosition(const QString &tokenString) const;
+    BasicProcessorTokenRecord::Associativity getOperatorAssociativity(const QString &tokenString) const;
 
     QString processString(QString string) const = 0;
 
@@ -62,6 +63,20 @@ protected:
     typedef QLinkedList<TokenWrapper>::reverse_iterator TokenStringWrapperReverseIterator;
 
     const BasicProcessorTokenRecord *getTokenRecordPtr(const QString &token) const;
+
+    TokenStringWrapper wrapTokenString(const QString &string) const;
+    void setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const;
+    void considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &necessaryRecords) const;
+    TokenStringWrapperIterator findDelimiterScopeEndIterator(const TokenStringWrapper &tokenString,
+                                       TokenStringWrapperIterator iter) const;
+    void findDelimiterScopeEndReverseIterator(const TokenStringWrapper &tokenString,
+                                              TokenStringWrapperReverseIterator &iter) const;
+    TokenStringWrapperIterator findOperatorLeftParenthesisIterator(const TokenStringWrapper &tokenString,
+                                                                   const unsigned int numberOfArgumentsBeforeOperator,
+                                                                   const TokenStringWrapperIterator &tokenStringIter) const;
+    TokenStringWrapperIterator findOperatorRightParenthesisIterator(const TokenStringWrapper &tokenString,
+                                                                    const unsigned int numberOfArgumentsAfterOperator,
+                                                                    const TokenStringWrapperIterator &tokenStringIter) const;
 
     QString tokenStringWrapperToString(const TokenStringWrapper &tokenString) const;
 

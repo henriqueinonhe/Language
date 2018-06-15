@@ -26,6 +26,8 @@
 #include "basicpreprocessor.h"
 #include "stringprocessor.h"
 #include "formatter.h"
+#include "basicpostprocessor.h"
+#include "formula.h"
 #include "dirtyfix.h"
 
 TEST_CASE("TypeParsingTrees")
@@ -877,8 +879,49 @@ TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
 
 }
 
+TEST_CASE("Pre and Post Processed One Digit Arithmetic")
+{
+    TableSignature signature;
+
+    signature.addToken(CoreToken("0", Type("i")));
+    signature.addToken(CoreToken("1", Type("i")));
+    signature.addToken(CoreToken("2", Type("i")));
+    signature.addToken(CoreToken("3", Type("i")));
+    signature.addToken(CoreToken("4", Type("i")));
+    signature.addToken(CoreToken("5", Type("i")));
+    signature.addToken(CoreToken("6", Type("i")));
+    signature.addToken(CoreToken("7", Type("i")));
+    signature.addToken(CoreToken("8", Type("i")));
+    signature.addToken(CoreToken("9", Type("i")));
+    signature.addToken(CoreToken("Minus", Type("i->i")));
+    signature.addToken(CoreToken("Plus", Type("[i,i]->i")));
+    signature.addToken(CoreToken("Times", Type("[i,i]->i")));
+    signature.addToken(CoreToken("Power", Type("[i,i]->i")));
+
+    Parser parser(&signature, Type("i"));
+
+    //PreProcessor Setup
+    BasicPreProcessor preProcessor(&signature);
+
+    preProcessor.addTokenRecord("Plus", 1);
+    preProcessor.addTokenRecord("Times", 1);
+    preProcessor.addTokenRecord("Power", 1);
+    preProcessor.addTokenRecord("Minus", 0);
+
+    //PostProcessor Setup
+    BasicPostProcessor postProcessor(&signature);
+
+    postProcessor.addTokenRecord("Plus", 1);
+    postProcessor.addTokenRecord("Times", 1);
+    postProcessor.addTokenRecord("Power", 1);
+    postProcessor.addTokenRecord("Minus", 0);
+
+    //Tests
+    CHECK(postProcessor.processString(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")).formattedString()) == "1 Times 0 Plus 1 Plus Minus 0");
+
+}
+
 TEST_CASE("Dirty Fix")
 {
     DirtyFix::fix();
 }
-
