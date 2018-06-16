@@ -45,7 +45,7 @@ protected:
     void parenthesisAnalysis(const QVector<SubSentenceRecord> &subSentenceRecords, const SubSentenceRecord &mainOperatorRecord, TokenStringWrapper &tokenString) const;
     void setupFirstRecord(SubSentenceRecord &firstRecord, TokenStringWrapper &tokenString) const;
     void operatorPositionAnalysis(TokenStringWrapper &tokenString, SubSentenceRecord &mainOperatorRecord) const;
-    const unsigned int getOperatorArity(const SubSentenceRecord &mainSentenceRecord) const;
+    unsigned int getOperatorArity(const SubSentenceRecord &mainSentenceRecord) const;
     bool subSentenceIsAtomic(const TokenStringWrapperIterator &firstSubSentenceToken) const;
 };
 

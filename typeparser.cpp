@@ -150,11 +150,9 @@ void TypeParser::separateProductArguments(TypeParsingTreeIterator iter, QVector<
     {
         if(!tokenString.indexIsWithinBounds(argumentEndOffset))
         {
-
-            //NOTE Will this ever happen?
             const unsigned int argumentBeginIndex = iter->getTypeBeginIndex() + argumentBeginOffset;
             const unsigned int argumentEndIndex = iter->getTypeBeginIndex() + argumentEndOffset;
-            throw ParsingErrorException<TypeTokenString>("Type Token String ended before expected! Probably because the lack of a separator!",
+            throw ParsingErrorException<TypeTokenString>("Type Token String ended before expected!",
                                         argumentBeginIndex,
                                         argumentEndIndex,
                                         iter.goToRoot()->getTypeString());
@@ -172,9 +170,8 @@ void TypeParser::separateProductArguments(TypeParsingTreeIterator iter, QVector<
 
         if(isProductArgumentBreakPoint(leftSquareBracketCount, rightSquareBracketCount, tokenString[argumentEndOffset]))
         {
-            if(argumentEndOffset < argumentBeginOffset)
+            if(argumentEndOffset - tokenLookaheadCompensation < argumentBeginOffset)
             {
-                //NOTE Will this ever happen?
                 throw std::invalid_argument("Argument End Offset cannot be less than Argument Begin Offset!");
             }
 
@@ -202,13 +199,8 @@ void TypeParser::separateProductArguments(TypeParsingTreeIterator iter, QVector<
     }
 }
 
-void TypeParser::parseProductType(TypeParsingTreeIterator iter)
+void TypeParser::checkProductTypeHasAtLeastTwoArguments(const QVector<ProductArgumentOffsets> &offsetList, TypeParsingTreeIterator iter)
 {
-    const unsigned int firstLeftSquareBracketCompensation = 1;
-    QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(firstLeftSquareBracketCompensation, firstLeftSquareBracketCompensation)};
-
-    separateProductArguments(iter, offsetList);
-
     if(offsetList.size() == 1)
     {
         throw ParsingErrorException<TypeTokenString>("Product types must have at least two argumets!",
@@ -216,6 +208,15 @@ void TypeParser::parseProductType(TypeParsingTreeIterator iter)
                                         iter->getTypeEndIndex(),
                                         iter.goToRoot()->getTypeString());
     }
+}
+
+void TypeParser::parseProductType(TypeParsingTreeIterator iter)
+{
+    const unsigned int firstLeftSquareBracketCompensation = 1;
+    QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(firstLeftSquareBracketCompensation, firstLeftSquareBracketCompensation)};
+    separateProductArguments(iter, offsetList);
+
+    checkProductTypeHasAtLeastTwoArguments(offsetList, iter);
 
     std::for_each(offsetList.begin(), offsetList.end(), [&iter](const ProductArgumentOffsets &offsets)
     {
@@ -339,6 +340,7 @@ void TypeParser::parse(const TypeTokenString &type, Type *newType)
 
     setReturnAndArgumentsTypes(argumentsTypes, iter, returnType);
 
+    //Setup New Type
     newType->typeString = type;
     newType->returnType = returnType;
     newType->argumentsTypes = argumentsTypes;
@@ -351,7 +353,7 @@ shared_ptr<TypeParsingTree> TypeParser::getParsingTree(const QString &type)
     return parsingTree;
 }
 
-void TypeParser::buildParsingTree(const TypeTokenString &typeString) //FIXME Implement caching policy
+void TypeParser::buildParsingTree(const TypeTokenString &typeString)
 {
     TypeTokenString tokenString(typeString);
 

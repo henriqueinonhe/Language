@@ -110,8 +110,6 @@ QString BasicPreProcessor::processString(QString string) const
         }
     });
 
-    std::cout << tokenStringWrapperToString(tokenString).toStdString();
-
     return tokenStringWrapperToString(tokenString);
 }
 

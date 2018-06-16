@@ -37,7 +37,8 @@ TokenString Lexer::lex(const QString &string) const
             const int tokenLookaheadCompensation = 1;
             const int beginIndex = index;
             const int endIndex = findTokenBreakpointIndex(string, beginIndex) - tokenLookaheadCompensation;
-            const int tokenSpan = endIndex - beginIndex + 1;
+            const int tokenSpanCompensation = 1;
+            const int tokenSpan = endIndex - beginIndex + tokenSpanCompensation;
             const QString token = string.mid(beginIndex, tokenSpan);
 
             tokenString.tokenList.push_back(signature->getTokenPointer(token));

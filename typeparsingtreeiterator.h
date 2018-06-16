@@ -18,8 +18,8 @@ public:
 
     TypeParsingTree &getTree() const;
 
-    TypeParsingTreeNode *operator->();
-    TypeParsingTreeNode &operator*();
+    TypeParsingTreeNode *operator->() const;
+    TypeParsingTreeNode &operator*() const;
 
 private:
     bool checkPathStringValidity(const QString &path) const;

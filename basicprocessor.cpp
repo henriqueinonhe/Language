@@ -134,17 +134,30 @@ const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString
     throw std::invalid_argument("There is no record associated with this token!");
 }
 
-QString BasicProcessor::tokenStringWrapperToString(const BasicProcessor::TokenStringWrapper &tokenString) const
+QString BasicProcessor::tokenStringWrapperToString(BasicProcessor::TokenStringWrapper tokenString) const
 {
     QString string;
 
-    std::for_each(tokenString.begin(), tokenString.end(), [&string](const TokenWrapper &token)
+    for(TokenStringWrapperIterator iter = tokenString.begin(); iter != tokenString.end(); iter++)
     {
-        string += token.token;
-        string += " ";
-    });
+        string += iter->token;
+
+        if(tokenNeedsSubsequentSeparation(tokenString, iter))
+        {
+            string += " ";
+        }
+    }
 
     return string;
+}
+
+bool BasicProcessor::tokenNeedsSubsequentSeparation(const BasicProcessor::TokenStringWrapper &tokenString, const BasicProcessor::TokenStringWrapperIterator &iter) const
+{
+    const unsigned int tokenLookaheadCompensation = 1;
+
+    return iter->token != "(" &&
+           iter + tokenLookaheadCompensation != tokenString.end() &&
+           (iter + tokenLookaheadCompensation)->token != ")";
 }
 
 void BasicProcessor::setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const

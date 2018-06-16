@@ -262,37 +262,6 @@ TEST_CASE("TypeTokenString")
     CHECK_NOTHROW(TypeTokenString(""));
 }
 
-TEST_CASE("TypeParsingTree Printer") //Re check this whole thing
-{
-    TypeParsingTree tree(TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType"));
-    TypeParsingTreeIterator iter(&tree);
-
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Composition);
-    iter->appendChild(0,10);
-    iter->appendChild(12,12);
-
-    iter.goToChild(0);
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Product);
-
-    iter->appendChild(1,5);
-    iter->appendChild(7,9);
-
-    iter.goToChild(0);
-    //iter->setMainOperator(TypeParsingTreeNode::MainOperator::Union);  RECHECK THIS
-
-    iter->appendChild(2,2);
-    iter->appendChild(4,4);
-
-    iter.goToParent();
-
-    iter.goToChild(1);
-    iter->setMainOperator(TypeParsingTreeNode::MainOperator::Primitive);
-
-    iter->appendChild(8,8);
-
-    std::cout << tree.print().toStdString();
-}
-
 TEST_CASE("Type")
 {
     SECTION("Pass")
@@ -395,6 +364,17 @@ TEST_CASE("Core Token")
     CHECK_NOTHROW(CoreToken("Abacate", a));
     CHECK_NOTHROW(CoreToken("Afleflesis", a));
     CHECK_NOTHROW(CoreToken("Afleisis", a));
+    CHECK_NOTHROW(CoreToken("+", a));
+    CHECK_NOTHROW(CoreToken(">", a));
+    CHECK_NOTHROW(CoreToken("<", a));
+    CHECK_NOTHROW(CoreToken("-", a));
+    CHECK_NOTHROW(CoreToken("->", a));
+    CHECK_NOTHROW(CoreToken("<-", a));
+    CHECK_NOTHROW(CoreToken("&", a));
+    CHECK_NOTHROW(CoreToken("=", a));
+    CHECK_NOTHROW(CoreToken("|", a));
+    CHECK_NOTHROW(CoreToken("\\", a));
+    CHECK_NOTHROW(CoreToken("*", a));
 
     CHECK_THROWS(CoreToken("(", a));
     CHECK_THROWS(CoreToken(")", a));
@@ -668,9 +648,9 @@ TEST_CASE("Binding and Variable Tokens")
 
     SECTION("Binding Token")
     {
-        QVector<BindingToken::BindingRecord> records;
+        QVector<BindingRecord> records;
 
-        BindingToken::BindingRecord record1(0, QVector<unsigned int>{1});
+        BindingRecord record1(0, QVector<unsigned int>{1});
         records.push_back(record1);
 
         CHECK_NOTHROW(BindingToken("Forall", Type("[i,o]->o"), records));
@@ -698,8 +678,8 @@ TEST_CASE("First Order Logic (With TableSignature)")
     signature.addToken(VariableToken("x", Type("i")));
     signature.addToken(VariableToken("y", Type("i")));
 
-    QVector<BindingToken::BindingRecord> records;
-    records.push_back(BindingToken::BindingRecord(0, QVector<unsigned int>{1}));
+    QVector<BindingRecord> records;
+    records.push_back(BindingRecord(0, QVector<unsigned int>{1}));
 
     signature.addToken(BindingToken("Forall", Type("[i,o]->o"), records));
     signature.addToken(BindingToken("Exists", Type("[i,o]->o"), records));
@@ -897,6 +877,7 @@ TEST_CASE("Pre and Post Processed One Digit Arithmetic")
     signature.addToken(CoreToken("Plus", Type("[i,i]->i")));
     signature.addToken(CoreToken("Times", Type("[i,i]->i")));
     signature.addToken(CoreToken("Power", Type("[i,i]->i")));
+    signature.addToken(CoreToken("CPlus", Type("i->(i->i)")));
 
     Parser parser(&signature, Type("i"));
 
@@ -917,9 +898,19 @@ TEST_CASE("Pre and Post Processed One Digit Arithmetic")
     postProcessor.addTokenRecord("Minus", 0);
 
     //Tests
-    std::cout << postProcessor.processString(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")).formattedString()).toStdString();
     CHECK(postProcessor.processString(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")).formattedString()) == "1 Times 0 Plus 1 Plus Minus 0");
+    CHECK(postProcessor.processString(parser.parse(preProcessor.processString("Minus (2 Power (3 Plus 4) Times 5)")).formattedString()).toStdString() == "Minus (2 Power (3 Plus 4) Times 5)");
 
+    //Curried Plus
+    CHECK_NOTHROW(parser.parse(preProcessor.processString("((CPlus 2) 3 Plus 5)")));
+
+}
+
+TEST_CASE("Formatter")
+{
+    Formatter formatter;
+
+    //Isto tem que ser feito depois!
 }
 
 TEST_CASE("Dirty Fix")

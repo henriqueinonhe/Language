@@ -22,7 +22,7 @@ QString Type::toString() const
     return typeString.toString();
 }
 
-Type Type::checkType(const QVector<TypeTokenString> &argumentsTypes) const
+Type Type::applyArguments(const QVector<TypeTokenString> &argumentsTypes) const
 {
     if(argumentsTypes == this->argumentsTypes)
     {

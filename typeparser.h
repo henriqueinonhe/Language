@@ -48,6 +48,7 @@ private:
     static bool isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount);
 
     static void separateProductArguments(TypeParsingTreeIterator iter, QVector<ProductArgumentOffsets> &offsetList);
+    static void checkProductTypeHasAtLeastTwoArguments(const QVector<ProductArgumentOffsets> &offsetList, TypeParsingTreeIterator iter);
     static unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString, TypeParsingTreeIterator iter);
     static void validateCompositionRightSideArgument(TypeParsingTreeIterator iter, const unsigned int compositionOperatorOffset);
 

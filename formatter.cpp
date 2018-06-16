@@ -9,7 +9,7 @@ QString Formatter::format(QString string) const
 {
     std::for_each(processors.begin(), processors.end(), [&string](const ProcessorEntry processor)
     {
-        processor.processString(string);
+        string = processor.processString(string);
     });
 
     return string;

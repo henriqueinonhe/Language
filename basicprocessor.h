@@ -78,7 +78,8 @@ protected:
                                                                     const unsigned int numberOfArgumentsAfterOperator,
                                                                     const TokenStringWrapperIterator &tokenStringIter) const;
 
-    QString tokenStringWrapperToString(const TokenStringWrapper &tokenString) const;
+    QString tokenStringWrapperToString(TokenStringWrapper tokenString) const;
+    bool tokenNeedsSubsequentSeparation(const TokenStringWrapper &tokenString, const TokenStringWrapperIterator &iter) const;
 
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
     Signature *signature;

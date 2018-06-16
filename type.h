@@ -20,7 +20,7 @@ public:
 
     QString toString() const;
 
-    Type checkType(const QVector<TypeTokenString> &argumentsTypes) const;
+    Type applyArguments(const QVector<TypeTokenString> &argumentsTypes) const;
 
     TypeTokenString getTypeString() const;
 

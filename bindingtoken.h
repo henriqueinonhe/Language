@@ -2,41 +2,11 @@
 #define BINDINGTOKEN_H
 
 #include "coretoken.h"
-#include "containerauxiliarytools.h"
+#include "bindingrecord.h"
 
 class BindingToken : public CoreToken
 {
 public:
-    struct BindingRecord
-    {
-        BindingRecord(){}
-
-        BindingRecord(const unsigned int bindingArgumentIndex,
-                      const QVector<unsigned int> &boundArgumentsIndexes) :
-            bindingArgumentIndex(bindingArgumentIndex),
-            boundArgumentsIndexes(boundArgumentsIndexes)
-        {
-            if(ContainerAuxiliaryTools<QVector<unsigned int>>::checkForDuplicates(boundArgumentsIndexes))
-            {
-                throw std::invalid_argument("");
-            }
-        }
-
-        bool operator==(const BindingRecord &other) const
-        {
-            return this->bindingArgumentIndex == other.bindingArgumentIndex &&
-                   this->boundArgumentsIndexes == other.boundArgumentsIndexes;
-        }
-
-        bool operator!=(const BindingRecord &other) const
-        {
-            return !(*this == other);
-        }
-
-        unsigned int bindingArgumentIndex;
-        QVector<unsigned int> boundArgumentsIndexes;
-    };
-
     BindingToken(const QString &token,
                  const Type &type,
                  const QVector<BindingRecord> &bindingRecords);
@@ -57,6 +27,13 @@ private:
     QVector<unsigned int> gatherBoundArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
 
     QVector<BindingRecord> bindingRecords;
+    void checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const;
+    void checkDuplicateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
+    void checkBindingRecordsArgumentsConsistency(const QVector<BindingRecord> &bindingRecords) const;
+    unsigned int getGreatestBindingArgumentNumber(const QVector<unsigned int> &bindingArgumentsIndexes) const;
+    unsigned int getGreatestBoundArgumentNumber(const QVector<unsigned int> &boundArgumentsIndexes) const;
+    void checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned int> &bindingArgumentsIndexes) const;
+    void checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const;
 };
 
 #endif // BINDINGTOKEN_H

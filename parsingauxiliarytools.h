@@ -159,7 +159,6 @@ typename StringClass::reverse_iterator findDelimiterScopeEndReverseIterator(cons
     return iter - tokenLookaheadCompensation;
 }
 
-
 }
 
 #endif // PARSINGAUXILIARYTOOLS_H

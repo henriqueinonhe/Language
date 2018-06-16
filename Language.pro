@@ -41,7 +41,8 @@ SOURCES += main.cpp \
     basicpreprocessor.cpp \
     basicpostprocessor.cpp \
     basicprocessortokenrecord.cpp \
-    basicprocessor.cpp
+    basicprocessor.cpp \
+    bindingrecord.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -87,4 +88,5 @@ HEADERS += \
     basicpreprocessor.h \
     basicpostprocessor.h \
     basicprocessortokenrecord.h \
-    basicprocessor.h
+    basicprocessor.h \
+    bindingrecord.h

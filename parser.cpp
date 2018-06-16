@@ -20,7 +20,7 @@ Formula Parser::parse(const QString &sentence)
 
     performVariableBindingChecking();
 
-    std::cout << parsingTree->print().toStdString();
+    //std::cout << parsingTree->print().toStdString();
 
     return Formula(lexer.lex(sentence));
 }
@@ -256,7 +256,7 @@ void Parser::checkType(ParsingTreeIterator iter)
 
         setArgumentsTypes(argumentsTypes, iter);
 
-        iter->setType(mainOperatorType.checkType(argumentsTypes));
+        iter->setType(mainOperatorType.applyArguments(argumentsTypes));
     }
 }
 
@@ -352,11 +352,11 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode)
 {
     const BindingToken *bindingToken = dynamic_cast<BindingToken *>(&parentNode->children.first()->getTokenString().first());
     QVector<std::shared_ptr<ParsingTreeNode>> &children = parentNode->children;
-    QVector<BindingToken::BindingRecord> records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
+    QVector<BindingRecord> records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
 
     std::for_each(records.begin(),
                   records.end(),
-                  [&parentNode, &children, this](const BindingToken::BindingRecord &record)
+                  [&parentNode, &children, this](const BindingRecord &record)
     {
         const unsigned int firstChildIsBindingTokenItselfCompensation = 1;
         const unsigned int bindingArgumentChildIndex = record.bindingArgumentIndex + firstChildIsBindingTokenItselfCompensation;

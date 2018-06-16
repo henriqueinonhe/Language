@@ -79,12 +79,12 @@ TypeParsingTree &TypeParsingTreeIterator::getTree() const
     return *tree;
 }
 
-TypeParsingTreeNode *TypeParsingTreeIterator::operator->()
+TypeParsingTreeNode *TypeParsingTreeIterator::operator->() const
 {
     return currentNode;
 }
 
-TypeParsingTreeNode &TypeParsingTreeIterator::operator*()
+TypeParsingTreeNode &TypeParsingTreeIterator::operator*() const
 {
     return *currentNode;
 }
