@@ -17,11 +17,11 @@ BasicProcessorTokenRecord::BasicProcessorTokenRecord(const CoreToken &token, con
 
     if(!token.getType().isOperator())
     {
-        throw std::invalid_argument("The token associated with the record should be an operator!");
+        throw std::invalid_argument(QString("The token (" + token.getString() + ") associated with the record should be an operator!").toStdString());
     }
 
     if(operatorPosition > numberOfArguments)
     {
-        throw std::invalid_argument("The operator position is inconsistent with the number of arguments the operator takes!");
+        throw std::invalid_argument(QString("The operator position (" + QString::number(operatorPosition) + ") is inconsistent with the number of arguments(" + QString::number(numberOfArguments) + ") the operator takes!").toStdString());
     }
 }

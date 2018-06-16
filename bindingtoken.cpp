@@ -101,6 +101,14 @@ void BindingToken::checkArgumentIsBothBindingAndBound(const QVector<unsigned int
     }
 }
 
+void BindingToken::checkNumberOfArgumentsConsistency(const unsigned int greatestBindingArgumentNumber, const unsigned int greatestBoundArgumentNumber, const unsigned int numberOfArguments) const
+{
+    if(greatestBindingArgumentNumber > numberOfArguments || greatestBoundArgumentNumber > numberOfArguments)
+    {
+        throw std::invalid_argument("The number of arguments required by the binding records is inconsistent with the number of arguments of the token's type you provided.");
+    }
+}
+
 void BindingToken::checkBindingRecordsArgumentsConsistency(const QVector<BindingRecord> &bindingRecords) const
 {
     const QVector<unsigned int> bindingArgumentsIndexes = gatherBindingArgumentsIndexes(bindingRecords);
@@ -113,10 +121,7 @@ void BindingToken::checkBindingRecordsArgumentsConsistency(const QVector<Binding
     const unsigned int greatestBoundArgumentNumber = getGreatestBoundArgumentNumber(boundArgumentsIndexes);
     const unsigned int numberOfArguments = type.getArgumentsTypes().size();
 
-    if(greatestBindingArgumentNumber > numberOfArguments || greatestBoundArgumentNumber > numberOfArguments)
-    {
-        throw std::invalid_argument("The number of arguments required by the binding records is inconsistent with the number of arguments of the token's type you provided.");
-    }
+    checkNumberOfArgumentsConsistency(greatestBindingArgumentNumber, greatestBoundArgumentNumber, numberOfArguments);
 }
 
 void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const

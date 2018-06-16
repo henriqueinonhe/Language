@@ -11,7 +11,7 @@ BindingRecord::BindingRecord(const unsigned int bindingArgumentIndex, const QVec
 {
     if(ContainerAuxiliaryTools<QVector<unsigned int>>::checkForDuplicates(boundArgumentsIndexes))
     {
-        throw std::invalid_argument("");
+        throw std::invalid_argument(""); //FIXME sdas
     }
 }
 

@@ -34,6 +34,7 @@ private:
     unsigned int getGreatestBoundArgumentNumber(const QVector<unsigned int> &boundArgumentsIndexes) const;
     void checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const;
+    void checkNumberOfArgumentsConsistency(const unsigned int greatestBindingArgumentNumber, const unsigned int greatestBoundArgumentNumber, const unsigned int numberOfArguments) const;
 };
 
 #endif // BINDINGTOKEN_H

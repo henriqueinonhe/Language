@@ -18,6 +18,7 @@ private:
     int findTokenBreakpointIndex(const QString &string, int beginIndex) const;
 
     Signature *signature;
+    void lexCoreToken(TokenString &tokenString, int &index, const QString &string) const;
 };
 
 #endif // LEXER_H

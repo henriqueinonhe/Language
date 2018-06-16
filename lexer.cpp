@@ -9,6 +9,20 @@ Lexer::Lexer(Signature * const signature) :
     }
 }
 
+void Lexer::lexCoreToken(TokenString &tokenString, int &index, const QString &string) const
+{
+    const int tokenLookaheadCompensation = 1;
+    const int beginTokenIndex = index;
+    const int endTokenIndex = findTokenBreakpointIndex(string, beginTokenIndex) - tokenLookaheadCompensation;
+    const int tokenSpanCompensation = 1;
+    const int tokenSpan = endTokenIndex - beginTokenIndex + tokenSpanCompensation;
+    const QString token = string.mid(beginTokenIndex, tokenSpan);
+
+    tokenString.tokenList.push_back(signature->getTokenPointer(token));
+
+    index = endTokenIndex;
+}
+
 TokenString Lexer::lex(const QString &string) const
 {
     //There are two phases in lexing:
@@ -34,16 +48,7 @@ TokenString Lexer::lex(const QString &string) const
         }
         else
         {
-            const int tokenLookaheadCompensation = 1;
-            const int beginIndex = index;
-            const int endIndex = findTokenBreakpointIndex(string, beginIndex) - tokenLookaheadCompensation;
-            const int tokenSpanCompensation = 1;
-            const int tokenSpan = endIndex - beginIndex + tokenSpanCompensation;
-            const QString token = string.mid(beginIndex, tokenSpan);
-
-            tokenString.tokenList.push_back(signature->getTokenPointer(token));
-
-            index = endIndex;
+            lexCoreToken(tokenString, index, string);
         }
     }
 
