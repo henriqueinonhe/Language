@@ -7,6 +7,14 @@ TableSignature::TableSignature()
     addToken(PunctuationToken(")"));
 }
 
+bool TableSignature::tokenIsAlreadyPresentInSignature(const Token &token) const
+{
+    return std::any_of(tokenTable.begin(), tokenTable.end(), [&token](const shared_ptr<Token> &tableToken)
+    {
+        return token.getString() == tableToken->getString();
+    });
+}
+
 Token *TableSignature::getTokenPointer(const QString &token)
 {
     for(int index = 0; index < tokenTable.size(); index++)
@@ -24,22 +32,22 @@ Token *TableSignature::getTokenPointer(const QString &token)
     throw std::invalid_argument(errorMsg.toStdString().data());
 }
 
+void TableSignature::pushTokenPointerToTable(const Token &token)
+{
+    shared_ptr<Token> ptr;
+    ptr.reset(token.getAllocatedClone());
+
+    tokenTable.push_back(ptr);
+}
+
 void TableSignature::addToken(const Token &token)
 {
-    const bool tokenAlreadyPresent = std::any_of(tokenTable.begin(), tokenTable.end(), [&token](const shared_ptr<Token> &tableToken)
-    {
-        return token.getString() == tableToken->getString();
-    });
-
-    if(tokenAlreadyPresent)
+    if(tokenIsAlreadyPresentInSignature(token))
     {
         throw std::invalid_argument("This token is already present in the table!");
     }
     else
     {
-        shared_ptr<Token> ptr;
-        ptr.reset(token.allocatedClone());
-
-        tokenTable.push_back(ptr);
+        pushTokenPointerToTable(token);
     }
 }

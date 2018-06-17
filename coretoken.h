@@ -14,7 +14,7 @@ public:
 
     virtual QString tokenClass() const;
 
-    virtual Token *allocatedClone() const;
+    virtual Token *getAllocatedClone() const;
 
 protected:
     Type type;

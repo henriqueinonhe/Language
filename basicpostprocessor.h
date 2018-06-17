@@ -8,7 +8,7 @@ class BasicPostProcessor : public BasicProcessor
 public:
     BasicPostProcessor(Signature * const signature);
 
-    QString processString(QString string) const;
+    QString processString(const QString &string) const;
 
     QString toString() const;
 

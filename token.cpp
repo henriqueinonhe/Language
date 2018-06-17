@@ -43,7 +43,7 @@ QString Token::tokenClass() const
     return "Token";
 }
 
-Token *Token::allocatedClone() const
+Token *Token::getAllocatedClone() const
 {
     return new Token(*this);
 }

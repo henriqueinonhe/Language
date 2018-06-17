@@ -72,7 +72,7 @@ void BasicPreProcessor::processToken(TokenStringWrapper &tokenString, const Toke
 
 
 #include <iostream>
-QString BasicPreProcessor::processString(QString string) const
+QString BasicPreProcessor::processString(const QString &string) const
 {
     //1. Lexing
     TokenStringWrapper tokenString = wrapTokenString(string);
@@ -116,5 +116,47 @@ QString BasicPreProcessor::processString(QString string) const
 QString BasicPreProcessor::toString() const
 {
     return "Basic PreProcessor (Operator position, precendece and associativity)";
+}
+
+void BasicPreProcessor::setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const
+{
+    for(TokenStringWrapperIterator tokenIter = tokenString.begin(); tokenIter != tokenString.end(); tokenIter++)
+    {
+        considerToken(tokenIter, auxiliaryRecords);
+    }
+
+    std::sort(auxiliaryRecords.begin(), auxiliaryRecords.end(), [](const AuxiliaryTokenRecord &record1, const AuxiliaryTokenRecord &record2)
+    {
+        return record1.precedenceRank < record2.precedenceRank;
+    });
+}
+
+
+
+void BasicPreProcessor::considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const
+{
+    bool matchingRecordFound = false;
+    for(auto record = auxiliaryRecords.begin(); record != auxiliaryRecords.end(); record++)
+    {
+        if(tokenIter->token == record->record->token)
+        {
+            matchingRecordFound = true;
+            record->tokenIterators.push_back(tokenIter);
+            break;
+        }
+    }
+
+    if(!matchingRecordFound)
+    {
+        try
+        {
+            auxiliaryRecords.push_back(AuxiliaryTokenRecord(const_cast<BasicProcessorTokenRecord *>(getTokenRecordPtr(tokenIter->token)), getOperatorPrecedenceRank(tokenIter->token)));
+            auxiliaryRecords.last().tokenIterators.push_back(tokenIter);
+        }
+        catch(const std::invalid_argument &)
+        {
+
+        }
+    }
 }
 

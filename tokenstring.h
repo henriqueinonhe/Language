@@ -21,8 +21,8 @@ public:
     Token &first() const;
     Token &last() const;
 
-    TokenString &insert(const unsigned int index, const QString &token);
-    TokenString &swapTokens(const unsigned int index1, const unsigned int index2);
+    TokenString &insert(const unsigned int index, const QString &token); //Deprecated
+    TokenString &swapTokens(const unsigned int index1, const unsigned int index2);//Deprecated
 
     bool isLastIndex(const unsigned int index) const;
     bool indexIsWithinBounds(const unsigned int index) const;

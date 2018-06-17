@@ -6,7 +6,7 @@
 class StringProcessor
 {
 public:
-    virtual QString processString(QString string) const = 0;
+    virtual QString processString(const QString &string) const = 0;
 
     virtual QString toString() const = 0;
 };

@@ -35,7 +35,7 @@ private:
         {
         }
 
-        QString processString(QString string) const
+        QString processString(const QString &string) const
         {
             if(isOnline)
             {

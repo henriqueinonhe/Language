@@ -11,7 +11,7 @@ QString VariableToken::tokenClass() const
     return "VariableToken";
 }
 
-Token *VariableToken::allocatedClone() const
+Token *VariableToken::getAllocatedClone() const
 {
     return new VariableToken(*this);
 }

@@ -10,7 +10,7 @@ public:
 
     virtual QString tokenClass() const;
 
-    virtual Token *allocatedClone() const;
+    virtual Token *getAllocatedClone() const;
 
 protected:
     virtual bool isEqual(const Token &other) const;

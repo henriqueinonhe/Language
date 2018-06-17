@@ -17,6 +17,8 @@ public:
 
     unsigned int bindingArgumentIndex;
     QVector<unsigned int> boundArgumentsIndexes;
+private:
+    void checkBoundArgumentIndexesDuplicates(const QVector<unsigned int> &boundArgumentsIndexes);
 };
 
 #endif // BINDINGRECORD_H

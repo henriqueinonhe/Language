@@ -15,7 +15,7 @@ public:
 
     virtual QString tokenClass() const;
 
-    virtual Token *allocatedClone() const;
+    virtual Token *getAllocatedClone() const;
 
 protected:
     virtual bool isEqual(const Token &other) const;
@@ -29,7 +29,7 @@ private:
     QVector<BindingRecord> bindingRecords;
     void checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const;
     void checkDuplicateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
-    void checkBindingRecordsArgumentsConsistency(const QVector<BindingRecord> &bindingRecords) const;
+    void validateBindingRecordsArguments(const QVector<BindingRecord> &bindingRecords) const;
     unsigned int getGreatestBindingArgumentNumber(const QVector<unsigned int> &bindingArgumentsIndexes) const;
     unsigned int getGreatestBoundArgumentNumber(const QVector<unsigned int> &boundArgumentsIndexes) const;
     void checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned int> &bindingArgumentsIndexes) const;

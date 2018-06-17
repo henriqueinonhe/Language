@@ -42,7 +42,7 @@ QString BindingToken::tokenClass() const
     return "BindingToken";
 }
 
-Token *BindingToken::allocatedClone() const
+Token *BindingToken::getAllocatedClone() const
 {
     return new BindingToken(*this);
 }
@@ -109,7 +109,7 @@ void BindingToken::checkNumberOfArgumentsConsistency(const unsigned int greatest
     }
 }
 
-void BindingToken::checkBindingRecordsArgumentsConsistency(const QVector<BindingRecord> &bindingRecords) const
+void BindingToken::validateBindingRecordsArguments(const QVector<BindingRecord> &bindingRecords) const
 {
     const QVector<unsigned int> bindingArgumentsIndexes = gatherBindingArgumentsIndexes(bindingRecords);
     checkDuplicatesBindingArgumentsIndexes(bindingArgumentsIndexes);
@@ -128,5 +128,5 @@ void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingR
 {
     checkEmptyRecords(bindingRecords);
     checkDuplicateBindingRecords(bindingRecords);
-    checkBindingRecordsArgumentsConsistency(bindingRecords);
+    validateBindingRecordsArguments(bindingRecords);
 }

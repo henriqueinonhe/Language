@@ -20,7 +20,7 @@ QString CoreToken::tokenClass() const
     return "CoreToken";
 }
 
-Token *CoreToken::allocatedClone() const
+Token *CoreToken::getAllocatedClone() const
 {
     return new CoreToken(*this);
 }

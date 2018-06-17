@@ -111,6 +111,8 @@ TokenString &TokenString::insert(const unsigned int index, const QString &token)
 {
     //NOTE This is more complex than it seems, must be tested!
     //Rethink This!
+
+    //Do I really need this?
     if(index > size())
     {
         throw std::invalid_argument("Index is out of bounds!");

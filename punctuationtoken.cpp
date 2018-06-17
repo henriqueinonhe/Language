@@ -19,7 +19,7 @@ QString PunctuationToken::tokenClass() const
     return "PunctuationToken";
 }
 
-Token *PunctuationToken::allocatedClone() const
+Token *PunctuationToken::getAllocatedClone() const
 {
     return new PunctuationToken(*this);
 }

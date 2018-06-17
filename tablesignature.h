@@ -17,9 +17,10 @@ public:
     void addToken(const Token &token);
 
 private:
+    bool tokenIsAlreadyPresentInSignature(const Token &token) const;
 
     QVector<shared_ptr<Token>> tokenTable;
-
+    void pushTokenPointerToTable(const Token &token);
 };
 
 #endif // TABLESIGNATURE_H

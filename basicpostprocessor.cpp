@@ -14,7 +14,7 @@ void BasicPostProcessor::setupFirstRecord(SubSentenceRecord &firstRecord, TokenS
     firstRecord.operatorIterator = tokenString.begin() + parenthesisCompensation;
 }
 
-QString BasicPostProcessor::processString(QString string) const
+QString BasicPostProcessor::processString(const QString &string) const
 {
     //1. Lexing
     TokenStringWrapper tokenString = wrapTokenString(string);
