@@ -29,7 +29,7 @@ private:
     };
 
     void setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const;
-    void considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &necessaryRecords) const;
+    void considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &auxilaryRecords) const;
     bool operatorParenthesisAreAlreadyPlaced(const TokenStringWrapper &tokenString,
                                              const TokenStringWrapperIterator &leftParenthesisIterator,
                                              const TokenStringWrapperIterator &rightParenthesisIterator) const;

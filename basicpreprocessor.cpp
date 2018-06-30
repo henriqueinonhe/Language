@@ -54,11 +54,11 @@ void BasicPreProcessor::moveOperator(TokenStringWrapper &tokenString, const Toke
 void BasicPreProcessor::processToken(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &tokenStringIter, const AuxiliaryTokenRecord &record) const
 {
     //Right to Left Scanning
-    const unsigned int numberOfArgumentsBeforeOperator = record.record->operatorPosition;
+    const unsigned int numberOfArgumentsBeforeOperator = record.record->findTokenSubRecord(tokenStringIter->token).operatorPosition;
     const TokenStringWrapperIterator leftParenthesisInsertIterator = findOperatorLeftParenthesisIterator(tokenString, numberOfArgumentsBeforeOperator, tokenStringIter);
 
     //Left to Right Scanning
-    const unsigned int numberOfArgumentsAfterOperator = record.record->numberOfArguments - numberOfArgumentsBeforeOperator;
+    const unsigned int numberOfArgumentsAfterOperator = record.record->findTokenSubRecord(tokenStringIter->token).numberOfArguments - numberOfArgumentsBeforeOperator;
     const TokenStringWrapperIterator rightParenthesisInsertIterator = findOperatorRightParenthesisIterator(tokenString, numberOfArgumentsAfterOperator, tokenStringIter);
 
     if(!operatorParenthesisAreAlreadyPlaced(tokenString, leftParenthesisInsertIterator, rightParenthesisInsertIterator))
@@ -84,7 +84,7 @@ QString BasicPreProcessor::processString(const QString &string) const
     //3. Processing
     std::for_each(auxiliaryRecords.begin(), auxiliaryRecords.end(), [&tokenString, this](const AuxiliaryTokenRecord &record)
     {
-        if(record->associativity == BasicProcessorTokenRecord::Associativity::Left)
+        if(record.record->associativity == BasicProcessorTokenRecord::Associativity::Left)
         {
             std::for_each(record.tokenIterators.begin(), record.tokenIterators.end(), [&tokenString, this, &record](const TokenStringWrapperIterator &tokenStringIter)
             {
@@ -133,12 +133,12 @@ void BasicPreProcessor::setupAuxiliaryRecords(TokenStringWrapper &tokenString, Q
 
 
 
-void BasicPreProcessor::considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const
+void BasicPreProcessor::considerToken(const TokenStringWrapperIterator &tokenIter, QVector<AuxiliaryTokenRecord> &auxilaryRecords) const
 {
     bool matchingRecordFound = false;//NOTE Make it's own function
-    for(auto record = auxiliaryRecords.begin(); record != auxiliaryRecords.end(); record++)
+    for(auto record = auxilaryRecords.begin(); record != auxilaryRecords.end(); record++)
     {
-        if(record->record->token == tokenIter->token)
+        if(record->record->hasTokenAsSubRecord(tokenIter->token))
         {
             matchingRecordFound = true;
             record->tokenIterators.push_back(tokenIter);
@@ -150,8 +150,8 @@ void BasicPreProcessor::considerToken(const TokenStringWrapperIterator &tokenIte
     {
         try
         {
-            auxiliaryRecords.push_back(AuxiliaryTokenRecord(const_cast<BasicProcessorTokenRecord *>(getTokenRecordPtr(tokenIter->token)), getOperatorPrecedenceRank(tokenIter->token)));
-            auxiliaryRecords.last().tokenIterators.push_back(tokenIter);
+            auxilaryRecords.push_back(AuxiliaryTokenRecord(const_cast<BasicProcessorTokenRecord *>(getTokenRecordPtr(tokenIter->token)), getOperatorPrecedenceRank(tokenIter->token)));
+            auxilaryRecords.last().tokenIterators.push_back(tokenIter);
         }
         catch(const std::invalid_argument &)
         {

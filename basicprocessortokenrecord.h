@@ -20,11 +20,33 @@ public:
     BasicProcessorTokenRecord(const CoreToken &token,
                               const unsigned int operatorPosition,
                               const Associativity associativity);
+    struct TokenSubRecord
+    {
+        TokenSubRecord()
+        {
+        }
+
+        TokenSubRecord(const QString &token,
+                       const unsigned int operatorPosition,
+                       const unsigned int numberOfArguments) :
+            token(token),
+            operatorPosition(operatorPosition),
+            numberOfArguments(numberOfArguments)
+        {}
+
+        QString token;
+        unsigned int operatorPosition;
+        unsigned int numberOfArguments;
+    };
+
+    bool hasTokenAsSubRecord(const QString &token) const;
+    TokenSubRecord findTokenSubRecord(const QString &token) const;
 
 private:
-    QString token;
-    unsigned int operatorPosition;
-    unsigned int numberOfArguments;
+
+    bool checkExistsTokenSubRecordDuplicate(const QString &token) const;
+
+    QVector<TokenSubRecord> tokenSubRecordList;
     Associativity associativity;
 
     friend class BasicProcessor;

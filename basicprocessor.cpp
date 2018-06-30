@@ -6,24 +6,54 @@ BasicProcessor::BasicProcessor(Signature * const signature) :
 
 }
 
-void BasicProcessor::addTokenRecord(const QString &token, const unsigned int position, const BasicProcessorTokenRecord::Associativity associativity, const int precedenceRank)
+void BasicProcessor::addTokenRecord(const QString &token, const unsigned int position, const int precedenceRank, const BasicProcessorTokenRecord::Associativity associativity)
 {
-    const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
-    const BasicProcessorTokenRecord newRecord(coreToken, position, associativity);
-    bool conflictingRecord = std::any_of(tokenRecords.begin(), tokenRecords.end(), [&newRecord](const BasicProcessorTokenRecord &record)
-    {
-        return newRecord.token == record.token;
-    });
+    checkExistsConflictingTokenRecord(token);
 
-    if(conflictingRecord)
+    if(0 <= precedenceRank  && precedenceRank < tokenRecords.size())
+    {
+        auto tokenPositionIterator = tokenRecords.begin() + precedenceRank;
+
+        if(tokenPositionIterator->associativity != associativity)
+        {
+            throw std::invalid_argument("Associativity mismatch!");
+        }
+
+        const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
+        tokenPositionIterator->tokenSubRecordList.push_back(BasicProcessorTokenRecord::TokenSubRecord(token, position, coreToken.getType().getNumberOfArguments()));
+    }
+    else
+    {
+        const int precedenceRankBeforeIteratorCompensation = 1;
+        insertTokenRecord(token, position, precedenceRank + precedenceRankBeforeIteratorCompensation, associativity);
+    }
+
+}
+
+void BasicProcessor::checkExistsConflictingTokenRecord(const QString &token)
+{
+    if(std::any_of(tokenRecords.begin(), tokenRecords.end(), [&token](const BasicProcessorTokenRecord &record)
+    {
+        return std::any_of(record.tokenSubRecordList.begin(), record.tokenSubRecordList.end(), [&token](const BasicProcessorTokenRecord::TokenSubRecord &subRecord)
+        {
+            return subRecord.token == token;
+        });
+    }))
     {
         throw std::invalid_argument("There is already a record with this token!");
     }
+}
 
-    if(precedenceRank >= 0)
+void BasicProcessor::insertTokenRecord(const QString &token, const unsigned int position, const int precedenceRank, const BasicProcessorTokenRecord::Associativity associativity)
+{
+    const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
+    const BasicProcessorTokenRecord newRecord(coreToken, position, associativity);
+
+    checkExistsConflictingTokenRecord(token);
+
+    if(0 <= precedenceRank && precedenceRank < tokenRecords.size())
     {
-        auto insertPosition = tokenRecords.begin();
-        insertPosition += precedenceRank;
+        auto insertPosition = tokenRecords.begin() + precedenceRank;
         tokenRecords.insert(insertPosition, newRecord);
     }
     else
@@ -34,11 +64,12 @@ void BasicProcessor::addTokenRecord(const QString &token, const unsigned int pos
 
 void BasicProcessor::removeTokenRecord(const QString &tokenString)
 {
+    //FIXME!
     bool tokenFound = false;
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
     {
-        if(iter->token == tokenString)
+        if(iter->hasTokenAsSubRecord(tokenString))
         {
             tokenRecords.erase(iter);
             tokenFound = true;
@@ -60,7 +91,7 @@ unsigned int BasicProcessor::getOperatorPrecedenceRank(const QString &tokenStrin
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++, precedenceRank++)
     {
-        if(iter->token == tokenString)
+        if(iter->hasTokenAsSubRecord(tokenString))
         {
             tokenFound = true;
             break;
@@ -82,9 +113,9 @@ unsigned int BasicProcessor::getOperatorPosition(const QString &tokenString) con
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
     {
-        if(iter->token == tokenString)
+        if(iter->hasTokenAsSubRecord(tokenString))
         {
-            operatorPosition = iter->operatorPosition;
+            operatorPosition = iter->findTokenSubRecord(tokenString).operatorPosition;
             tokenFound = true;
             break;
         }
@@ -105,7 +136,7 @@ BasicProcessorTokenRecord::Associativity BasicProcessor::getOperatorAssociativit
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
     {
-        if(iter->token == tokenString)
+        if(iter->hasTokenAsSubRecord(tokenString))
         {
             associativity = iter->associativity;
             tokenFound = true;
@@ -125,7 +156,7 @@ const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString
 {
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
     {
-        if(iter->token == token)
+        if(iter->hasTokenAsSubRecord(token))
         {
             return &(*iter);
         }

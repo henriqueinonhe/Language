@@ -12,8 +12,12 @@ public:
 
     void addTokenRecord(const QString &token,
                         const unsigned int position,
-                        const BasicProcessorTokenRecord::Associativity associativity = BasicProcessorTokenRecord::Associativity::Left,
-                        const int precedenceRank = 0); //FIXME
+                        const int precedenceRank = -1,
+                        const BasicProcessorTokenRecord::Associativity associativity = BasicProcessorTokenRecord::Associativity::Left);
+    void insertTokenRecord(const QString &token,
+                        const unsigned int position,
+                        const int precedenceRank = -1,
+                        const BasicProcessorTokenRecord::Associativity associativity = BasicProcessorTokenRecord::Associativity::Left); //FIXME
     void removeTokenRecord(const QString &tokenString);
 
     unsigned int getOperatorPrecedenceRank(const QString &tokenString) const;
@@ -66,6 +70,8 @@ protected:
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
     Signature *signature;
 
+private:
+    void checkExistsConflictingTokenRecord(const QString &token);
 };
 
 #endif // BASICPROCESSOR_H

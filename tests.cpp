@@ -762,16 +762,17 @@ TEST_CASE("BasicPreProcessor")
 
     BasicPreProcessor processor(&signature);
 
-    CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
-    CHECK_NOTHROW(processor.addTokenRecord("YubbaDubba", 3, BasicProcessorTokenRecord::Associativity::Left, 2));
+    CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, 0, BasicProcessorTokenRecord::Associativity::Left));
+    CHECK_NOTHROW(processor.addTokenRecord("YubbaDubba", 3, 2, BasicProcessorTokenRecord::Associativity::Left));
 
-    CHECK_THROWS(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
-    CHECK_THROWS(processor.addTokenRecord("a", 0, BasicProcessorTokenRecord::Associativity::Left, 0));
-    CHECK_THROWS(processor.addTokenRecord("YabbaDabba", 4, BasicProcessorTokenRecord::Associativity::Left, 2));
+    CHECK_THROWS(processor.addTokenRecord("Operator", 1, 0, BasicProcessorTokenRecord::Associativity::Left));
+    CHECK_THROWS(processor.addTokenRecord("a", 0, 1, BasicProcessorTokenRecord::Associativity::Left));
+    CHECK_THROWS(processor.addTokenRecord("YabbaDabba", 4, 2, BasicProcessorTokenRecord::Associativity::Left));
 
-    processor.removeTokenRecord("Operator");
+    //processor.removeTokenRecord("Operator"); FIXME! Gotta fix this!
+    //FIXME! asd
 
-    CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, BasicProcessorTokenRecord::Associativity::Left, 0));
+    CHECK_NOTHROW(processor.addTokenRecord("Operator", 1, 0, BasicProcessorTokenRecord::Associativity::Left));
 }
 
 TEST_CASE("Token String Methods")
@@ -812,9 +813,9 @@ TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
     {
         BasicPreProcessor preProcessor(&signature);
 
-        preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Left, 0);
-        preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Left, 1);
-        preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Left, 2);
+        preProcessor.addTokenRecord("Minus", 0, 0, BasicProcessorTokenRecord::Associativity::Left);
+        preProcessor.addTokenRecord("Times", 1, 1, BasicProcessorTokenRecord::Associativity::Left);
+        preProcessor.addTokenRecord("Plus", 1, 2, BasicProcessorTokenRecord::Associativity::Left);
 
         CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
         CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus (Minus 0)")));
@@ -849,9 +850,9 @@ TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
     {
         BasicPreProcessor preProcessor(&signature);
 
-        preProcessor.addTokenRecord("Minus", 0, BasicProcessorTokenRecord::Associativity::Right, 0);
-        preProcessor.addTokenRecord("Times", 1, BasicProcessorTokenRecord::Associativity::Right, 1);
-        preProcessor.addTokenRecord("Plus", 1, BasicProcessorTokenRecord::Associativity::Right, 2);
+        preProcessor.addTokenRecord("Minus", 0, 0, BasicProcessorTokenRecord::Associativity::Right);
+        preProcessor.addTokenRecord("Times", 1, 1, BasicProcessorTokenRecord::Associativity::Right);
+        preProcessor.addTokenRecord("Plus", 1, 2, BasicProcessorTokenRecord::Associativity::Right);
         CHECK_NOTHROW(parser.parse(preProcessor.processString("1 Times 0 Plus 1 Plus Minus 0")));
     }
 
