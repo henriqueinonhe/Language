@@ -18,7 +18,7 @@ protected:
         TokenStringWrapperIterator operatorIterator;
         TokenStringWrapperIterator firstLeftParenthesisIterator;
         TokenStringWrapperIterator lastRightParenthesisIterator;
-        bool isAtomic;
+        bool isAtomicSentence;
 
         bool hasAtomicOperator() const
         {

@@ -26,7 +26,6 @@ private:
     QVector<unsigned int> gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
     QVector<unsigned int> gatherBoundArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
 
-    QVector<BindingRecord> bindingRecords;
     void checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const;
     void checkDuplicateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
     void validateBindingRecordsArguments(const QVector<BindingRecord> &bindingRecords) const;
@@ -35,6 +34,8 @@ private:
     void checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkNumberOfArgumentsConsistency(const unsigned int greatestBindingArgumentNumber, const unsigned int greatestBoundArgumentNumber, const unsigned int numberOfArguments) const;
+
+    QVector<BindingRecord> bindingRecords;
 };
 
 #endif // BINDINGTOKEN_H
