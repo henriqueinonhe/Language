@@ -17,7 +17,7 @@ private:
     struct AuxiliaryTokenRecord
     {
         AuxiliaryTokenRecord(){}
-        AuxiliaryTokenRecord(BasicProcessorTokenRecord * const record,
+        AuxiliaryTokenRecord(BasicProcessorTokenRecord * record,
                        const unsigned int precedenceRank) :
             record(record),
             precedenceRank(precedenceRank)
