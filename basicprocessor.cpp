@@ -20,7 +20,7 @@ void BasicProcessor::addTokenRecord(const QString &token, const unsigned int pos
         throw std::invalid_argument("There is already a record with this token!");
     }
 
-    if(precedenceRank >= 0) //FIXME Size issues here!
+    if(precedenceRank >= 0)
     {
         auto insertPosition = tokenRecords.begin();
         insertPosition += precedenceRank;
