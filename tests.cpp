@@ -995,15 +995,76 @@ TEST_CASE("First Order Logic With Pre and Post Processor")
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("P a & Q b")).formattedString()) == "P a & Q b");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("P a & Q b & R  a c")).formattedString()).toStdString() == "P a & Q b & R a c");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("P a | Q b & R  a c")).formattedString()) == "P a | Q b & R a c");
-        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("(P a | Q b) & R  a c")).formattedString()) == "(P a | Q b) & R a c");
-        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("(P a | Q b) & R  a c")).formattedString()) == "(P a | Q b) & R a c");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("(P a | Q b) & R a c")).formattedString()) == "(P a | Q b) & R a c");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("(P a | Q b) & R a c")).formattedString()) == "(P a | Q b) & R a c");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("P a & P b -> P c")).formattedString()) == "P a & P b -> P c");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x P x -> Q x")).formattedString()) == "U x P x -> Q x");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x P x -> R x x")).formattedString()) == "U x P x -> R x x");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U y U x R x y -> R y x")).formattedString()).toStdString() == "U y U x R x y -> R y x");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("E y U x R x y -> R y x")).formattedString()).toStdString() == "E y U x R x y -> R y x");
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("(U x U y R x y -> ~ R y x) -> (U x ~ R x x) ")).formattedString()).toStdString() == "(U x U y R x y -> ~ R y x) -> (U x ~ R x x)");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x E y R x y")).formattedString()).toStdString() == "U x E y R x y");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("E x U y R x y")).formattedString()).toStdString() == "E x U y R x y");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x E y U z R x y <-> P z")).formattedString()).toStdString() == "U x E y U z R x y <-> P z");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x U y U z R x y & R y z -> R x z")).formattedString()).toStdString() == "U x U y U z R x y & R y z -> R x z");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("(U x P x -> Q x) & (E x P x) -> (E x Q x)")).formattedString()).toStdString() == "(U x P x -> Q x) & (E x P x) -> (E x Q x)");
+
     }
+
+    SECTION("Failures")
+    {
+        SECTION("Structural Errors")
+        {
+            CHECK_THROWS(parser.parse("("));
+            CHECK_THROWS(parser.parse(")"));
+            CHECK_THROWS(parser.parse("()"));
+            CHECK_THROWS(parser.parse("(a)"));
+            CHECK_THROWS(parser.parse(")P a("));
+            CHECK_THROWS(parser.parse("P a"));
+            CHECK_THROWS(parser.parse("(P a"));
+            CHECK_THROWS(parser.parse("P a)"));
+        }
+
+        SECTION("Type Errors")
+        {
+            CHECK_THROWS(parser.parse("(P Q)"));
+            CHECK_THROWS(parser.parse("(b P)"));
+            CHECK_THROWS(parser.parse("(R a)"));
+        }
+
+        SECTION("Variable Binding Errors")
+        {}
+    }
+
+    signature.addToken(CoreToken("f", Type("i->i")));
+    signature.addToken(CoreToken("g", Type("i->i")));
+
+    preProcessor.insertTokenRecord("f", 0, 0);
+    preProcessor.addTokenRecord("g", 0, 0);
+
+    postProcessor.insertTokenRecord("f", 0, 0);
+    postProcessor.addTokenRecord("g", 0, 0);
+
+    SECTION("Functional Symbols")
+    {
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("P f a")).formattedString()) == "P f a");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x P f x")).formattedString()) == "U x P f x");
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("U x U y R x y <-> R x f x")).formattedString()) == "U x U y R x y <-> R x f x");
+    }
+
+    QVector<BindingRecord> lambdaRecord;
+    lambdaRecord.push_back(BindingRecord(0, QVector<unsigned int>{1}));
+    signature.addToken(BindingToken("Lambda", Type("[i,i]->i"), lambdaRecord));
+
+    preProcessor.insertTokenRecord("Lambda", 0, 1);
+
+    postProcessor.insertTokenRecord("Lambda", 0, 1);
+
+    SECTION("Lambda Expressions")
+    {
+        CHECK(postProcessor.processString(parser.parse(preProcessor.processString("R Lambda x f x Lambda y g y")).formattedString()) == "R Lambda x f x Lambda y g y");
+    }
+
 }
 
 TEST_CASE("Dirty Fix")
