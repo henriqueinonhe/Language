@@ -20,7 +20,7 @@ void BasicProcessor::addTokenRecord(const QString &token, const unsigned int pos
         }
 
         const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
-        tokenPositionIterator->tokenSubRecordList.push_back(BasicProcessorTokenRecord::TokenSubRecord(token, position, coreToken.getType().getNumberOfArguments()));
+        tokenPositionIterator->tokenSubRecordList.push_back(BasicProcessorTokenRecord::TokenSubRecord(coreToken, position, coreToken.getType().getNumberOfArguments()));
     }
     else
     {

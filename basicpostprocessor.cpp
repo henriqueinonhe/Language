@@ -53,14 +53,14 @@ void BasicPostProcessor::addSubSentenceRecord(TokenStringWrapperIterator &subSen
         subSentenceRecord.firstLeftParenthesisIterator = subSentenceScannerIter;
         subSentenceRecord.operatorIterator = subSentenceScannerIter + nextTokenCompensation;
         subSentenceRecord.lastRightParenthesisIterator = findDelimiterScopeEndIterator(tokenString, subSentenceScannerIter);
-        subSentenceRecord.isAtomic = false;
+        subSentenceRecord.isAtomicSentence = false;
 
         subSentenceScannerIter = subSentenceRecord.lastRightParenthesisIterator + nextTokenCompensation;
     }
     else
     {
         subSentenceRecord.operatorIterator = subSentenceScannerIter;
-        subSentenceRecord.isAtomic = true;
+        subSentenceRecord.isAtomicSentence = true;
 
         subSentenceScannerIter++;
     }
@@ -96,7 +96,7 @@ bool BasicPostProcessor::hasHigherOverallPrecedence(const BasicProcessor::TokenS
 
 bool BasicPostProcessor::hasLowerIndex(const BasicProcessor::TokenStringWrapperIterator &subSentenceOperatorIter, const BasicProcessor::TokenStringWrapperIterator &mainSentenceOperatorIter, const TokenStringWrapper &tokenString) const
 {
-    for(TokenStringWrapperIterator tokenStringIter = subSentenceOperatorIter; subSentenceOperatorIter != tokenString.end(); tokenStringIter++)
+    for(TokenStringWrapperIterator tokenStringIter = subSentenceOperatorIter; tokenStringIter != tokenString.end(); tokenStringIter++)
     {
         if(tokenStringIter == mainSentenceOperatorIter)
         {
@@ -158,7 +158,7 @@ void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &s
     {
         std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, &tokenString, this](const SubSentenceRecord &record)
         {
-            if(!record.isAtomic &&
+            if(!record.isAtomicSentence &&
                record.hasAtomicOperator() &&
                hasHigherOverallPrecedence(record.operatorIterator, mainOperatorRecord.operatorIterator, tokenString))
             {
@@ -170,7 +170,7 @@ void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &s
     {
         std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, &tokenString, this](const SubSentenceRecord &record)
         {
-            if(!record.isAtomic &&
+            if(!record.isAtomicSentence &&
                record.hasAtomicOperator())
             {
                 eraseParenthesis(record.firstLeftParenthesisIterator, record.lastRightParenthesisIterator, tokenString);
@@ -217,7 +217,7 @@ void BasicPostProcessor::processSubSentence(TokenStringWrapper &tokenString, con
     // 4 - Recursando tudo
     std::for_each(subSentenceRecords.begin(), subSentenceRecords.end(), [&tokenString, this](const SubSentenceRecord &record)
     {
-        if(!record.isAtomic)
+        if(!record.isAtomicSentence)
         {
             processSubSentence(tokenString, record);
         }
