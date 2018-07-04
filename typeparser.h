@@ -49,7 +49,7 @@ private:
 
     static void separateProductArguments(TypeParsingTreeIterator iter, QVector<ProductArgumentOffsets> &offsetList);
     static void checkProductTypeHasAtLeastTwoArguments(const QVector<ProductArgumentOffsets> &offsetList, TypeParsingTreeIterator iter);
-    static unsigned int findCompositionOperatorOffset(const TypeTokenString &tokenString, TypeParsingTreeIterator iter);
+    static unsigned int findCompositionOperatorOffsetAndValidateLeftSideArgument(const TypeTokenString &tokenString, TypeParsingTreeIterator iter);
     static void validateCompositionRightSideArgument(TypeParsingTreeIterator iter, const unsigned int compositionOperatorOffset);
 
     static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);

@@ -11,9 +11,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     tests.cpp \
-    tree.cpp \
-    treenode.cpp \
-    treeiterator.cpp \
     token.cpp \
     typeparsingtree.cpp \
     typeparsingtreenode.cpp \

@@ -116,5 +116,6 @@ QVector<unsigned int> ParsingTreeIterator::convertStringToPath(const QString &pa
 QString ParsingTreeIterator::removeOuterParenthesis(const QString &path) const
 {
     const unsigned int parenthesisPadding = 1;
-    return path.mid(parenthesisPadding, path.size() - 2 * parenthesisPadding);
+    const unsigned int numberOfParenthesis = 2;
+    return path.mid(parenthesisPadding, path.size() - numberOfParenthesis * parenthesisPadding);
 }

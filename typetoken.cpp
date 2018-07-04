@@ -80,8 +80,8 @@ void TypeToken::assignSort(const QString &string)
         QString message;
         message += "'";
         message += string;
-        message += "' -> ";
-        message += "This is not a suitable expression for a primitive type.";
+        message += "' ";
+        message += "is not a suitable expression for a primitive type.";
 
         throw std::invalid_argument(message.toStdString());
     }

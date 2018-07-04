@@ -41,7 +41,6 @@ TypeParsingTreeIterator &TypeParsingTreeIterator::travelPath(const QString &path
     }
 
     const QVector<unsigned int> pathVector = convertStringToPath(path);
-
     std::for_each(pathVector.begin(), pathVector.end(), [&](unsigned int index)
     {
         this->goToChild(index);
@@ -101,6 +100,9 @@ bool TypeParsingTreeIterator::checkPathStringValidity(const QString &path) const
 
 QVector<unsigned int> TypeParsingTreeIterator::convertStringToPath(const QString &path) const
 {
+    /* Path coordinates strings are in the form:
+     * "(x1,x2,...,xn)". */
+
     QVector<unsigned int> pathVector;
     const QString uncencasedPath = removeOuterParenthesis(path);
     const QStringList coordinatesList = uncencasedPath.split(",");
@@ -116,5 +118,6 @@ QVector<unsigned int> TypeParsingTreeIterator::convertStringToPath(const QString
 QString TypeParsingTreeIterator::removeOuterParenthesis(const QString &path) const
 {
     const unsigned int parenthesisPadding = 1;
-    return path.mid(parenthesisPadding, path.size() - 2 * parenthesisPadding);
+    const unsigned int numberOfParenthesis = 2;
+    return path.mid(parenthesisPadding, path.size() - numberOfParenthesis * parenthesisPadding);
 }

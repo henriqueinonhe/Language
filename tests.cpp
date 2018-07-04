@@ -257,6 +257,8 @@ TEST_CASE("TypeTokenString")
     CHECK(TypeTokenString("A") != TypeTokenString("B"));
 
     CHECK_THROWS(TypeTokenString(" "));
+    CHECK_THROWS(TypeTokenString("i-"));
+    CHECK_THROWS(TypeTokenString("a>b"));
 
     CHECK_NOTHROW(TypeTokenString());
     CHECK_NOTHROW(TypeTokenString(""));

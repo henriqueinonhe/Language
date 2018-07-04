@@ -39,6 +39,8 @@ private:
 
     QVector<PoolRecordPointer<TypeToken>> tokenList;
 
+    void lexCompositionOperator(const QString &string, int &index);
+    void lexPrimitiveTypeToken(const QString &string, int &index);
 };
 
 #endif // TYPETOKENSTRING_H

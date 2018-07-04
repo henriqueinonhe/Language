@@ -35,8 +35,16 @@ bool TypeParser::isProductArgumentsScopeEnd(const unsigned int leftSquareBracket
     return leftSquareBracketCount == rightSquareBracketCount;
 }
 
-unsigned int TypeParser::findCompositionOperatorOffset(const TypeTokenString &tokenString, TypeParsingTreeIterator iter)
+unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgument(const TypeTokenString &tokenString, TypeParsingTreeIterator iter)
 {
+    /* This function ALSO validates left side argument.
+     * The reason why this validation is not in a separate function is
+     * because these two processes are tightly coupled toghether in such a way
+     * that separating them would do more harm than good.
+     *
+     * It is called specifically when it is certain that it is
+     * analyzing a composite type canditate and no other option is viable. */
+
     unsigned int compositionOperatorOffset;
     const unsigned int compositionOperatorCompensation = 1;
 
@@ -78,6 +86,9 @@ unsigned int TypeParser::findCompositionOperatorOffset(const TypeTokenString &to
 
     if(!(tokenString[compositionOperatorOffset].getSort() == TypeToken::Sort::CompositionOperator))
     {
+        /* Even though it finds the composition operator index, it must also certify that the token that
+         * occupies that index REALLY is a composition operator. */
+
         unsigned int compositionOperatorIndex = iter->getTypeBeginIndex() + compositionOperatorOffset;
         throw ParsingErrorException<TypeTokenString>("Composition operator (->) was expected here!",
                                         compositionOperatorIndex,
@@ -120,7 +131,7 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
             const unsigned int argumentBeginIndex = compositionOperatorOffset + argumentParenthesisPadding + tokenLookaheadCompensation;
             const unsigned int argumentSize = tokenString.size() - argumentBeginIndex - argumentParenthesisPadding;
             const TypeTokenString rightSideArgument = tokenString.mid(argumentBeginIndex, argumentSize);
-            findCompositionOperatorOffset(rightSideArgument, iter);
+            findCompositionOperatorOffsetAndValidateLeftSideArgument(rightSideArgument, iter);
         }
     }
     else
@@ -239,7 +250,7 @@ void TypeParser::parseProductType(TypeParsingTreeIterator iter)
 void TypeParser::parseCompositeType(TypeParsingTreeIterator iter)
 {
     const TypeTokenString tokenString = iter->getTypeString();
-    unsigned int compositionOperatorOffset = findCompositionOperatorOffset(tokenString, iter); //Also validates left side argument
+    unsigned int compositionOperatorOffset = findCompositionOperatorOffsetAndValidateLeftSideArgument(tokenString, iter);
     validateCompositionRightSideArgument(iter, compositionOperatorOffset);
 
     const unsigned int compositionOperatorCompensation = 1;
@@ -342,7 +353,7 @@ void TypeParser::parse(const TypeTokenString &type, Type *newType)
 
     //Setup New Type
     newType->typeString = type;
-    newType->returnType = returnType;
+    newType->returnTypeTokenString = returnType;
     newType->argumentsTypes = argumentsTypes;
 }
 

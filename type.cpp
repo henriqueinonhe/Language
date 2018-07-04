@@ -26,10 +26,10 @@ Type Type::applyArguments(const QVector<TypeTokenString> &argumentsTypes) const
 {
     if(argumentsTypes == this->argumentsTypes)
     {
-        Type newType;
-        TypeParser::parse(returnType, &newType);
+        Type returnType;
+        TypeParser::parse(returnTypeTokenString, &returnType);
 
-        return newType;
+        return returnType;
     }
     else
     {
@@ -46,7 +46,7 @@ Type::Type()
 Type::Type(const TypeTokenString &typeString, const QVector<TypeTokenString> argumentsTypes, const TypeTokenString &returnType) :
     typeString(typeString),
     argumentsTypes(argumentsTypes),
-    returnType(returnType)
+    returnTypeTokenString(returnType)
 {
 
 }
@@ -58,7 +58,7 @@ void Type::setTypeString(const TypeTokenString &value)
 
 TypeTokenString Type::getReturnType() const
 {
-    return returnType;
+    return returnTypeTokenString;
 }
 
 shared_ptr<TypeParsingTree> Type::getParsingTree() const

@@ -36,13 +36,13 @@ private:
     Type();
     Type(const TypeTokenString &typeString,
          const QVector<TypeTokenString> argumentsTypes,
-         const TypeTokenString &returnType);
+         const TypeTokenString &returnTypeTokenString);
 
     void setTypeString(const TypeTokenString &value);
 
     TypeTokenString typeString;
     QVector<TypeTokenString> argumentsTypes;
-    TypeTokenString returnType;
+    TypeTokenString returnTypeTokenString;
 
     friend class TypeParser;
     friend class ParsingTreeNode;

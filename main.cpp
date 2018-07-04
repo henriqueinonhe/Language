@@ -13,11 +13,6 @@
 
 int main()
 {
-    Type("o");
-    Type("a");
-    Type("i");
-
-    std::cout << "Aflisis!";
     return 0;
 }
 

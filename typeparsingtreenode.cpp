@@ -14,7 +14,7 @@ TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeN
 
 void TypeParsingTreeNode::printNodeToString(QString &str) const
 {
-    /* The printing process consists on two things:
+    /* The printing convention consists on two things:
      * 1st - (Parent Node Index, This Node Index)
      * 2nd - The Type Sort. */
 

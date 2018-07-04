@@ -13,8 +13,18 @@ unsigned int TypeParsingTree::getHeight() const
     return height;
 }
 
-QString TypeParsingTree::print() //NOTE better refactor this, or at least document it very well!
+QString TypeParsingTree::print()
 {
+    /* This algorithm prints the tree textually for debugging/inspection purposes
+     * and it does so in a level by level ordering.
+     * It works mainly with two vectors, one holds the nodes currently
+     * being printed and the other the children of the former, that is,
+     * the nodes that will be printed next.
+     * Lastly we swap vectors when the first row of nodes has been already printed,
+     * for as we already have the next row held by the second vector, we don't need
+     * the first vector anymore, therefore we can copy all of the elements of the
+     * second vector to the first, saving memory. */
+
     TypeParsingTreeIterator iter(this);
     QVector<TypeParsingTreeNode *> nextLevelNodes{&(*iter)};
     QString str;

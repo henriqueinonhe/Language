@@ -109,7 +109,8 @@ QString ParsingTreeNode::coordinatesToString() const
     coordinatesString += "(";
     if(!this->coordinates.empty())
     {
-        std::for_each(this->coordinates.begin(), this->coordinates.end() - 1, [&](unsigned int e) {
+        const unsigned int lastIndexCompensation = 1;
+        std::for_each(this->coordinates.begin(), this->coordinates.end() - lastIndexCompensation, [&](unsigned int e) {
             coordinatesString += QString::number(e);
             coordinatesString += ",";
         });
@@ -132,7 +133,8 @@ bool ParsingTreeNode::isChildless() const
 
 TokenString ParsingTreeNode::getTokenString() const
 {
-    const unsigned int stringSize = endIndex - beginIndex + 1;
+    const unsigned int zeroIndexCompensation = 1;
+    const unsigned int stringSize = endIndex - beginIndex + zeroIndexCompensation;
     return tree->tokenString.mid(beginIndex, stringSize);
 }
 
