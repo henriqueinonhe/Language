@@ -13,12 +13,16 @@ Parser::Parser(Signature *signature, const Type &wellFormedFormulaType) :
 Formula Parser::parse(const QString &sentence)
 {
 
-    //TODO Cache stuff
-    buildParsingTree(sentence);
+    if(!sentenceIsCached(sentence))
+    {
+        cachedSentence = sentence;
 
-    performTypeChecking();
+        buildParsingTree(sentence);
 
-    performVariableBindingChecking();
+        performTypeChecking();
+
+        performVariableBindingChecking();
+    }
 
     //std::cout << parsingTree->print().toStdString();
 
@@ -36,17 +40,17 @@ void Parser::buildParsingTree(const QString &sentence)
     parseSentence(iter);
 }
 
-void Parser::analyzeError(ParsingTreeIterator iter)
+void Parser::analyzeError(ParsingTreeIterator currentNodeIter)
 {
-    const TokenString tokenString = iter->getTokenString();
-    const unsigned int beginIndex = iter->getBeginIndex();
+    const TokenString tokenString = currentNodeIter->getTokenString();
+    const unsigned int beginIndex = currentNodeIter->getBeginIndex();
 
     if(tokenString.first().getString() == ")")
     {
-        throw ParsingErrorException<TokenString>("The first character cannot be a left parenthesis.",
+        throw ParsingErrorException<TokenString>("The first character cannot be a right parenthesis.",
                                                  beginIndex,
                                                  beginIndex,
-                                                 iter.goToRoot()->getTokenString());
+                                                 currentNodeIter.goToRoot()->getTokenString());
     }
     else if(outermostParenthesisMismatch(tokenString))
     {
@@ -55,16 +59,16 @@ void Parser::analyzeError(ParsingTreeIterator iter)
         throw ParsingErrorException<TokenString>("The outermost parenthesis doesn't match!",
                                                  beginIndex,
                                                  endIndex,
-                                                 iter.goToRoot()->getTokenString());
+                                                 currentNodeIter.goToRoot()->getTokenString());
     }
     else if(!isDelimiter(tokenString.first()) && tokenString.size() != 1)
     {
         const unsigned int zeroIndexCompensation = 1;
         const unsigned int endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
-        throw ParsingErrorException<TokenString>("A string with more than one token should be an application, which uses parenthesis!",
+        throw ParsingErrorException<TokenString>("A string with more than one token should be an application, which uses parenthesis and none was found!",
                                                  beginIndex,
                                                  endIndex,
-                                                 iter.goToRoot()->getTokenString());
+                                                 currentNodeIter.goToRoot()->getTokenString());
     }
     else
     {
@@ -72,45 +76,60 @@ void Parser::analyzeError(ParsingTreeIterator iter)
     }
 }
 
-void Parser::parseApplication(ParsingTreeIterator iter)
+void Parser::checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString)
 {
-    const TokenString tokenString = iter->getTokenString();
-    QVector<ArgumentOffsets> offsets = separateArgumentOffsets(iter);
-
-    if(offsets.size() < 2)
+    const unsigned int minimumApplicatonArgumentNumber = 2;
+    if(argumentsOffsets.size() < static_cast<int>(minimumApplicatonArgumentNumber))
     {
-        const unsigned int beginIndex = iter->getBeginIndex();
-        const unsigned int endIndex = iter->getBeginIndex() + tokenString.size();
+        const unsigned int beginIndex = currentNodeIter->getBeginIndex();
+        const unsigned int endIndex = currentNodeIter->getBeginIndex() + tokenString.size();
 
         throw ParsingErrorException<TokenString>("An application should have at least two arguments!",
                                                  beginIndex,
                                                  endIndex,
                                                  tokenString);
     }
+}
 
-    std::for_each(offsets.begin(), offsets.end(), [&iter](const ArgumentOffsets &element)
+void Parser::appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter)
+{
+    std::for_each(argumentsOffsets.begin(), argumentsOffsets.end(), [&currentNodeIter](const ArgumentOffsets &offsets)
     {
-        const unsigned int argumentBeginIndex = iter->getBeginIndex() + element.beginOffset;
-        const unsigned int argumentEndIndex = iter->getBeginIndex() + element.endOffset;
+        const unsigned int argumentBeginIndex = currentNodeIter->getBeginIndex() + offsets.beginOffset;
+        const unsigned int argumentEndIndex = currentNodeIter->getBeginIndex() + offsets.endOffset;
 
-        iter->appendChild(argumentBeginIndex, argumentEndIndex);
+        currentNodeIter->appendChild(argumentBeginIndex, argumentEndIndex);
     });
+}
 
-    for(unsigned int childIndex = 0; childIndex < iter->getChildrenNumber(); childIndex++)
+void Parser::parseArgumentsNodes(ParsingTreeIterator currentNodeIter)
+{
+    for(unsigned int childIndex = 0; childIndex < currentNodeIter->getChildrenNumber(); childIndex++)
     {
-        iter.goToChild(childIndex);
-        parseSentence(iter);
-        iter.goToParent();
+        currentNodeIter.goToChild(childIndex);
+        parseSentence(currentNodeIter);
+        currentNodeIter.goToParent();
     }
 }
 
-void Parser::parseSentence(ParsingTreeIterator iter)
+void Parser::parseApplication(ParsingTreeIterator currentNodeIter)
 {
-    const TokenString tokenString = iter->getTokenString();
+    const TokenString tokenString = currentNodeIter->getTokenString();
+    QVector<ArgumentOffsets> argumentsOffsets = separateArgumentOffsets(currentNodeIter);
+    checkMinimumApplicationArgumentNumber(argumentsOffsets, currentNodeIter, tokenString);
+
+    appendArgumentsNodes(argumentsOffsets, currentNodeIter);
+
+    parseArgumentsNodes(currentNodeIter);
+}
+
+void Parser::parseSentence(ParsingTreeIterator currentNodeIter)
+{
+    const TokenString tokenString = currentNodeIter->getTokenString();
 
     if(tokenString.isEmpty())
     {
-        std::invalid_argument("The string is empty!");
+        throw std::invalid_argument("The string is empty!");
     }
 
     if(isAtomic(tokenString))
@@ -119,11 +138,13 @@ void Parser::parseSentence(ParsingTreeIterator iter)
     }
     else if(hasMolecularForm(tokenString))
     {
-        parseApplication(iter);
+        parseApplication(currentNodeIter);
     }
     else
     {
-        analyzeError(iter);
+        //When it has neither the atomic or molecular form it must be
+        //somehow malformed.
+        analyzeError(currentNodeIter);
     }
 }
 
@@ -148,15 +169,15 @@ bool Parser::isDelimiter(const Token &token) const
 
 bool Parser::outermostParenthesisMismatch(const TokenString &tokenString) const
 {
-    return tokenString.first().getString() == "(" &&
-           tokenString.last().getString() == ")";
+    return !(tokenString.first().getString() == "(" &&
+           tokenString.last().getString() == ")");
 }
 
-QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIterator iter) const
+QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIterator currentNodeIter) const
 {
     QVector<ArgumentOffsets> offsets;
 
-    const TokenString tokenString = iter->getTokenString();
+    const TokenString tokenString = currentNodeIter->getTokenString();
     const unsigned int firstDelimiterCompensation = 1;
     const unsigned int lastOffset = tokenString.size() - firstDelimiterCompensation;
     unsigned int argumentBeginOffset = firstDelimiterCompensation;
@@ -166,11 +187,11 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
     {
         if(tokenString[argumentBeginOffset].getString() == ")")
         {
-            const unsigned int argumentBeginIndex = iter->getBeginIndex() + argumentBeginOffset;
+            const unsigned int argumentBeginIndex = currentNodeIter->getBeginIndex() + argumentBeginOffset;
             throw ParsingErrorException<TokenString>("A \")\" was found where a \"(\" or a token was expected!",
                                                      argumentBeginIndex,
                                                      argumentBeginIndex,
-                                                     iter.goToRoot()->getTokenString());
+                                                     currentNodeIter.goToRoot()->getTokenString());
         }
         else if(tokenString[argumentBeginOffset].getString() == "(")
         {
@@ -186,7 +207,7 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
                 throw ParsingErrorException<TokenString>("There are unmatched parenthesis!",
                                             argumentBeginOffset,
                                             argumentBeginOffset,
-                                            iter.goToRoot()->getTokenString());
+                                            currentNodeIter.goToRoot()->getTokenString());
             }
         }
         else
@@ -204,29 +225,28 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
 
 void Parser::performTypeChecking()
 {
-    ParsingTreeIterator iter(parsingTree.get());
+    ParsingTreeIterator rootIter(parsingTree.get());
 
-    checkType(iter);
+    checkType(rootIter);
 
-    if(iter->getType() == wellFormedFormulaType)
+    if(rootIter->getType() == wellFormedFormulaType)
     {
         return;
     }
     else
     {
-        //FIXME Find a more suitable way to handle this! Maybe with a specialized exception
-        throw std::invalid_argument("The type of the sentence is not the type of well formed formulas!");
+        throw std::invalid_argument("The type of the sentence ("+ rootIter->getType().toString() +") is not the type of well formed formulas (" + wellFormedFormulaType.toString() + "!");
     }
 }
 
-void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &iter)
+void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter)
 {
-    for(unsigned int childNumber = 1; childNumber < iter->getChildrenNumber(); childNumber++)
+    for(unsigned int childNumber = 1; childNumber < currentNodeIter->getChildrenNumber(); childNumber++)
     {
-        iter.goToChild(childNumber);
-        checkType(iter);
-        argumentsTypes.push_back(iter->getType().getTypeString());
-        iter.goToParent();
+        currentNodeIter.goToChild(childNumber);
+        checkType(currentNodeIter);
+        argumentsTypes.push_back(currentNodeIter->getType().getTypeString());
+        currentNodeIter.goToParent();
     }
 }
 
@@ -273,6 +293,11 @@ void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
             }
         });
     });
+}
+
+bool Parser::sentenceIsCached(const QString &sentence) const
+{
+    return sentence == cachedSentence && !sentence.isEmpty();
 }
 
 void Parser::performVariableBindingChecking()
