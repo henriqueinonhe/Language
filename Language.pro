@@ -9,37 +9,48 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
+INCLUDEPATH += Parser \
+               Processors \
+               Processors/PreProcessors \
+               Processors/PostProcessors \
+               Token \
+               Type \
+               Utils
+
 SOURCES += main.cpp \
     tests.cpp \
-    token.cpp \
-    typeparsingtree.cpp \
-    typeparsingtreenode.cpp \
-    typeparsingtreeiterator.cpp \
-    type.cpp \
-    typetoken.cpp \
-    typetokenstring.cpp \
-    tokenstring.cpp \
-    lexer.cpp \
-    signature.cpp \
-    punctuationtoken.cpp \
-    coretoken.cpp \
-    tablesignature.cpp \
-    parsingtree.cpp \
-    parsingtreenode.cpp \
-    parsingtreeiterator.cpp \
-    typeparser.cpp \
-    parser.cpp \
-    formula.cpp \
-    variabletoken.cpp \
-    bindingtoken.cpp \
-    dirtyfix.cpp \
-    stringprocessor.cpp \
-    formatter.cpp \
-    basicpreprocessor.cpp \
-    basicpostprocessor.cpp \
-    basicprocessortokenrecord.cpp \
-    basicprocessor.cpp \
-    bindingrecord.cpp
+    Parser/formula.cpp \
+    Parser/lexer.cpp \
+    Parser/parser.cpp \
+    Parser/parsingtree.cpp \
+    Parser/parsingtreeiterator.cpp \
+    Parser/parsingtreenode.cpp \
+    Parser/signature.cpp \
+    Parser/tablesignature.cpp \
+    Processors/PostProcessors/basicpostprocessor.cpp \
+    Processors/PreProcessors/basicpreprocessor.cpp \
+    Processors/PreProcessors/classicfunctionnotationpreprocessor.cpp \
+    Processors/basicprocessor.cpp \
+    Processors/basicprocessortokenrecord.cpp \
+    Processors/formatter.cpp \
+    Processors/stringprocessor.cpp \
+    Token/bindingrecord.cpp \
+    Token/bindingtoken.cpp \
+    Token/coretoken.cpp \
+    Token/punctuationtoken.cpp \
+    Token/token.cpp \
+    Token/tokenstring.cpp \
+    Token/variabletoken.cpp \
+    Type/type.cpp \
+    Type/typeparser.cpp \
+    Type/typeparsingtree.cpp \
+    Type/typeparsingtreeiterator.cpp \
+    Type/typeparsingtreenode.cpp \
+    Type/typetoken.cpp \
+    Type/typetokenstring.cpp \
+    Utils/dirtyfix.cpp \
+    main.cpp \
+    tests.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -54,36 +65,39 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     catch.hpp \
-    token.h \
-    typeparsingtree.h \
-    typeparsingtreenode.h \
-    typeparsingtreeiterator.h \
-    type.h \
-    typetoken.h \
-    pool.h \
-    typetokenstring.h \
-    parsingauxiliarytools.h \
-    tokenstring.h \
-    parsingerrorexception.hpp \
-    lexer.h \
-    signature.h \
-    punctuationtoken.h \
-    coretoken.h \
-    tablesignature.h \
-    parsingtree.h \
-    parsingtreenode.h \
-    parsingtreeiterator.h \
-    typeparser.h \
-    parser.h \
-    formula.h \
-    variabletoken.h \
-    bindingtoken.h \
-    containerauxiliarytools.h \
-    dirtyfix.h \
-    stringprocessor.h \
-    formatter.h \
-    basicpreprocessor.h \
-    basicpostprocessor.h \
-    basicprocessortokenrecord.h \
-    basicprocessor.h \
-    bindingrecord.h
+    Parser/formula.h \
+    Parser/lexer.h \
+    Parser/parser.h \
+    Parser/parsingerrorexception.hpp \
+    Parser/parsingtree.h \
+    Parser/parsingtreeiterator.h \
+    Parser/parsingtreenode.h \
+    Parser/signature.h \
+    Parser/tablesignature.h \
+    Processors/PostProcessors/basicpostprocessor.h \
+    Processors/PreProcessors/basicpreprocessor.h \
+    Processors/PreProcessors/classicfunctionnotationpreprocessor.h \
+    Processors/basicprocessor.h \
+    Processors/basicprocessortokenrecord.h \
+    Processors/formatter.h \
+    Processors/stringprocessor.h \
+    Token/bindingrecord.h \
+    Token/bindingtoken.h \
+    Token/coretoken.h \
+    Token/punctuationtoken.h \
+    Token/token.h \
+    Token/tokenstring.h \
+    Token/variabletoken.h \
+    Type/type.h \
+    Type/typeparser.h \
+    Type/typeparsingerrorexception.h \
+    Type/typeparsingtree.h \
+    Type/typeparsingtreeiterator.h \
+    Type/typeparsingtreenode.h \
+    Type/typetoken.h \
+    Type/typetokenstring.h \
+    Utils/containerauxiliarytools.h \
+    Utils/dirtyfix.h \
+    Utils/parsingauxiliarytools.h \
+    Utils/pool.h \
+    catch.hpp

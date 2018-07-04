@@ -181,7 +181,7 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
     const unsigned int firstDelimiterCompensation = 1;
     const unsigned int lastOffset = tokenString.size() - firstDelimiterCompensation;
     unsigned int argumentBeginOffset = firstDelimiterCompensation;
-    unsigned int argumentEndOffset = argumentBeginOffset;
+    unsigned int argumentEndOffset;
 
     while(argumentBeginOffset < lastOffset)
     {
@@ -235,7 +235,7 @@ void Parser::performTypeChecking()
     }
     else
     {
-        throw std::invalid_argument("The type of the sentence ("+ rootIter->getType().toString() +") is not the type of well formed formulas (" + wellFormedFormulaType.toString() + "!");
+        throw std::invalid_argument((QString("The type of the sentence (")+ rootIter->getType().toString() +") is not the type of well formed formulas (" + wellFormedFormulaType.toString() + "!").toStdString());
     }
 }
 
