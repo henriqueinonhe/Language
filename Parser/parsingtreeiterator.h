@@ -9,7 +9,7 @@ class ParsingTreeIterator
 public:
     ParsingTreeIterator(ParsingTree *tree);
 
-    ParsingTreeIterator &goToChild(unsigned int index);
+    ParsingTreeIterator &goToChild(const unsigned int index);
     ParsingTreeIterator &goToParent();
     ParsingTreeIterator &goToRoot();
     ParsingTreeIterator &travelPath(const QString &path);

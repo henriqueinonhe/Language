@@ -20,6 +20,11 @@ QString Formula::formattedString() const
     return tokenString.formattedString();
 }
 
+Formula::Formula()
+{
+
+}
+
 Formula::Formula(const TokenString &tokenString) :
     tokenString(tokenString)
 {

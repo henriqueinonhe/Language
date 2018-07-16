@@ -10,6 +10,8 @@ class Parser;
 class TokenString
 {
 public:
+    TokenString();
+
     QString toString() const;
     QString formattedString() const;
 
@@ -32,7 +34,6 @@ public:
     bool operator!=(const TokenString &other) const;
 
 private:
-    TokenString();
 
     //Token &operator[](const unsigned int index);
     //Token &first();

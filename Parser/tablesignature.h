@@ -7,10 +7,9 @@
 
 using namespace std;
 
-class TableSignature : public Signature
+class TableSignature : virtual public Signature
 {
 public:
-
     TableSignature();
     Token *getTokenPointer(const QString &token);
 

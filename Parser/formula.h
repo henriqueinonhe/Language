@@ -5,6 +5,7 @@
 #include "type.h"
 
 class Parser;
+class ProofLinks;
 
 class Formula
 {
@@ -16,11 +17,13 @@ public:
     QString formattedString() const;
 
 private:
+    Formula();
     Formula(const TokenString &tokenString);
 
     TokenString tokenString;
 
     friend class Parser;
+    friend class QVector<Formula>;
 };
 
 #endif // FORMULA_H

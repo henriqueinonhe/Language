@@ -54,7 +54,7 @@ private:
 
     static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 
-    static shared_ptr<TypeParsingTree> parsingTree; //FIXME There is something wrong here! But I really don't know what it is!
+    static shared_ptr<TypeParsingTree> parsingTree;
 
     friend class Type;
     friend class DirtyFix;

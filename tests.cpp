@@ -6,7 +6,6 @@
 #include "token.h"
 #include "pool.h"
 #include "typetokenstring.h"
-#include <iostream>
 #include "parsingerrorexception.hpp"
 #include "tokenstring.h"
 #include "lexer.h"

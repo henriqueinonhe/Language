@@ -5,6 +5,7 @@
 #include <memory>
 #include "parsingtreenode.h"
 #include "tokenstring.h"
+
 using namespace std;
 
 class ParsingTree

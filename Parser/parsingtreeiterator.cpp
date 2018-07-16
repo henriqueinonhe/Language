@@ -7,7 +7,7 @@ ParsingTreeIterator::ParsingTreeIterator(ParsingTree *tree) :
 
 }
 
-ParsingTreeIterator &ParsingTreeIterator::goToChild(unsigned int index)
+ParsingTreeIterator &ParsingTreeIterator::goToChild(const unsigned int index)
 {
     if(index >= (uint) currentNode->children.size())
     {

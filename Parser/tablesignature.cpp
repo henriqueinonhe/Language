@@ -1,4 +1,5 @@
 ﻿#include "tablesignature.h"
+#include "signature.cpp" //This is so fucking shady...
 
 TableSignature::TableSignature()
 {

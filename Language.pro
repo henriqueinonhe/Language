@@ -7,7 +7,9 @@ TARGET = Language
 CONFIG += console
 CONFIG -= app_bundle
 
-TEMPLATE = app
+TEMPLATE = lib
+
+CONFIG += staticlib
 
 INCLUDEPATH += Parser \
                Processors \
@@ -15,7 +17,17 @@ INCLUDEPATH += Parser \
                Processors/PostProcessors \
                Token \
                Type \
-               Utils
+               Utils \
+               $$PWD
+
+DEPENDPATH += Parser \
+              Processors \
+              Processors/PreProcessors \
+              Processors/PostProcessors \
+              Token \
+              Type \
+              Utils \
+              $$PWD
 
 SOURCES += main.cpp \
     tests.cpp \
@@ -48,9 +60,7 @@ SOURCES += main.cpp \
     Type/typeparsingtreenode.cpp \
     Type/typetoken.cpp \
     Type/typetokenstring.cpp \
-    Utils/dirtyfix.cpp \
-    main.cpp \
-    tests.cpp
+    Utils/dirtyfix.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -99,5 +109,5 @@ HEADERS += \
     Utils/containerauxiliarytools.h \
     Utils/dirtyfix.h \
     Utils/parsingauxiliarytools.h \
-    Utils/pool.h \
-    catch.hpp
+    Utils/pool.h
+
