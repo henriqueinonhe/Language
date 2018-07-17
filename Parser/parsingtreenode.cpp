@@ -43,7 +43,7 @@ void ParsingTreeNode::printNodeToString(QString &str) const
     str += "} ";
 }
 
-QString ParsingTreeNode::printVariableSet(const QSet<VariableToken *> &set) const
+QString ParsingTreeNode::printVariableSet(const QSet<const VariableToken *> &set) const
 {
     if(set.isEmpty())
     {
@@ -54,7 +54,7 @@ QString ParsingTreeNode::printVariableSet(const QSet<VariableToken *> &set) cons
         QString setString;
         setString += "{\"";
 
-        QList<VariableToken *> list = set.toList();
+        QList<const VariableToken *> list = set.toList();
         const unsigned int lastIndexCompensation = 1;
         std::for_each(list.begin(), list.end() - lastIndexCompensation, [&setString](const VariableToken *token)
         {

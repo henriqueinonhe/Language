@@ -37,7 +37,7 @@ private:
     void lexString(const QString &string);
     bool characterIsSeparator(const QString &c) const;
 
-    QVector<PoolRecordPointer<TypeToken>> tokenList;
+    QVector<PoolRecordPointer<const TypeToken>> tokenList;
 
     void lexCompositionOperator(const QString &string, int &index);
     void lexPrimitiveTypeToken(const QString &string, int &index);

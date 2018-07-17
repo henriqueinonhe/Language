@@ -47,7 +47,7 @@ private:
 
     void printNodeToString(QString &str) const;
 
-    QString printVariableSet(const QSet<VariableToken *> &set) const;
+    QString printVariableSet(const QSet<const VariableToken *> &set) const;
 
     void updateTreeHeight();
 
@@ -58,8 +58,8 @@ private:
     unsigned int beginIndex;
     unsigned int endIndex;
     Type type;
-    QSet<VariableToken *> freeVariables;
-    QSet<VariableToken *> boundVariables;
+    QSet<const VariableToken *> freeVariables;
+    QSet<const VariableToken *> boundVariables;
 
 friend class ParsingTreeIterator;
 friend class ParsingTree;

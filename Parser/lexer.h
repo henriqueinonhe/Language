@@ -9,7 +9,7 @@
 class Lexer
 {
 public:
-    Lexer(Signature * const signature);
+    Lexer(const Signature * const signature);
     TokenString lex(const QString &string) const;
 
 private:
@@ -17,7 +17,7 @@ private:
     bool stringHasEnded(const QString &string, const int index) const;
     int findTokenBreakpointIndex(const QString &string, int beginIndex) const;
 
-    Signature *signature;
+    const Signature *signature;
     void lexCoreToken(TokenString &tokenString, int &index, const QString &string) const;
 };
 

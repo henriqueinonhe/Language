@@ -1,6 +1,6 @@
 ﻿#include "basicprocessor.h"
 
-BasicProcessor::BasicProcessor(Signature * const signature) :
+BasicProcessor::BasicProcessor(const Signature * const signature) :
     signature(signature)
 {
 
@@ -19,7 +19,7 @@ void BasicProcessor::addTokenRecord(const QString &token, const unsigned int pos
             throw std::invalid_argument("Associativity mismatch!");
         }
 
-        const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
+        const CoreToken &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
         tokenPositionIterator->tokenSubRecordList.push_back(BasicProcessorTokenRecord::TokenSubRecord(coreToken, position, coreToken.getType().getNumberOfArguments()));
     }
     else
@@ -46,7 +46,7 @@ void BasicProcessor::checkExistsConflictingTokenRecord(const QString &token)
 
 void BasicProcessor::insertTokenRecord(const QString &token, const unsigned int position, const int precedenceRank, const BasicProcessorTokenRecord::Associativity associativity)
 {
-    const CoreToken &coreToken = dynamic_cast<CoreToken &>(*(signature->getTokenPointer(token)));
+    const CoreToken &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
     const BasicProcessorTokenRecord newRecord(coreToken, position, associativity);
 
     checkExistsConflictingTokenRecord(token);

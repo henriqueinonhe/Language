@@ -7,10 +7,6 @@ TARGET = Language
 CONFIG += console
 CONFIG -= app_bundle
 
-TEMPLATE = lib
-
-CONFIG += staticlib
-
 INCLUDEPATH += Parser \
                Processors \
                Processors/PreProcessors \

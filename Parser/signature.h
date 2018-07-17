@@ -10,9 +10,11 @@ class Signature
 {
 public:
     Signature();
-    virtual Token *getTokenPointer(const QString &token) = 0;
+    virtual const Token *getTokenPointer(const QString &token) const = 0;
 
 protected:
 };
+
+Q_DECLARE_INTERFACE(Signature, "Signature")
 
 #endif // SIGNATURE_H

@@ -57,7 +57,6 @@ public:
     TokenSubRecord findTokenSubRecord(const QString &token) const;
 
 private:
-
     bool checkExistsTokenSubRecordDuplicate(const QString &token) const;
 
     QVector<TokenSubRecord> tokenSubRecordList;

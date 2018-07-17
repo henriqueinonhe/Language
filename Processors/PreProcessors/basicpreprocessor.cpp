@@ -1,7 +1,7 @@
 ﻿#include "basicpreprocessor.h"
 
 
-BasicPreProcessor::BasicPreProcessor(Signature * const signature) :
+BasicPreProcessor::BasicPreProcessor(const Signature * const signature) :
     BasicProcessor(signature)
 {
 

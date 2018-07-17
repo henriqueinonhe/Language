@@ -266,7 +266,7 @@ void Parser::checkType(ParsingTreeIterator iter)
 
     if(isAtomic(tokenString))
     {
-        iter->setType(dynamic_cast<CoreToken &>(tokenString.first()).getType());
+        iter->setType(dynamic_cast<const CoreToken &>(tokenString.first()).getType());
         return;
     }
     else
@@ -289,7 +289,7 @@ void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
             const TokenString currentNodeTokenString = node->getTokenString();
             if(isVariableToken(currentNodeTokenString))
             {
-                node->freeVariables.insert(dynamic_cast<VariableToken *>(&currentNodeTokenString.first()));
+                node->freeVariables.insert(dynamic_cast<const VariableToken *>(&currentNodeTokenString.first()));
             }
         });
     });
@@ -375,7 +375,7 @@ bool Parser::nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const
 
 void Parser::performVariableBinding(ParsingTreeNode *parentNode)
 {
-    const BindingToken *bindingToken = dynamic_cast<BindingToken *>(&parentNode->children.first()->getTokenString().first());
+    const BindingToken *bindingToken = dynamic_cast<const BindingToken *>(&parentNode->children.first()->getTokenString().first());
     QVector<std::shared_ptr<ParsingTreeNode>> &children = parentNode->children;
     QVector<BindingRecord> records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
 
@@ -391,7 +391,7 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode)
         }
         else
         {
-            VariableToken *currentBindingVariable = dynamic_cast<VariableToken *>(&children[bindingArgumentChildIndex]->getTokenString().first());
+            const VariableToken *currentBindingVariable = dynamic_cast<const VariableToken *>(&children[bindingArgumentChildIndex]->getTokenString().first());
 
             std::for_each(record.boundArgumentsIndexes.begin(),
                           record.boundArgumentsIndexes.end(),
@@ -419,7 +419,7 @@ void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode)
 {
     std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](std::shared_ptr<ParsingTreeNode> childNode)
     {
-        QSet<VariableToken *> childFreeVariablesCopy = childNode->freeVariables; //So operation doesn't affect the original object
+        QSet<const VariableToken *> childFreeVariablesCopy = childNode->freeVariables; //So operation doesn't affect the original object
 
         parentNode->freeVariables.unite(childFreeVariablesCopy.subtract(parentNode->boundVariables));
         parentNode->boundVariables.unite(childNode->boundVariables);

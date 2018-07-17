@@ -6,7 +6,7 @@
 class BasicPostProcessor : public BasicProcessor
 {
 public:
-    BasicPostProcessor(Signature * const signature);
+    BasicPostProcessor(const Signature * const signature);
 
     QString processString(const QString &string) const;
 

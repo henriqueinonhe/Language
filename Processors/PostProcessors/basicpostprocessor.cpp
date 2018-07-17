@@ -1,6 +1,6 @@
 ﻿#include "basicpostprocessor.h"
 
-BasicPostProcessor::BasicPostProcessor(Signature * const signature) :
+BasicPostProcessor::BasicPostProcessor(const Signature * const signature) :
     BasicProcessor(signature)
 {
 
@@ -109,7 +109,7 @@ bool BasicPostProcessor::hasLowerIndex(const BasicProcessor::TokenStringWrapperI
 
 unsigned int BasicPostProcessor::getOperatorArity(const SubSentenceRecord &mainSentenceRecord) const
 {
-    const unsigned int operatorArity = dynamic_cast<CoreToken *>(signature->getTokenPointer(mainSentenceRecord.operatorIterator->token))->getType().getNumberOfArguments();
+    const unsigned int operatorArity = dynamic_cast<const CoreToken *>(signature->getTokenPointer(mainSentenceRecord.operatorIterator->token))->getType().getNumberOfArguments();
 
     return operatorArity;
 }

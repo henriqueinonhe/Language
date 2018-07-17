@@ -11,7 +11,7 @@ class TableSignature : virtual public Signature
 {
 public:
     TableSignature();
-    Token *getTokenPointer(const QString &token);
+    const Token *getTokenPointer(const QString &token) const;
 
     void addToken(const Token &token);
 
