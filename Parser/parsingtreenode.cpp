@@ -1,7 +1,7 @@
 ﻿#include "parsingtreenode.h"
 #include "ParsingTree.h"
 
-ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, const unsigned int BeginIndex, const unsigned int EndIndex) :
+ParsingTreeNode::ParsingTreeNode(const ParsingTree *tree, const ParsingTreeNode *parent, const unsigned int BeginIndex, const unsigned int EndIndex) :
     tree(tree),
     parent(parent),
     beginIndex(BeginIndex),
@@ -70,14 +70,14 @@ QString ParsingTreeNode::printVariableSet(const QSet<const VariableToken *> &set
     }
 }
 
-void ParsingTreeNode::setType(const Type &value)
-{
-    type = value;
-}
-
 Type ParsingTreeNode::getType() const
 {
     return type;
+}
+
+void ParsingTreeNode::setType(const Type &value)
+{
+    type = value;
 }
 
 unsigned int ParsingTreeNode::getEndIndex() const

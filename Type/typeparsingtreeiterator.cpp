@@ -21,7 +21,7 @@ TypeParsingTreeIterator &TypeParsingTreeIterator::goToChild(unsigned int index)
 
 TypeParsingTreeIterator &TypeParsingTreeIterator::goToParent()
 {
-    currentNode = currentNode->parent;
+    currentNode = const_cast<TypeParsingTreeNode *>(currentNode->parent);
 
     return *this;
 }

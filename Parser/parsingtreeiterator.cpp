@@ -21,7 +21,7 @@ ParsingTreeIterator &ParsingTreeIterator::goToChild(const unsigned int index)
 
 ParsingTreeIterator &ParsingTreeIterator::goToParent()
 {
-    currentNode = currentNode->parent;
+    currentNode = const_cast<ParsingTreeNode *>(currentNode->parent);
 
     return *this;
 }

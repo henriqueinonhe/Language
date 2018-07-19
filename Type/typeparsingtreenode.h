@@ -44,8 +44,8 @@ public:
     unsigned int getTypeEndIndex() const;
 
 private:
-    TypeParsingTreeNode(TypeParsingTree *tree,
-                        TypeParsingTreeNode *parent,
+    TypeParsingTreeNode(const TypeParsingTree *tree,
+                        const TypeParsingTreeNode *parent,
                         const unsigned int typeBeginIndex,
                         const unsigned int typeEndIndex,
                         const MainOperator mainOperator = MainOperator::Primitive);
@@ -53,8 +53,8 @@ private:
     void printNodeToString(QString &str) const;
     QString mainOperatorToString() const;
 
-    TypeParsingTree *tree;
-    TypeParsingTreeNode *parent;
+    const TypeParsingTree *tree;
+    const TypeParsingTreeNode *parent;
     QVector<shared_ptr<TypeParsingTreeNode>> children;
     unsigned int typeBeginIndex;
     unsigned int typeEndIndex;

@@ -1,7 +1,7 @@
 ﻿#include "typeparsingtreenode.h"
 #include "TypeParsingTree.h"
 
-TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
+TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
     tree(tree),
     parent(parent),
     typeBeginIndex(typeBeginIndex),

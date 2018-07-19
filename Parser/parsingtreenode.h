@@ -40,8 +40,8 @@ public:
     void setType(const Type &value);
 
 private:
-    ParsingTreeNode(ParsingTree *tree,
-                    ParsingTreeNode *parent,
+    ParsingTreeNode(const ParsingTree *tree,
+                    const ParsingTreeNode *parent,
                     const unsigned int beginIndex,
                     const unsigned int endIndex);
 
@@ -49,8 +49,8 @@ private:
 
     QString printVariableSet(const QSet<const VariableToken *> &set) const;
 
-    ParsingTree *tree;
-    ParsingTreeNode *parent;
+    const ParsingTree *tree;
+    const ParsingTreeNode *parent;
     QVector<shared_ptr<ParsingTreeNode>> children;
     unsigned int beginIndex;
     unsigned int endIndex;
