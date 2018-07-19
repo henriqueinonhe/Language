@@ -35,7 +35,7 @@ public:
     unsigned int getHeight() const;
     unsigned int getChildrenNumber() const;
     unsigned int getOwnChildNumber() const;
-
+    unsigned int getGreatestDescendantHeight() const;
 
     MainOperator getMainOperator() const;
     void setMainOperator(const MainOperator &value);
@@ -46,7 +46,6 @@ public:
 private:
     TypeParsingTreeNode(TypeParsingTree *tree,
                         TypeParsingTreeNode *parent,
-                        const QVector<unsigned int> &coordinates,
                         const unsigned int typeBeginIndex,
                         const unsigned int typeEndIndex,
                         const MainOperator mainOperator = MainOperator::Primitive);
@@ -54,11 +53,8 @@ private:
     void printNodeToString(QString &str) const;
     QString mainOperatorToString() const;
 
-    void updateTreeHeight();
-
     TypeParsingTree *tree;
     TypeParsingTreeNode *parent;
-    QVector<unsigned int> coordinates;
     QVector<shared_ptr<TypeParsingTreeNode>> children;
     unsigned int typeBeginIndex;
     unsigned int typeEndIndex;

@@ -24,7 +24,7 @@ Formula Parser::parse(const QString &sentence)
         performVariableBindingChecking();
     }
 
-    std::cout << parsingTree->print().toStdString();
+    //std::cout << parsingTree->print().toStdString();
 
     return Formula(lexer.lex(sentence));
 }

@@ -28,7 +28,7 @@ void ParsingTreeNode::printNodeToString(QString &str) const
         const unsigned int fatherNodeCompensation = 1;
         str += QString::number(coordinates[coordinates.size() - zeroIndexCompensation - fatherNodeCompensation]);
     }
-    if(height == 0)
+    if(height != 0)
     {
         str += ",";
         str += QString::number(coordinates.back());

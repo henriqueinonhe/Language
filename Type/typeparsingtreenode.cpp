@@ -1,15 +1,13 @@
 ﻿#include "typeparsingtreenode.h"
 #include "TypeParsingTree.h"
 
-TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const QVector<unsigned int> &coordinates, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
+TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
     tree(tree),
     parent(parent),
-    coordinates(coordinates),
     typeBeginIndex(typeBeginIndex),
     typeEndIndex(typeEndIndex),
     mainOperator(mainOperator)
 {
-    updateTreeHeight();
 }
 
 void TypeParsingTreeNode::printNodeToString(QString &str) const
@@ -18,6 +16,7 @@ void TypeParsingTreeNode::printNodeToString(QString &str) const
      * 1st - (Parent Node Index, This Node Index)
      * 2nd - The Type Sort. */
 
+    const QVector<unsigned int> coordinates = getCoordinates();
     str += "(";
     if(coordinates.size() >= 2)
     {
@@ -56,14 +55,6 @@ QString TypeParsingTreeNode::mainOperatorToString() const
     }
 }
 
-void TypeParsingTreeNode::updateTreeHeight()
-{
-    if(tree->height < getHeight())
-    {
-        tree->height = getHeight();
-    }
-}
-
 unsigned int TypeParsingTreeNode::getTypeEndIndex() const
 {
     return typeEndIndex;
@@ -86,21 +77,31 @@ void TypeParsingTreeNode::setMainOperator(const MainOperator &value)
 
 QVector<unsigned int> TypeParsingTreeNode::getCoordinates() const
 {
+    QVector<unsigned int> coordinates;
+
+    const TypeParsingTreeNode *ptr = this;
+    while(!ptr->isRoot())
+    {
+        coordinates.prepend(ptr->getOwnChildNumber());
+        ptr = ptr->parent;
+    }
+
     return coordinates;
 }
 
 QString TypeParsingTreeNode::coordinatesToString() const
 {
     QString coordinatesString;
+    const QVector<unsigned int> coordinates = getCoordinates();
 
     coordinatesString += "(";
-    if(!this->coordinates.empty())
+    if(!coordinates.empty())
     {
-        std::for_each(this->coordinates.begin(), this->coordinates.end() - 1, [&](unsigned int e) {
+        std::for_each(coordinates.begin(), coordinates.end() - 1, [&](unsigned int e) {
             coordinatesString += QString::number(e);
             coordinatesString += ",";
         });
-        coordinatesString += QString::number(this->coordinates.back());
+        coordinatesString += QString::number(coordinates.back());
     }
     coordinatesString += ")";
 
@@ -125,7 +126,15 @@ TypeTokenString TypeParsingTreeNode::getTypeString() const
 
 unsigned int TypeParsingTreeNode::getHeight() const
 {
-    return coordinates.size();
+    unsigned int height = 0;
+    const TypeParsingTreeNode *ptr = this;
+    while(!ptr->isRoot())
+    {
+        ptr = ptr->parent;
+        height++;
+    }
+
+    return height;
 }
 
 unsigned int TypeParsingTreeNode::getChildrenNumber() const
@@ -135,14 +144,40 @@ unsigned int TypeParsingTreeNode::getChildrenNumber() const
 
 unsigned int TypeParsingTreeNode::getOwnChildNumber() const
 {
-    return coordinates.back();
+    const TypeParsingTreeNode *ptr = parent;
+
+    unsigned int ownChildNumber = 0;
+    while(ptr->children[ownChildNumber].get() != this)
+    {
+        ownChildNumber++;
+    }
+
+    return ownChildNumber;
+}
+
+unsigned int TypeParsingTreeNode::getGreatestDescendantHeight() const
+{
+    if(this->isChildless())
+    {
+        return getHeight();
+    }
+    else
+    {
+        QVector<unsigned int> greatestDescendantHeightVector;
+
+        std::for_each(children.begin(), children.end(), [&greatestDescendantHeightVector](const shared_ptr<TypeParsingTreeNode> &node)
+        {
+            greatestDescendantHeightVector.push_back(node->getGreatestDescendantHeight());
+        });
+
+
+        return *std::max_element(greatestDescendantHeightVector.begin(),
+                                greatestDescendantHeightVector.end());
+    }
 }
 
 void TypeParsingTreeNode::appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex)
 {
-    QVector<unsigned int> coordinates = this->coordinates;
-    coordinates.push_back(this->children.size());
-
-    children.push_back(make_shared<TypeParsingTreeNode>(TypeParsingTreeNode(this->tree, this, coordinates, typeBeginIndex, typeEndIndex)));
+    children.push_back(make_shared<TypeParsingTreeNode>(TypeParsingTreeNode(this->tree, this, typeBeginIndex, typeEndIndex)));
 }
 

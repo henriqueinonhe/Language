@@ -27,7 +27,6 @@ public:
 
 private:
     TypeParsingTreeNode root;
-    unsigned int height;
     TypeTokenString typeString;
 
 friend class TypeParsingTreeIterator;

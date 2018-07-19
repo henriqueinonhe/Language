@@ -2,15 +2,14 @@
 #include "typeparsingtreeiterator.h"
 
 TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
-    root(this, nullptr, QVector<unsigned int>(), 0, type.size() - 1),
-    height(0),
+    root(this, nullptr, 0, type.size() - 1),
     typeString(type)
 {
 }
 
 unsigned int TypeParsingTree::getHeight() const
 {
-    return height;
+    return root.getGreatestDescendantHeight();
 }
 
 QString TypeParsingTree::print()
