@@ -2,7 +2,7 @@
 #include "parsingtreeiterator.h"
 
 ParsingTree::ParsingTree(const TokenString &string) :
-    root(this, nullptr, QVector<unsigned int>(), 0, string.size() - 1),
+    root(this, nullptr, 0, string.size() - 1),
     height(0),
     tokenString(string)
 {

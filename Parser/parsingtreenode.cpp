@@ -1,10 +1,9 @@
 ﻿#include "parsingtreenode.h"
 #include "ParsingTree.h"
 
-ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, const QVector<unsigned int> &coordinates, const unsigned int BeginIndex, const unsigned int EndIndex) :
+ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, const unsigned int BeginIndex, const unsigned int EndIndex) :
     tree(tree),
     parent(parent),
-    coordinates(coordinates),
     beginIndex(BeginIndex),
     endIndex(EndIndex)
 {
@@ -20,14 +19,17 @@ void ParsingTreeNode::printNodeToString(QString &str) const
      * 4th - The Free Variable Set.
      * 5th - The Bound Variable Set. */
 
+
+    const unsigned int height = getHeight();
+    const QVector<unsigned int> coordinates = getCoordinates();
     str += "(";
-    if(coordinates.size() >= 2)
+    if(height >= 2)
     {
         const unsigned int zeroIndexCompensation = 1;
         const unsigned int fatherNodeCompensation = 1;
         str += QString::number(coordinates[coordinates.size() - zeroIndexCompensation - fatherNodeCompensation]);
     }
-    if(!coordinates.isEmpty())
+    if(height == 0)
     {
         str += ",";
         str += QString::number(coordinates.back());
@@ -99,22 +101,32 @@ unsigned int ParsingTreeNode::getBeginIndex() const
 
 QVector<unsigned int> ParsingTreeNode::getCoordinates() const
 {
+    QVector<unsigned int> coordinates;
+
+    const ParsingTreeNode *ptr = this;
+    while(!ptr->isRoot())
+    {
+        coordinates.prepend(ptr->getOwnChildNumber());
+        ptr = ptr->parent;
+    }
+
     return coordinates;
 }
 
 QString ParsingTreeNode::coordinatesToString() const
 {
     QString coordinatesString;
+    const QVector<unsigned int> coordinates = this->getCoordinates();
 
     coordinatesString += "(";
-    if(!this->coordinates.empty())
+    if(!coordinates.empty())
     {
         const unsigned int lastIndexCompensation = 1;
-        std::for_each(this->coordinates.begin(), this->coordinates.end() - lastIndexCompensation, [&](unsigned int e) {
+        std::for_each(coordinates.begin(), coordinates.end() - lastIndexCompensation, [&](unsigned int e) {
             coordinatesString += QString::number(e);
             coordinatesString += ",";
         });
-        coordinatesString += QString::number(this->coordinates.back());
+        coordinatesString += QString::number(coordinates.back());
     }
     coordinatesString += ")";
 
@@ -140,7 +152,15 @@ TokenString ParsingTreeNode::getTokenString() const
 
 unsigned int ParsingTreeNode::getHeight() const
 {
-    return coordinates.size();
+    unsigned int height = 0;
+    const ParsingTreeNode *ptr = this;
+    while(!ptr->isRoot())
+    {
+        ptr = ptr->parent;
+        height++;
+    }
+
+    return height;
 }
 
 unsigned int ParsingTreeNode::getChildrenNumber() const
@@ -150,14 +170,19 @@ unsigned int ParsingTreeNode::getChildrenNumber() const
 
 unsigned int ParsingTreeNode::getOwnChildNumber() const
 {
-    return coordinates.back();
+    const ParsingTreeNode *ptr = parent;
+
+    unsigned int ownChildNumber = 0;
+    while(ptr->children[ownChildNumber].get() != this)
+    {
+        ownChildNumber++;
+    }
+
+    return ownChildNumber;
 }
 
 void ParsingTreeNode::appendChild(const unsigned int BeginIndex, const unsigned int EndIndex)
 {
-    QVector<unsigned int> coordinates = this->coordinates;
-    coordinates.push_back(this->children.size());
-
-    children.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(this->tree, this, coordinates, BeginIndex, EndIndex)));
+    children.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(this->tree, this, BeginIndex, EndIndex)));
 }
 

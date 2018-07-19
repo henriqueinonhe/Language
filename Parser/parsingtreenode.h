@@ -41,7 +41,6 @@ public:
 private:
     ParsingTreeNode(ParsingTree *tree,
                     ParsingTreeNode *parent,
-                    const QVector<unsigned int> &coordinates,
                     const unsigned int beginIndex,
                     const unsigned int endIndex);
 
@@ -53,7 +52,6 @@ private:
 
     ParsingTree *tree;
     ParsingTreeNode *parent;
-    QVector<unsigned int> coordinates;
     QVector<shared_ptr<ParsingTreeNode>> children;
     unsigned int beginIndex;
     unsigned int endIndex;
