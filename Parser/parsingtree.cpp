@@ -3,14 +3,13 @@
 
 ParsingTree::ParsingTree(const TokenString &string) :
     root(this, nullptr, 0, string.size() - 1),
-    height(0),
     tokenString(string)
 {
 }
 
 unsigned int ParsingTree::getHeight() const
 {
-    return height;
+    return root.getGreatestDescendantHeight();
 }
 
 QString ParsingTree::print()

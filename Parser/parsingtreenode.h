@@ -31,6 +31,7 @@ public:
     unsigned int getHeight() const;
     unsigned int getChildrenNumber() const;
     unsigned int getOwnChildNumber() const;
+    unsigned int getGreatestDescendantHeight() const;
 
     unsigned int getBeginIndex() const;
     unsigned int getEndIndex() const;
@@ -47,8 +48,6 @@ private:
     void printNodeToString(QString &str) const;
 
     QString printVariableSet(const QSet<const VariableToken *> &set) const;
-
-    void updateTreeHeight();
 
     ParsingTree *tree;
     ParsingTreeNode *parent;

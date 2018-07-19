@@ -25,7 +25,6 @@ public:
 
 private:
     ParsingTreeNode root;
-    unsigned int height;
     TokenString tokenString;
 
 friend class ParsingTreeIterator;

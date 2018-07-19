@@ -7,7 +7,6 @@ ParsingTreeNode::ParsingTreeNode(ParsingTree *tree, ParsingTreeNode *parent, con
     beginIndex(BeginIndex),
     endIndex(EndIndex)
 {
-    updateTreeHeight();
 }
 
 void ParsingTreeNode::printNodeToString(QString &str) const
@@ -68,14 +67,6 @@ QString ParsingTreeNode::printVariableSet(const QSet<const VariableToken *> &set
         setString += "\"}";
 
         return setString;
-    }
-}
-
-void ParsingTreeNode::updateTreeHeight()
-{
-    if(tree->height < getHeight())
-    {
-        tree->height = getHeight();
     }
 }
 
@@ -179,6 +170,27 @@ unsigned int ParsingTreeNode::getOwnChildNumber() const
     }
 
     return ownChildNumber;
+}
+
+unsigned int ParsingTreeNode::getGreatestDescendantHeight() const
+{
+    if(this->isChildless())
+    {
+        return getHeight();
+    }
+    else
+    {
+        QVector<unsigned int> greatestDescendantHeightVector;
+
+        std::for_each(children.begin(), children.end(), [&greatestDescendantHeightVector](const shared_ptr<ParsingTreeNode> &node)
+        {
+            greatestDescendantHeightVector.push_back(node->getGreatestDescendantHeight());
+        });
+
+
+        return *std::max_element(greatestDescendantHeightVector.begin(),
+                                greatestDescendantHeightVector.end());
+    }
 }
 
 void ParsingTreeNode::appendChild(const unsigned int BeginIndex, const unsigned int EndIndex)
