@@ -183,7 +183,7 @@ bool TokenString::operator!=(const TokenString &other) const
 
 QDataStream &operator <<(QDataStream &stream, const TokenString &tokenString)
 {
-
+    
 }
 
 QDataStream &operator >>(QDataStream &stream, TokenString &tokenString)

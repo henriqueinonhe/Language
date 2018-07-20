@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QString>
 #include <QLinkedList>
+#include <QDataStream>
 
 class TypeTokenString
 {
@@ -41,6 +42,12 @@ private:
 
     void lexCompositionOperator(const QString &string, int &index);
     void lexPrimitiveTypeToken(const QString &string, int &index);
+
+    friend QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);
+    friend QDataStream &operator >>(QDataStream &stream, TypeTokenString &string);
 };
+
+QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);
+QDataStream &operator >>(QDataStream &stream, TypeTokenString &string);
 
 #endif // TYPETOKENSTRING_H

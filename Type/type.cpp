@@ -86,3 +86,15 @@ TypeTokenString Type::getTypeString() const
     return typeString;
 }
 
+
+QDataStream &operator <<(QDataStream &stream, const Type &type)
+{
+    stream << type.typeString << type.argumentsTypes << type.returnTypeTokenString;
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, Type &type)
+{
+    stream >> type.typeString >> type.argumentsTypes >> type.returnTypeTokenString;
+    return stream;
+}

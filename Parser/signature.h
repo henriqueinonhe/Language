@@ -12,7 +12,6 @@ public:
     Signature();
     virtual const Token *getTokenPointer(const QString &token) const = 0;
 
-protected:
 };
 
 Q_DECLARE_INTERFACE(Signature, "Signature")

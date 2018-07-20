@@ -188,3 +188,13 @@ bool TypeTokenString::characterIsSeparator(const QString &c) const
            c == "," ||
            c == "-";
 }
+
+QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string)
+{
+    //TODO
+}
+
+QDataStream &operator >>(QDataStream &stream, TypeTokenString &string)
+{
+    //TODO
+}

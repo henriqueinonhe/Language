@@ -3,6 +3,7 @@
 
 #include "token.h"
 #include "signature.h"
+#include <QDataStream>
 
 class Lexer;
 class Parser;
@@ -45,6 +46,11 @@ private:
     const Signature *signature;
 
     friend class Lexer;
+    friend QDataStream &operator << (QDataStream &stream, const TokenString &tokenString);
+    friend QDataStream &operator >> (QDataStream &stream, TokenString &tokenString);
 };
+
+QDataStream &operator << (QDataStream &stream, const TokenString &tokenString);
+QDataStream &operator >> (QDataStream &stream, TokenString &tokenString);
 
 #endif // TOKENSTRING_H

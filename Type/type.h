@@ -3,6 +3,7 @@
 
 #include "typetokenstring.h"
 #include <memory>
+#include <QDataStream>
 
 class TypeParser;
 class ParsingTreeNode;
@@ -46,6 +47,12 @@ private:
 
     friend class TypeParser;
     friend class ParsingTreeNode;
+
+    friend QDataStream &operator <<(QDataStream &stream, const Type &type);
+    friend QDataStream &operator >>(QDataStream &stream, Type &type);
 };
+
+QDataStream &operator <<(QDataStream &stream, const Type &type);
+QDataStream &operator >>(QDataStream &stream, Type &type);
 
 #endif // TOKENTYPE_H
