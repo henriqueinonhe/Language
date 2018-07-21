@@ -27,6 +27,8 @@
 #include "formatter.h"
 #include "basicpostprocessor.h"
 #include "formula.h"
+#include <QFile>
+#include <QDataStream>
 #include "dirtyfix.h"
 
 TEST_CASE("TypeParsingTrees")
@@ -1066,6 +1068,189 @@ TEST_CASE("First Order Logic With Pre and Post Processor")
         CHECK(postProcessor.processString(parser.parse(preProcessor.processString("R Lambda x f x Lambda y g y")).formattedString()) == "R Lambda x f x Lambda y g y");
     }
 
+}
+
+TEST_CASE("Serialization")
+{
+    QFile file("C:/Users/Henrique/Documents/Qt Projects/Language/test.dat");
+
+    SECTION("Type Token")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        TypeToken t1("i"), t2("o"), t3("->"), t4("["), t5("]"), t6("("), t7(")");
+        stream << t1 << t2 << t3 << t4 << t5 << t6 << t7;
+
+        file.reset();
+
+        TypeToken t8, t9, t10, t11, t12, t13, t14;
+        stream >> t8 >> t9 >> t10 >> t11 >> t12 >> t13 >> t14;
+
+        CHECK(t1 == t8);
+        CHECK(t2 == t9);
+        CHECK(t3 == t10);
+        CHECK(t4 == t11);
+        CHECK(t5 == t12);
+        CHECK(t6 == t13);
+        CHECK(t7 == t14);
+    }
+
+    SECTION("Type Token String")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        TypeTokenString t1("i"), t2("i->o"), t3("[i,i,i]->o");
+        stream << t1 << t2 << t3;
+
+        file.reset();
+
+        TypeTokenString t4, t5, t6;
+        stream >> t4 >> t5 >> t6;
+
+        CHECK(t1 == t4);
+        CHECK(t2 == t5);
+        CHECK(t3 == t6);
+    }
+
+    SECTION("Type")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        Type t1("i"), t2("i->o"), t3("(i->o)->o"), t4("[o,o]->o");
+        stream << t1 << t2 << t3 << t4;
+
+        file.reset();
+
+        QVector<Type> vector;
+        vector.resize(4);
+
+        stream >> vector[0] >> vector[1] >> vector[2] >> vector[3];
+        CHECK(t1 == vector[0]);
+        CHECK(t2 == vector[1]);
+        CHECK(t3 == vector[2]);
+        CHECK(t4 == vector[3]);
+    }
+
+    SECTION("Core Token")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        CoreToken t1("P", Type("i")), t2("And", Type("o")), t3("Or", Type("i->o"));
+        stream << t1 << t2 << t3;
+
+        file.reset();
+
+        shared_ptr<Token> t4, t5, t6;
+        t4 = Token::unserializePtr(stream);
+        t5 = Token::unserializePtr(stream);
+        t6 = Token::unserializePtr(stream);
+
+        CHECK(t1 == *t4);
+        CHECK(t2 == *t5);
+        CHECK(t3 == *t6);
+    }
+
+    SECTION("Punctuaction Token")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        PunctuationToken t1("("), t2(")");
+        stream << t1 << t2;
+
+        file.reset();
+
+        shared_ptr<Token> t3, t4;
+        t3 = Token::unserializePtr(stream);
+        t4 = Token::unserializePtr(stream);
+
+        CHECK(t1 == *t3);
+        CHECK(t2 == *t4);
+    }
+
+    SECTION("Variable Token")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        VariableToken t1("x", Type("i")), t2("y", Type("o")), t3("z", Type("p"));
+        stream << t1 << t2 << t3;
+
+        file.reset();
+
+        shared_ptr<Token> t4, t5, t6;
+        t4 = Token::unserializePtr(stream);
+        t5 = Token::unserializePtr(stream);
+        t6 = Token::unserializePtr(stream);
+
+        CHECK(t1 == *t4);
+        CHECK(t2 == *t5);
+        CHECK(t3 == *t6);
+    }
+
+    SECTION("Binding Token")
+    {
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        BindingRecord record(0, QVector<unsigned int>{1});
+        BindingToken t1("Forall", Type("[i,o]->o"), QVector<BindingRecord>{record});
+        stream << t1;
+
+        file.reset();
+
+        shared_ptr<Token> t2;
+        t2 = Token::unserializePtr(stream);
+
+        CHECK(t1 == *t2);
+    }
+
+    SECTION("Token String")
+    {
+        TableSignature signature;
+
+        signature.addToken(CoreToken("~", Type("o->o")));
+        signature.addToken(CoreToken("&", Type("[o,o]->o")));
+        signature.addToken(CoreToken("|", Type("[o,o]->o")));
+        signature.addToken(CoreToken("->", Type("[o,o]->o")));
+        signature.addToken(CoreToken("<->", Type("[o,o]->o")));
+
+        signature.addToken(CoreToken("P", Type("i->o")));
+        signature.addToken(CoreToken("Q", Type("i->o")));
+        signature.addToken(CoreToken("R", Type("[i,i]->o")));
+
+        signature.addToken(CoreToken("a", Type("i")));
+        signature.addToken(CoreToken("b", Type("i")));
+        signature.addToken(CoreToken("c", Type("i")));
+
+        Lexer lexer(&signature);
+
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        TokenString t1, t2, t3;
+        t1 = lexer.lex("(-> (~ (P a)) (~ (R b c)))");
+        t2 = lexer.lex("(| (P c) (& (P a) (P b)))");
+        t3 = lexer.lex("(Q a)");
+
+        stream << t1 << t2 << t3;
+
+        file.reset();
+
+        TokenString t4, t5, t6;
+        t4 = t1;
+        t5 = t2;
+        t6 = t3;
+        stream >> t1 >> t2 >> t3;
+
+        CHECK(t1 == t4);
+        CHECK(t2 == t5);
+        CHECK(t3 == t6);
+    }
 }
 
 TEST_CASE("Dirty Fix")

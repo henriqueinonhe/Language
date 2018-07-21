@@ -47,10 +47,28 @@ Token *BindingToken::getAllocatedClone() const
     return new BindingToken(*this);
 }
 
+void BindingToken::serialize(QDataStream &stream) const
+{
+    CoreToken::serialize(stream);
+    stream << bindingRecords;
+}
+
+void BindingToken::unserialize(QDataStream &stream)
+{
+    CoreToken::unserialize(stream);
+    stream >> bindingRecords;
+}
+
 bool BindingToken::isEqual(const Token &other) const
 {
     return CoreToken::isEqual(other) &&
-           this->bindingRecords == dynamic_cast<const BindingToken &>(other).bindingRecords;
+            this->bindingRecords == dynamic_cast<const BindingToken &>(other).bindingRecords;
+}
+
+BindingToken::BindingToken() :
+    CoreToken()
+{
+
 }
 
 void BindingToken::checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const

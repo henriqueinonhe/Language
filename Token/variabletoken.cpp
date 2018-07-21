@@ -20,3 +20,9 @@ bool VariableToken::isEqual(const Token &other) const
 {
     return CoreToken::isEqual(other);
 }
+
+VariableToken::VariableToken() :
+    CoreToken()
+{
+
+}

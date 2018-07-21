@@ -1,6 +1,9 @@
 ﻿#include "tokenstring.h"
 
-TokenString::TokenString()
+#include "lexer.h"
+
+TokenString::TokenString() :
+    signature(nullptr)
 {
 
 }
@@ -183,10 +186,18 @@ bool TokenString::operator!=(const TokenString &other) const
 
 QDataStream &operator <<(QDataStream &stream, const TokenString &tokenString)
 {
+    stream << tokenString.formattedString();
 
+    return stream;
 }
 
 QDataStream &operator >>(QDataStream &stream, TokenString &tokenString)
 {
+    Lexer lexer(tokenString.signature);
+    QString formattedString;
+    stream >> formattedString;
 
+    tokenString = lexer.lex(formattedString);
+
+    return stream;
 }

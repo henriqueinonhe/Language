@@ -13,7 +13,11 @@ public:
     virtual Token *getAllocatedClone() const;
 
 protected:
+    VariableToken();
+
     virtual bool isEqual(const Token &other) const;
+
+    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
 };
 
 #endif // VARIABLETOKEN_H

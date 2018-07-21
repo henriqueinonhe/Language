@@ -87,3 +87,17 @@ void TypeToken::assignSort(const QString &string)
     }
 }
 
+
+QDataStream &operator <<(QDataStream &stream, const TypeToken &token)
+{
+    stream << (qint8 &) token.sort << token.string;
+
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, TypeToken &token)
+{
+    stream >> (qint8 &) token.sort >> token.string;
+
+    return stream;
+}

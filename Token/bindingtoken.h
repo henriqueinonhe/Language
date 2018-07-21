@@ -3,6 +3,7 @@
 
 #include "coretoken.h"
 #include "bindingrecord.h"
+#include <QDataStream>
 
 class BindingToken : public CoreToken
 {
@@ -17,16 +18,21 @@ public:
 
     virtual Token *getAllocatedClone() const;
 
+    virtual void serialize(QDataStream &stream) const;
+    virtual void unserialize(QDataStream &stream);
+
 protected:
+    BindingToken();
+
     virtual bool isEqual(const Token &other) const;
 
 private:
+
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 
     QVector<unsigned int> gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
     QVector<unsigned int> gatherBoundArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
 
-    QVector<BindingRecord> bindingRecords;
     void checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const;
     void checkDuplicateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
     void validateBindingRecordsArguments(const QVector<BindingRecord> &bindingRecords) const;
@@ -35,6 +41,10 @@ private:
     void checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkNumberOfArgumentsConsistency(const unsigned int greatestBindingArgumentNumber, const unsigned int greatestBoundArgumentNumber, const unsigned int numberOfArguments) const;
+
+    QVector<BindingRecord> bindingRecords;
+
+    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
 };
 
 #endif // BINDINGTOKEN_H

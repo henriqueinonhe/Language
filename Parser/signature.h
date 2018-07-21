@@ -4,8 +4,6 @@
 #include "coretoken.h"
 #include "type.h"
 
-//So far this is an interface
-
 class Signature
 {
 public:

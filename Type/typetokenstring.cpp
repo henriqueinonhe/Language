@@ -150,7 +150,7 @@ void TypeTokenString::lexString(const QString &string)
     {
         if(string[index] == '(')
         {
-            tokenList.push_back(pool.getPointer(TypeToken(QString("("))));
+            tokenList.push_back(pool.getPointer(TypeToken("(")));
         }
         else if(string[index] == ')')
         {
@@ -191,10 +191,17 @@ bool TypeTokenString::characterIsSeparator(const QString &c) const
 
 QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string)
 {
-    //TODO
+    stream << string.toString();
+
+    return stream;
 }
 
 QDataStream &operator >>(QDataStream &stream, TypeTokenString &string)
 {
-    //TODO
+    QString stringnizedTypeString;
+    stream >> stringnizedTypeString;
+
+    string = TypeTokenString(stringnizedTypeString);
+
+    return stream;
 }

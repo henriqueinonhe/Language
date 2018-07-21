@@ -14,6 +14,11 @@ public:
 
 protected:
     virtual bool isEqual(const Token &other) const;
+
+private:
+    PunctuationToken();
+
+    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
 };
 
 #endif // PUNCTUATIONTOKEN_H

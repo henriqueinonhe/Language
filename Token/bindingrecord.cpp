@@ -13,6 +13,20 @@ void BindingRecord::checkBoundArgumentIndexesDuplicates(const QVector<unsigned i
     }
 }
 
+QDataStream &operator <<(QDataStream &stream, const BindingRecord &record)
+{
+    stream << record.bindingArgumentIndex <<  record.boundArgumentsIndexes;
+
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, BindingRecord &record)
+{
+    stream >> record.bindingArgumentIndex >> record.boundArgumentsIndexes;
+
+    return stream;
+}
+
 BindingRecord::BindingRecord(const unsigned int bindingArgumentIndex, const QVector<unsigned int> &boundArgumentsIndexes) :
     bindingArgumentIndex(bindingArgumentIndex),
     boundArgumentsIndexes(boundArgumentsIndexes)

@@ -11,7 +11,7 @@
 class TypeTokenString
 {
 public:
-    TypeTokenString();
+    TypeTokenString(); //NOTE Maybe this is not good!
     TypeTokenString(const QString &string);
 
     QString toString() const;

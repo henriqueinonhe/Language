@@ -3,6 +3,7 @@
 
 #include "containerauxiliarytools.h"
 #include <QVector>
+#include <QDataStream>
 
 struct BindingRecord
 {
@@ -12,6 +13,8 @@ public:
     BindingRecord(const unsigned int bindingArgumentIndex,
                   const QVector<unsigned int> &boundArgumentsIndexes);
 
+    BindingRecord(const QString &string);
+
     bool operator==(const BindingRecord &other) const;
     bool operator!=(const BindingRecord &other) const;
 
@@ -19,6 +22,12 @@ public:
     QVector<unsigned int> boundArgumentsIndexes;
 private:
     void checkBoundArgumentIndexesDuplicates(const QVector<unsigned int> &boundArgumentsIndexes);
+
+    friend QDataStream &operator <<(QDataStream &stream, const BindingRecord &record);
+    friend QDataStream &operator >>(QDataStream &stream, BindingRecord &record);
 };
+
+QDataStream &operator <<(QDataStream &stream, const BindingRecord &record);
+QDataStream &operator >>(QDataStream &stream, BindingRecord &record);
 
 #endif // BINDINGRECORD_H

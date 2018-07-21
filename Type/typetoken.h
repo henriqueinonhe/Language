@@ -3,11 +3,12 @@
 
 #include <QString>
 #include <QRegularExpression>
+#include <QDataStream>
 
 class TypeToken
 {
 public:
-    enum class Sort
+    enum class Sort : unsigned char
     {
         LeftParenthesis,
         RightParenthesis,
@@ -37,6 +38,12 @@ private:
     Sort sort;
     QString string;
 
+    friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
+    friend QDataStream &operator >>(QDataStream &stream, TypeToken &token);
+
 };
+
+QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
+QDataStream &operator >>(QDataStream &stream, TypeToken &token);
 
 #endif // TYPETOKEN_H

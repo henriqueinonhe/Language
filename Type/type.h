@@ -8,6 +8,8 @@
 class TypeParser;
 class ParsingTreeNode;
 class TypeParsingTree;
+class Token;
+class CoreToken;
 
 using namespace std;
 
@@ -45,9 +47,11 @@ private:
     QVector<TypeTokenString> argumentsTypes;
     TypeTokenString returnTypeTokenString;
 
+    friend class QVector<Type>;
     friend class TypeParser;
     friend class ParsingTreeNode;
-
+    friend class Token; //FIXME!
+    friend class CoreToken;
     friend QDataStream &operator <<(QDataStream &stream, const Type &type);
     friend QDataStream &operator >>(QDataStream &stream, Type &type);
 };

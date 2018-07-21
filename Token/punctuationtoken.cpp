@@ -28,3 +28,9 @@ bool PunctuationToken::isEqual(const Token &other) const
 {
     return Token::isEqual(other);
 }
+
+PunctuationToken::PunctuationToken()
+{
+
+}
+
