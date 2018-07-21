@@ -16,6 +16,7 @@ using namespace std;
 class Type
 {
 public:
+    Type(QDataStream &stream);
     Type(const QString &type);
 
     bool operator==(const Type &other) const;
@@ -50,13 +51,9 @@ private:
     friend class QVector<Type>;
     friend class TypeParser;
     friend class ParsingTreeNode;
-    friend class Token; //FIXME!
-    friend class CoreToken;
     friend QDataStream &operator <<(QDataStream &stream, const Type &type);
-    friend QDataStream &operator >>(QDataStream &stream, Type &type);
 };
 
 QDataStream &operator <<(QDataStream &stream, const Type &type);
-QDataStream &operator >>(QDataStream &stream, Type &type);
 
 #endif // TOKENTYPE_H

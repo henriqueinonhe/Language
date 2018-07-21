@@ -7,6 +7,13 @@ TypeTokenString::TypeTokenString()
 
 }
 
+TypeTokenString::TypeTokenString(QDataStream &stream)
+{
+    QString stringnizedTypeString;
+    stream >> stringnizedTypeString;
+    lexString(stringnizedTypeString);
+}
+
 TypeTokenString::TypeTokenString(const QString &string)
 {
     lexString(string);

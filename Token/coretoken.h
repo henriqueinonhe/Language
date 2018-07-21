@@ -8,6 +8,7 @@
 class CoreToken : public Token
 {
 public:
+    CoreToken(QDataStream &stream);
     CoreToken(const QString &string, const Type &type);
 
     Type getType() const;
@@ -16,22 +17,18 @@ public:
 
     virtual Token *getAllocatedClone() const;
 
-    virtual void serialize(QDataStream &stream) const;
-    virtual void unserialize(QDataStream &stream);
 
 protected:
-    CoreToken();
-
-    Type type;
+    virtual void serialize(QDataStream &stream) const;
 
     virtual bool isEqual(const Token &other) const;
 
+    Type type;
+
     friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
     friend QDataStream &operator <<(QDataStream &stream, const CoreToken &token);
-    friend QDataStream &operator >>(QDataStream &stream, CoreToken &token);
 };
 
 QDataStream &operator <<(QDataStream &stream, const CoreToken &token);
-QDataStream &operator >>(QDataStream &stream, CoreToken &token);
 
 #endif // CORETOKEN_H

@@ -11,7 +11,8 @@
 class TypeTokenString
 {
 public:
-    TypeTokenString(); //NOTE Maybe this is not good!
+    TypeTokenString();
+    TypeTokenString(QDataStream &stream);
     TypeTokenString(const QString &string);
 
     QString toString() const;
@@ -45,6 +46,8 @@ private:
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);
     friend QDataStream &operator >>(QDataStream &stream, TypeTokenString &string);
+    friend class QVector<TypeTokenString>;
+    friend class Type;
 };
 
 QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);

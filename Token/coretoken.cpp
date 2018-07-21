@@ -1,5 +1,11 @@
 ﻿#include "coretoken.h"
 
+CoreToken::CoreToken(QDataStream &stream) :
+    Token(stream),
+    type(stream)
+{
+}
+
 CoreToken::CoreToken(const QString &string, const Type &type) :
     Token(string),
     type(type)
@@ -31,34 +37,15 @@ void CoreToken::serialize(QDataStream &stream) const
     stream << type;
 }
 
-void CoreToken::unserialize(QDataStream &stream)
-{
-    Token::unserialize(stream);
-    stream >> type;
-}
-
 bool CoreToken::isEqual(const Token &other) const
 {
     return Token::isEqual(other) &&
             this->type == dynamic_cast<const CoreToken &>(other).type;
 }
 
-CoreToken::CoreToken() :
-    Token()
-{
-
-}
-
 QDataStream &operator <<(QDataStream &stream, const CoreToken &token)
 {
     token.serialize(stream);
-
-    return stream;
-}
-
-QDataStream &operator >>(QDataStream &stream, CoreToken &token)
-{
-    token.unserialize(stream);
 
     return stream;
 }

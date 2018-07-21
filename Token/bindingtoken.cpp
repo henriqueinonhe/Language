@@ -1,5 +1,11 @@
 ﻿#include "bindingtoken.h"
 
+BindingToken::BindingToken(QDataStream &stream) :
+    CoreToken(stream)
+{
+    stream >> bindingRecords;
+}
+
 BindingToken::BindingToken(const QString &token, const Type &type, const QVector<BindingRecord> &bindingRecords) :
     CoreToken(token, type)
 {
@@ -53,22 +59,10 @@ void BindingToken::serialize(QDataStream &stream) const
     stream << bindingRecords;
 }
 
-void BindingToken::unserialize(QDataStream &stream)
-{
-    CoreToken::unserialize(stream);
-    stream >> bindingRecords;
-}
-
 bool BindingToken::isEqual(const Token &other) const
 {
     return CoreToken::isEqual(other) &&
             this->bindingRecords == dynamic_cast<const BindingToken &>(other).bindingRecords;
-}
-
-BindingToken::BindingToken() :
-    CoreToken()
-{
-
 }
 
 void BindingToken::checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const

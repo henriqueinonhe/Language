@@ -1,5 +1,10 @@
 ﻿#include "formula.h"
 
+Formula::Formula(QDataStream &stream, const Signature *signature) :
+    tokenString(stream, signature)
+{
+}
+
 bool Formula::operator==(const Formula &other) const
 {
     return this->tokenString == other.tokenString;

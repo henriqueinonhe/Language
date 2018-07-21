@@ -4,6 +4,7 @@
 #include "signature.h"
 #include "punctuationtoken.h"
 #include <memory>
+#include <QDataStream>
 
 using namespace std;
 
@@ -15,11 +16,25 @@ public:
 
     void addToken(const Token &token);
 
+    bool operator==(const TableSignature &other) const;
+    bool operator!=(const TableSignature &other) const;
+
+    bool equalTokenTable(const TableSignature &other) const;
+
 private:
     bool tokenIsAlreadyPresentInSignature(const Token &token) const;
 
-    QVector<shared_ptr<Token>> tokenTable;
     void pushTokenPointerToTable(const Token &token);
+
+    QVector<shared_ptr<Token>> tokenTable;
+
+    friend QDataStream &operator <<(QDataStream &stream, const TableSignature &signature);
+    friend QDataStream &operator >>(QDataStream &stream, TableSignature &signature);
 };
+
+QDataStream &operator <<(QDataStream &stream, const TableSignature &signature);
+QDataStream &operator >>(QDataStream &stream, TableSignature &signature);
+QDataStream &operator <<(QDataStream &stream, const shared_ptr<Token> &token);
+QDataStream &operator >>(QDataStream &stream, shared_ptr<Token> &token);
 
 #endif // TABLESIGNATURE_H

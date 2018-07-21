@@ -12,6 +12,7 @@ class TokenString
 {
 public:
     TokenString();
+    TokenString(QDataStream &stream, const Signature * const signature);
 
     QString toString() const;
     QString formattedString() const;
@@ -24,9 +25,6 @@ public:
     const Token &first() const;
     const Token &last() const;
 
-//    TokenString &insert(const unsigned int index, const QString &token); //Deprecated
-//    TokenString &swapTokens(const unsigned int index1, const unsigned int index2);//Deprecated
-
     bool isLastIndex(const unsigned int index) const;
     bool indexIsWithinBounds(const unsigned int index) const;
     bool isEmpty() const;
@@ -35,11 +33,6 @@ public:
     bool operator!=(const TokenString &other) const;
 
 private:
-
-    //Token &operator[](const unsigned int index);
-    //Token &first();
-    //Token &last();
-
     bool tokenNeedsSubsequentSeparation(const QVector<const Token *> &tokenList, const int index) const;
 
     QVector<const Token *> tokenList;
@@ -47,7 +40,6 @@ private:
 
     friend class Lexer;
     friend QDataStream &operator << (QDataStream &stream, const TokenString &tokenString);
-    friend QDataStream &operator >> (QDataStream &stream, TokenString &tokenString);
 };
 
 QDataStream &operator << (QDataStream &stream, const TokenString &tokenString);

@@ -5,6 +5,11 @@ TypeToken::TypeToken()
 
 }
 
+TypeToken::TypeToken(QDataStream &stream)
+{
+    stream >> (qint8 &) sort >> string;
+}
+
 TypeToken::TypeToken(const QString &string)
 {
     assignSort(string);
@@ -32,13 +37,13 @@ QString TypeToken::getString() const
     return string;
 }
 
-TypeToken TypeToken::setString(const QString &value)
-{
-    assignSort(value);
-    string = value;
+//TypeToken TypeToken::setString(const QString &value)
+//{
+//    assignSort(value);
+//    string = value;
 
-    return *this;
-}
+//    return *this;
+//}
 
 unsigned int TypeToken::getTokenCharSpan() const
 {
@@ -95,9 +100,9 @@ QDataStream &operator <<(QDataStream &stream, const TypeToken &token)
     return stream;
 }
 
-QDataStream &operator >>(QDataStream &stream, TypeToken &token)
-{
-    stream >> (qint8 &) token.sort >> token.string;
+//QDataStream &operator >>(QDataStream &stream, TypeToken &token)
+//{
+//    stream >> (qint8 &) token.sort >> token.string;
 
-    return stream;
-}
+//    return stream;
+//}

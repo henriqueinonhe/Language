@@ -167,13 +167,13 @@ TEST_CASE("TypeToken")
         CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
         CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
 
-        CHECK(TypeToken().setString("(").getSort() == TypeToken::Sort::LeftParenthesis);
-        CHECK(TypeToken().setString(")").getSort() == TypeToken::Sort::RightParenthesis);
-        CHECK(TypeToken().setString("[").getSort() == TypeToken::Sort::LeftSquareBracket);
-        CHECK(TypeToken().setString("]").getSort() == TypeToken::Sort::RightSquareBracket);
-        CHECK(TypeToken().setString(",").getSort() == TypeToken::Sort::Comma);
-        CHECK(TypeToken().setString("->").getSort() == TypeToken::Sort::CompositionOperator);
-        CHECK(TypeToken().setString("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
+//        CHECK(TypeToken().setString("(").getSort() == TypeToken::Sort::LeftParenthesis);
+//        CHECK(TypeToken().setString(")").getSort() == TypeToken::Sort::RightParenthesis);
+//        CHECK(TypeToken().setString("[").getSort() == TypeToken::Sort::LeftSquareBracket);
+//        CHECK(TypeToken().setString("]").getSort() == TypeToken::Sort::RightSquareBracket);
+//        CHECK(TypeToken().setString(",").getSort() == TypeToken::Sort::Comma);
+//        CHECK(TypeToken().setString("->").getSort() == TypeToken::Sort::CompositionOperator);
+//        CHECK(TypeToken().setString("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
 
         CHECK_THROWS(TypeToken("sd-ad"));
         CHECK_THROWS(TypeToken("sd,ad"));
@@ -187,7 +187,7 @@ TEST_CASE("TypeToken")
         CHECK_THROWS(TypeToken(""));
         CHECK_THROWS(TypeToken(" "));
 
-        CHECK_NOTHROW(TypeToken());
+        //CHECK_NOTHROW(TypeToken());
     }
 
     SECTION("Other Tests")
@@ -261,7 +261,7 @@ TEST_CASE("TypeTokenString")
     CHECK_THROWS(TypeTokenString("i-"));
     CHECK_THROWS(TypeTokenString("a>b"));
 
-    CHECK_NOTHROW(TypeTokenString());
+    //CHECK_NOTHROW(TypeTokenString());
     CHECK_NOTHROW(TypeTokenString(""));
 }
 
@@ -1084,8 +1084,7 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        TypeToken t8, t9, t10, t11, t12, t13, t14;
-        stream >> t8 >> t9 >> t10 >> t11 >> t12 >> t13 >> t14;
+        TypeToken t8(stream), t9(stream), t10(stream), t11(stream), t12(stream), t13(stream), t14(stream);
 
         CHECK(t1 == t8);
         CHECK(t2 == t9);
@@ -1106,8 +1105,7 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        TypeTokenString t4, t5, t6;
-        stream >> t4 >> t5 >> t6;
+        TypeTokenString t4(stream), t5(stream), t6(stream);
 
         CHECK(t1 == t4);
         CHECK(t2 == t5);
@@ -1124,14 +1122,12 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        QVector<Type> vector;
-        vector.resize(4);
+        Type t5(stream), t6(stream), t7(stream), t8(stream);
 
-        stream >> vector[0] >> vector[1] >> vector[2] >> vector[3];
-        CHECK(t1 == vector[0]);
-        CHECK(t2 == vector[1]);
-        CHECK(t3 == vector[2]);
-        CHECK(t4 == vector[3]);
+        CHECK(t1 == t5);
+        CHECK(t2 == t6);
+        CHECK(t3 == t7);
+        CHECK(t4 == t8);
     }
 
     SECTION("Core Token")
@@ -1241,16 +1237,45 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        TokenString t4, t5, t6;
-        t4 = t1;
-        t5 = t2;
-        t6 = t3;
-        stream >> t1 >> t2 >> t3;
+        TokenString t4(stream, &signature), t5(stream, &signature), t6(stream, &signature);
 
         CHECK(t1 == t4);
         CHECK(t2 == t5);
         CHECK(t3 == t6);
     }
+
+    SECTION("Table Signature")
+    {
+        TableSignature signature;
+
+        signature.addToken(CoreToken("~", Type("o->o")));
+        signature.addToken(CoreToken("&", Type("[o,o]->o")));
+        signature.addToken(CoreToken("|", Type("[o,o]->o")));
+        signature.addToken(CoreToken("->", Type("[o,o]->o")));
+        signature.addToken(CoreToken("<->", Type("[o,o]->o")));
+
+        signature.addToken(CoreToken("P", Type("i->o")));
+        signature.addToken(CoreToken("Q", Type("i->o")));
+        signature.addToken(CoreToken("R", Type("[i,i]->o")));
+
+        signature.addToken(CoreToken("a", Type("i")));
+        signature.addToken(CoreToken("b", Type("i")));
+        signature.addToken(CoreToken("c", Type("i")));
+
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream(&file);
+
+        stream << signature;
+
+        file.reset();
+
+        TableSignature signature2;
+
+        stream >> signature2;
+
+        CHECK(signature.equalTokenTable(signature2));
+    }
+
 }
 
 TEST_CASE("Dirty Fix")

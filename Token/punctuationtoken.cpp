@@ -1,5 +1,10 @@
 ﻿#include "punctuationtoken.h"
 
+PunctuationToken::PunctuationToken(QDataStream &stream) :
+    Token(stream)
+{
+}
+
 PunctuationToken::PunctuationToken(const QString &string) :
     Token(string)
 {
@@ -27,10 +32,5 @@ Token *PunctuationToken::getAllocatedClone() const
 bool PunctuationToken::isEqual(const Token &other) const
 {
     return Token::isEqual(other);
-}
-
-PunctuationToken::PunctuationToken()
-{
-
 }
 

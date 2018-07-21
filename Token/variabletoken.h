@@ -6,6 +6,7 @@
 class VariableToken : public CoreToken
 {
 public:
+    VariableToken(QDataStream &stream);
     VariableToken(const QString &token, const Type &type);
 
     virtual QString tokenClass() const;
@@ -13,8 +14,6 @@ public:
     virtual Token *getAllocatedClone() const;
 
 protected:
-    VariableToken();
-
     virtual bool isEqual(const Token &other) const;
 
     friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);

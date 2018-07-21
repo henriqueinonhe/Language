@@ -8,6 +8,7 @@
 class BindingToken : public CoreToken
 {
 public:
+    BindingToken(QDataStream &stream);
     BindingToken(const QString &token,
                  const Type &type,
                  const QVector<BindingRecord> &bindingRecords);
@@ -18,11 +19,9 @@ public:
 
     virtual Token *getAllocatedClone() const;
 
-    virtual void serialize(QDataStream &stream) const;
-    virtual void unserialize(QDataStream &stream);
 
 protected:
-    BindingToken();
+    virtual void serialize(QDataStream &stream) const;
 
     virtual bool isEqual(const Token &other) const;
 

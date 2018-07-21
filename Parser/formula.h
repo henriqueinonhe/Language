@@ -3,6 +3,7 @@
 
 #include "tokenstring.h"
 #include "type.h"
+#include <QDataStream>
 
 class Parser;
 class ProofLinks;
@@ -10,6 +11,8 @@ class ProofLinks;
 class Formula
 {
 public:
+    Formula(QDataStream &stream, const Signature * signature);
+
     bool operator==(const Formula &other) const;
     bool operator!=(const Formula &other) const;
 
@@ -25,6 +28,9 @@ private:
     friend class Parser;
     friend class QVector<Formula>;
 };
+
+QDataStream &operator <<(QDataStream &stream, const Formula &formula);
+
 
 #endif // FORMULA_H
 

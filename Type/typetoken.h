@@ -19,7 +19,7 @@ public:
         PrimitiveType
     };
 
-    TypeToken();
+    TypeToken(QDataStream &stream);
     TypeToken(const QString &string);
 
     Sort getSort() const;
@@ -28,11 +28,12 @@ public:
     bool operator !=(const TypeToken &other) const;
 
     QString getString() const;
-    TypeToken setString(const QString &value);
+//    TypeToken setString(const QString &value);
 
     unsigned int getTokenCharSpan() const;
 
 private:
+    TypeToken();
     void assignSort(const QString &string);
 
     Sort sort;
@@ -40,10 +41,9 @@ private:
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
     friend QDataStream &operator >>(QDataStream &stream, TypeToken &token);
-
 };
 
 QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
-QDataStream &operator >>(QDataStream &stream, TypeToken &token);
+//QDataStream &operator >>(QDataStream &stream, TypeToken &token);
 
 #endif // TYPETOKEN_H

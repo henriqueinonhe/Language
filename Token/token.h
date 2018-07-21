@@ -29,22 +29,20 @@ public:
 
     virtual Token *getAllocatedClone() const;
 
-    virtual void serialize(QDataStream &stream) const;
-    virtual void unserialize(QDataStream &stream);
 
 protected:
-    Token();
+    Token(QDataStream &stream);
     Token(const QString &string);
 
     virtual bool isEqual(const Token &other) const;
 
+    virtual void serialize(QDataStream &stream) const;
+
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const Token &token);
-    friend QDataStream &operator >>(QDataStream &stream, Token &token);
 };
 
 QDataStream &operator <<(QDataStream &stream, const Token &token);
-QDataStream &operator >>(QDataStream &stream, Token &token);
 
 #endif // TOKEN_H

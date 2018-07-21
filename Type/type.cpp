@@ -2,6 +2,13 @@
 
 #include "typeparser.h"
 
+Type::Type(QDataStream &stream) :
+    typeString(stream),
+    returnTypeTokenString(stream)
+{
+    stream >> argumentsTypes;
+}
+
 Type::Type(const QString &type)
 {
     TypeParser::parse(TypeTokenString(type), this);
@@ -89,12 +96,7 @@ TypeTokenString Type::getTypeString() const
 
 QDataStream &operator <<(QDataStream &stream, const Type &type)
 {
-    stream << type.typeString << type.argumentsTypes << type.returnTypeTokenString;
+    stream << type.typeString << type.returnTypeTokenString << type.argumentsTypes;
     return stream;
 }
 
-QDataStream &operator >>(QDataStream &stream, Type &type)
-{
-    stream >> type.typeString >> type.argumentsTypes >> type.returnTypeTokenString;
-    return stream;
-}

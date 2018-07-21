@@ -41,6 +41,19 @@ void TableSignature::pushTokenPointerToTable(const Token &token)
     tokenTable.push_back(ptr);
 }
 
+QDataStream &operator <<(QDataStream &stream, const TableSignature &signature)
+{
+    stream << signature.tokenTable;
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, TableSignature &signature)
+{
+
+    stream >> signature.tokenTable;
+    return stream;
+}
+
 void TableSignature::addToken(const Token &token)
 {
     if(tokenIsAlreadyPresentInSignature(token))
@@ -51,4 +64,46 @@ void TableSignature::addToken(const Token &token)
     {
         pushTokenPointerToTable(token);
     }
+}
+
+bool TableSignature::operator==(const TableSignature &other) const
+{
+    return tokenTable == other.tokenTable;
+}
+
+bool TableSignature::operator!=(const TableSignature &other) const
+{
+    return !(*this == other);
+}
+
+bool TableSignature::equalTokenTable(const TableSignature &other) const
+{
+    if(tokenTable.size() != other.tokenTable.size())
+    {
+        return false;
+    }
+    else
+    {
+        for(int index = 0; index < tokenTable.size(); index++)
+        {
+            if(*tokenTable[index] != *other.tokenTable[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+QDataStream &operator <<(QDataStream &stream, const shared_ptr<Token> &token)
+{
+    stream << *token;
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, shared_ptr<Token> &token)
+{
+    token = Token::unserializePtr(stream);
+    return stream;
 }
