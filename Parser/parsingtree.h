@@ -23,6 +23,8 @@ public:
     bool operator==(const ParsingTree &other) const;
     bool operator!=(const ParsingTree &other) const;
 
+    TokenString getTokenString() const;
+
 private:
     ParsingTreeNode root;
     TokenString tokenString;
@@ -31,4 +33,6 @@ friend class ParsingTreeIterator;
 friend class ParsingTreeNode;
 
 };
+
+
 #endif // PARSINGTREE_H

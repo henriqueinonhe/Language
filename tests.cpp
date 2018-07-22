@@ -1276,6 +1276,36 @@ TEST_CASE("Serialization")
         CHECK(signature.equalTokenTable(signature2));
     }
 
+    SECTION("Formulas")
+    {
+        TableSignature signature;
+
+        signature.addToken(CoreToken("P", Type("o")));
+        signature.addToken(CoreToken("&", Type("[o,o]->o")));
+
+        Parser parser(&signature, Type("o"));
+
+        Formula f1 = parser.parse("P");
+        Formula f2 = parser.parse("(& P P)");
+        Formula f3 = parser.parse("(& (& P P ) P)");
+        Formula f4 = parser.parse("(& P (& P P))");
+
+        file.open(QIODevice::ReadWrite);
+        QDataStream stream (&file);
+
+        stream << f1 << f2 << f3 << f4;
+
+        file.reset();
+
+        Formula f5(stream, &signature), f6(stream, &signature), f7(stream, &signature), f8(stream, &signature);
+
+
+        CHECK(f1 == f5);
+        CHECK(f2 == f6);
+        CHECK(f3 == f7);
+        CHECK(f4 == f8);
+    }
+
 }
 
 TEST_CASE("Dirty Fix")

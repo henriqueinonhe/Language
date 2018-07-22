@@ -3,6 +3,7 @@
 
 #include "tokenstring.h"
 #include "type.h"
+#include "parsingtree.h"
 #include <QDataStream>
 
 class Parser;
@@ -21,12 +22,13 @@ public:
 
 private:
     Formula();
-    Formula(const TokenString &tokenString);
+    Formula(const ParsingTree * const tree);
 
-    TokenString tokenString;
+    unique_ptr<const ParsingTree> parsingTree;
 
     friend class Parser;
     friend class QVector<Formula>;
+    friend QDataStream &operator <<(QDataStream &stream, const Formula &formula);
 };
 
 QDataStream &operator <<(QDataStream &stream, const Formula &formula);

@@ -1,13 +1,22 @@
 ﻿#include "formula.h"
 
-Formula::Formula(QDataStream &stream, const Signature *signature) :
-    tokenString(stream, signature)
+#include "parser.h"
+
+Formula::Formula(QDataStream &stream, const Signature *signature)
 {
+    Type wffType(stream);
+    QString formattedString;
+    stream >> formattedString;
+
+    Parser parser(signature, wffType);
+    Formula formula = parser.parse(formattedString);
+
+    parsingTree.reset(formula.parsingTree.release());
 }
 
 bool Formula::operator==(const Formula &other) const
 {
-    return this->tokenString == other.tokenString;
+    return parsingTree->getTokenString() == other.parsingTree->getTokenString();
 }
 
 bool Formula::operator!=(const Formula &other) const
@@ -17,12 +26,12 @@ bool Formula::operator!=(const Formula &other) const
 
 QString Formula::toString() const
 {
-    return tokenString.toString();
+    return parsingTree->getTokenString().toString();
 }
 
 QString Formula::formattedString() const
 {
-    return tokenString.formattedString();
+    return parsingTree->getTokenString().formattedString();
 }
 
 Formula::Formula()
@@ -30,8 +39,16 @@ Formula::Formula()
 
 }
 
-Formula::Formula(const TokenString &tokenString) :
-    tokenString(tokenString)
+Formula::Formula(const ParsingTree * const tree) :
+    parsingTree(tree)
 {
+}
 
+QDataStream &operator <<(QDataStream &stream, const Formula &formula)
+{
+    ParsingTreeIterator iter(const_cast<ParsingTree *>(formula.parsingTree.get()));
+
+    stream << iter->getType() << formula.formattedString();
+
+    return stream;
 }

@@ -19,9 +19,8 @@ using namespace std;
 class Parser
 {
 public:
-    Parser(Signature *signature, const Type &wellFormedFormulaType);
+    Parser(const Signature * const signature, const Type &wellFormedFormulaType);
     Formula parse(const QString &sentence);
-
 
 private:
     struct ArgumentOffsets
@@ -54,6 +53,8 @@ private:
 
     QVector<ArgumentOffsets> separateArgumentOffsets(ParsingTreeIterator currentNodeIter) const;
     void setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter);
+    void appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter);
+    void parseArgumentsNodes(ParsingTreeIterator currentNodeIter);
 
     //Type Checking Methods
     void performTypeChecking();
@@ -70,14 +71,9 @@ private:
     const Type setMainOperatorType(ParsingTreeIterator iter);
     void setVariablesNodes(QVector<QVector<ParsingTreeNode *> > &nodesMatrix);
 
-    bool sentenceIsCached(const QString &sentence) const;
-
     Lexer lexer;
     Type wellFormedFormulaType;
     unique_ptr<ParsingTree> parsingTree;
-    QString cachedSentence;
-    void appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter);
-    void parseArgumentsNodes(ParsingTreeIterator currentNodeIter);
 };
 
 #endif // PARSER_H

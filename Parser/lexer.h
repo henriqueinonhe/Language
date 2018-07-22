@@ -16,9 +16,9 @@ private:
     bool isSeparator(const QChar &character) const;
     bool stringHasEnded(const QString &string, const int index) const;
     int findTokenBreakpointIndex(const QString &string, int beginIndex) const;
+    void lexCoreToken(TokenString &tokenString, int &index, const QString &string) const;
 
     const Signature *signature;
-    void lexCoreToken(TokenString &tokenString, int &index, const QString &string) const;
 };
 
 #endif // LEXER_H

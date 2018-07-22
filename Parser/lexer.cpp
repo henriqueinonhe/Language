@@ -30,7 +30,6 @@ TokenString Lexer::lex(const QString &string) const
     //2st - Type assignment.
 
     TokenString tokenString;
-    tokenString.signature = signature;
 
     for(int index = 0; index < string.size(); index++)
     {

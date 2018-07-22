@@ -1,6 +1,6 @@
 ﻿#include "parser.h"
 
-Parser::Parser(Signature *signature, const Type &wellFormedFormulaType) :
+Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaType) :
     lexer(signature),
     wellFormedFormulaType(wellFormedFormulaType)
 {
@@ -13,20 +13,16 @@ Parser::Parser(Signature *signature, const Type &wellFormedFormulaType) :
 Formula Parser::parse(const QString &sentence)
 {
 
-    if(!sentenceIsCached(sentence))
-    {
-        cachedSentence = sentence;
 
-        buildParsingTree(sentence);
+    buildParsingTree(sentence);
 
-        performTypeChecking();
+    performTypeChecking();
 
-        performVariableBindingChecking();
-    }
+    performVariableBindingChecking();
 
     //std::cout << parsingTree->print().toStdString();
 
-    return Formula(lexer.lex(sentence));
+    return Formula(parsingTree.release());
 }
 
 void Parser::buildParsingTree(const QString &sentence)
@@ -293,11 +289,6 @@ void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
             }
         });
     });
-}
-
-bool Parser::sentenceIsCached(const QString &sentence) const
-{
-    return sentence == cachedSentence && !sentence.isEmpty();
 }
 
 void Parser::performVariableBindingChecking()

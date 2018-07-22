@@ -36,7 +36,6 @@ private:
     bool tokenNeedsSubsequentSeparation(const QVector<const Token *> &tokenList, const int index) const;
 
     QVector<const Token *> tokenList;
-    const Signature *signature;
 
     friend class Lexer;
     friend QDataStream &operator << (QDataStream &stream, const TokenString &tokenString);

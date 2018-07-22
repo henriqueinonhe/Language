@@ -50,3 +50,8 @@ bool ParsingTree::operator!=(const ParsingTree &other) const
 {
     return !(*this == other);
 }
+
+TokenString ParsingTree::getTokenString() const
+{
+    return tokenString;
+}

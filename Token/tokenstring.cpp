@@ -2,8 +2,7 @@
 
 #include "lexer.h"
 
-TokenString::TokenString() :
-    signature(nullptr)
+TokenString::TokenString()
 {
 
 }
