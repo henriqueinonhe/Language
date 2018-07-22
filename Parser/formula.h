@@ -28,6 +28,7 @@ private:
 
     friend class Parser;
     friend class QVector<Formula>;
+    friend class QVector<Formula>;
     friend QDataStream &operator <<(QDataStream &stream, const Formula &formula);
 };
 
