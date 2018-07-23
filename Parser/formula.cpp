@@ -14,6 +14,25 @@ Formula::Formula(QDataStream &stream, const Signature *signature)
     parsingTree.reset(formula.parsingTree.release());
 }
 
+QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, const Signature *signature)
+{
+    int size;
+    stream >> size;
+
+    QLinkedList<Formula> list;
+    for(int index = 0; index < size; index++)
+    {
+        list.push_back(Formula(stream, signature));
+    }
+
+    return list;
+}
+
+Formula::Formula(const Formula &other) :
+    parsingTree(new ParsingTree(other.getParsingTree()))
+{
+}
+
 bool Formula::operator==(const Formula &other) const
 {
     return parsingTree->getTokenString() == other.parsingTree->getTokenString();
@@ -22,6 +41,18 @@ bool Formula::operator==(const Formula &other) const
 bool Formula::operator!=(const Formula &other) const
 {
     return !(*this == other);
+}
+
+Type Formula::getWffType() const
+{
+    ParsingTreeIterator iter(const_cast<ParsingTree *>(parsingTree.get()));
+
+    return iter->getType();
+}
+
+const ParsingTree &Formula::getParsingTree() const
+{
+    return *parsingTree;
 }
 
 QString Formula::toString() const
@@ -46,9 +77,18 @@ Formula::Formula(const ParsingTree * const tree) :
 
 QDataStream &operator <<(QDataStream &stream, const Formula &formula)
 {
-    ParsingTreeIterator iter(const_cast<ParsingTree *>(formula.parsingTree.get()));
+    stream << formula.getWffType() << formula.formattedString();
 
-    stream << iter->getType() << formula.formattedString();
+    return stream;
+}
+
+QDataStream &operator <<(QDataStream &stream, const QLinkedList<Formula> &list)
+{
+    stream << list.size();
+    std::for_each(list.begin(), list.end(), [&stream](const Formula &formula)
+    {
+        stream << formula;
+    });
 
     return stream;
 }

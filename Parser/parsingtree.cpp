@@ -1,10 +1,31 @@
 ﻿#include "parsingtree.h"
 #include "parsingtreeiterator.h"
+#include "parsingtreeconstiterator.h"
 
 ParsingTree::ParsingTree(const TokenString &string) :
     root(this, nullptr, 0, string.size() - 1),
     tokenString(string)
 {
+}
+
+ParsingTree::ParsingTree(const ParsingTree &other) :
+    root(this, nullptr)
+{
+    (*this) = other;
+
+}
+
+ParsingTree &ParsingTree::operator=(const ParsingTree &other)
+{
+    ParsingTreeConstIterator iter(&other);
+    //Currently pointing at root!
+
+    tokenString = other.getTokenString();
+    root.copyValues(*iter);
+
+    copyChildrenRecursively(*iter, root);
+
+    return *this;
 }
 
 unsigned int ParsingTree::getHeight() const
@@ -54,4 +75,17 @@ bool ParsingTree::operator!=(const ParsingTree &other) const
 TokenString ParsingTree::getTokenString() const
 {
     return tokenString;
+}
+
+void ParsingTree::copyChildrenRecursively(const ParsingTreeNode &copyNode, ParsingTreeNode &pasteNode) const
+{
+    const QVector<shared_ptr<ParsingTreeNode>> &copyNodeChildren = copyNode.children;
+    QVector<shared_ptr<ParsingTreeNode>> &pasteNodeChildren = pasteNode.children;
+
+    for(int index = 0; index < copyNodeChildren.size(); index++)
+    {
+        pasteNodeChildren.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(pasteNode.tree, pasteNode.parent)));
+        pasteNodeChildren[index]->copyValues(*copyNodeChildren[index]);
+        copyChildrenRecursively(*copyNodeChildren[index], *pasteNodeChildren[index]);
+    }
 }

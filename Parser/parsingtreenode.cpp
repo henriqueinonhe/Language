@@ -9,6 +9,15 @@ ParsingTreeNode::ParsingTreeNode(const ParsingTree *tree, const ParsingTreeNode 
 {
 }
 
+void ParsingTreeNode::copyValues(const ParsingTreeNode &other)
+{
+    beginIndex = other.beginIndex;
+    endIndex = other.endIndex;
+    type = other.type;
+    freeVariables = other.freeVariables;
+    boundVariables = other.boundVariables;
+}
+
 void ParsingTreeNode::printNodeToString(QString &str) const
 {
     /* There are five informations to be printed:
@@ -78,6 +87,13 @@ Type ParsingTreeNode::getType() const
 void ParsingTreeNode::setType(const Type &value)
 {
     type = value;
+}
+
+ParsingTreeNode::ParsingTreeNode(const ParsingTree *tree, const ParsingTreeNode *parent) :
+    tree(tree),
+    parent(parent)
+{
+
 }
 
 unsigned int ParsingTreeNode::getEndIndex() const

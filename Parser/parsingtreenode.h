@@ -41,9 +41,13 @@ public:
 
 private:
     ParsingTreeNode(const ParsingTree *tree,
+                    const ParsingTreeNode *parent);
+    ParsingTreeNode(const ParsingTree *tree,
                     const ParsingTreeNode *parent,
                     const unsigned int beginIndex,
                     const unsigned int endIndex);
+
+    void copyValues(const ParsingTreeNode &other);
 
     void printNodeToString(QString &str) const;
 
@@ -58,10 +62,10 @@ private:
     QSet<const VariableToken *> freeVariables;
     QSet<const VariableToken *> boundVariables;
 
-friend class ParsingTreeIterator;
-friend class ParsingTree;
-friend class Parser;
-
+    friend class ParsingTreeConstIterator;
+    friend class ParsingTreeIterator;
+    friend class ParsingTree;
+    friend class Parser;
 };
 
 #endif // PARSINGTREENODE_H

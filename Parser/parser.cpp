@@ -4,16 +4,10 @@ Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaT
     lexer(signature),
     wellFormedFormulaType(wellFormedFormulaType)
 {
-    if(signature == nullptr)
-    {
-        throw std::invalid_argument("Signature pointer is null!");
-    }
 }
 
 Formula Parser::parse(const QString &sentence)
 {
-
-
     buildParsingTree(sentence);
 
     performTypeChecking();

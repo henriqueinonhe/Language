@@ -11,10 +11,10 @@ using namespace std;
 class ParsingTree
 {
 public:
-    ParsingTree(const TokenString &String);
+    ParsingTree(const TokenString &string);
 
-    ParsingTree(const ParsingTree &other) = delete;
-    ParsingTree &operator=(const ParsingTree &other) = delete;
+    ParsingTree(const ParsingTree &other);
+    ParsingTree &operator=(const ParsingTree &other);
 
     unsigned int getHeight() const;
 
@@ -26,10 +26,13 @@ public:
     TokenString getTokenString() const;
 
 private:
+    void copyChildrenRecursively(const ParsingTreeNode &copyNode, ParsingTreeNode &pasteNode) const;
+
     ParsingTreeNode root;
     TokenString tokenString;
 
 friend class ParsingTreeIterator;
+friend class ParsingTreeConstIterator;
 friend class ParsingTreeNode;
 
 };
