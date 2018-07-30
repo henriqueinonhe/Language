@@ -1,5 +1,9 @@
 ﻿#include "tablesignature.h"
-#include "signature.cpp" //This is so fucking shady...
+
+TableSignature::TableSignature(QDataStream &stream)
+{
+    stream >> tokenTable;
+}
 
 TableSignature::TableSignature()
 {
@@ -49,7 +53,6 @@ QDataStream &operator <<(QDataStream &stream, const TableSignature &signature)
 
 QDataStream &operator >>(QDataStream &stream, TableSignature &signature)
 {
-
     stream >> signature.tokenTable;
     return stream;
 }
@@ -94,6 +97,16 @@ bool TableSignature::equalTokenTable(const TableSignature &other) const
 
         return true;
     }
+}
+
+void TableSignature::serialize(QDataStream &stream) const
+{
+    stream << tokenTable;
+}
+
+void TableSignature::unserialize(QDataStream &stream)
+{
+    stream >> tokenTable;
 }
 
 QDataStream &operator <<(QDataStream &stream, const shared_ptr<Token> &token)

@@ -8,11 +8,13 @@
 
 using namespace std;
 
-class TableSignature : virtual public Signature
+class TableSignature : public virtual Signature
 {
 public:
+    TableSignature(QDataStream &stream);
     TableSignature();
-    const Token *getTokenPointer(const QString &token) const;
+
+    virtual const Token *getTokenPointer(const QString &token) const;
 
     void addToken(const Token &token);
 
@@ -21,9 +23,12 @@ public:
 
     bool equalTokenTable(const TableSignature &other) const;
 
+protected:
+    virtual void serialize(QDataStream &stream) const;
+    virtual void unserialize(QDataStream &stream);
+
 private:
     bool tokenIsAlreadyPresentInSignature(const Token &token) const;
-
     void pushTokenPointerToTable(const Token &token);
 
     QVector<shared_ptr<Token>> tokenTable;
