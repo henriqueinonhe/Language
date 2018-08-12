@@ -136,7 +136,7 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
     }
     else
     {
-        throw ParsingErrorException<TypeTokenString>("Right side argument of composition argument should begin with a left parenthesis or a primitive type.",
+        throw ParsingErrorException<TypeTokenString>("Composition operator's right side argument should be either a composite type or a primitive type!",
                                                      compositionOperatorOffset,
                                                      compositionOperatorOffset,
                                                      tokenString);
@@ -214,7 +214,7 @@ void TypeParser::checkProductTypeHasAtLeastTwoArguments(const QVector<ProductArg
 {
     if(offsetList.size() == 1)
     {
-        throw ParsingErrorException<TypeTokenString>("Product types must have at least two argumets!",
+        throw ParsingErrorException<TypeTokenString>("Product types must have at least two arguments!",
                                         iter->getTypeBeginIndex(),
                                         iter->getTypeEndIndex(),
                                         iter.goToRoot()->getTypeString());
@@ -290,7 +290,7 @@ void TypeParser::parseType(TypeParsingTreeIterator iter)
 
     if(typeIsEmpty(tokenString))
     {
-        throw std::invalid_argument("The type cannot be empty!");
+        throw std::invalid_argument("Type cannot be empty!");
     }
 
     if(isPrimitiveType(tokenString))

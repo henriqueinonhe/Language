@@ -46,7 +46,6 @@ private:
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);
     friend QDataStream &operator >>(QDataStream &stream, TypeTokenString &string);
-    friend class QVector<TypeTokenString>;
     friend class Type;
 };
 

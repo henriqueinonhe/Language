@@ -56,7 +56,8 @@ SOURCES += main.cpp \
     Type/typeparsingtreenode.cpp \
     Type/typetoken.cpp \
     Type/typetokenstring.cpp \
-    Utils/dirtyfix.cpp
+    Utils/dirtyfix.cpp \
+    Parser/parsingtreeconstiterator.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -105,5 +106,6 @@ HEADERS += \
     Utils/containerauxiliarytools.h \
     Utils/dirtyfix.h \
     Utils/parsingauxiliarytools.h \
-    Utils/pool.h
+    Utils/pool.h \
+    Parser/parsingtreeconstiterator.h
 

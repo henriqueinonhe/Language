@@ -28,15 +28,12 @@ public:
     bool operator !=(const TypeToken &other) const;
 
     QString getString() const;
-//    TypeToken setString(const QString &value);
 
-    unsigned int getTokenCharSpan() const;
+    unsigned int getTokenCharacterSpan() const;
 
 private:
     TypeToken();
-    void assignSort(const QString &string);
 
-    Sort sort;
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
@@ -44,6 +41,5 @@ private:
 };
 
 QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
-//QDataStream &operator >>(QDataStream &stream, TypeToken &token);
 
 #endif // TYPETOKEN_H

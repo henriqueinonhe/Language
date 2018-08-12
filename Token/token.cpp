@@ -30,19 +30,19 @@ shared_ptr<Token> Token::unserializePtr(QDataStream &stream)
 
     if(tokenType == "PunctuationToken")
     {
-        return make_shared<Token>(PunctuationToken(stream));
+        return make_shared<PunctuationToken>(PunctuationToken(stream));
     }
     else if(tokenType == "CoreToken")
     {
-        return make_shared<Token>(CoreToken(stream));
+        return make_shared<CoreToken>(CoreToken(stream));
     }
     else if(tokenType == "VariableToken")
     {
-        return make_shared<Token>(VariableToken(stream));
+        return make_shared<VariableToken>(VariableToken(stream));
     }
     else if(tokenType == "BindingToken")
     {
-        return make_shared<Token>(BindingToken(stream));
+        return make_shared<BindingToken>(BindingToken(stream));
     }
     else
     {
@@ -72,7 +72,7 @@ bool Token::operator!=(const Token &other) const
     return !(other == *this);
 }
 
-unsigned int Token::getTokenCharSpan() const
+unsigned int Token::getTokenCharacterSpan() const
 {
     return string.size();
 }

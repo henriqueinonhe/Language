@@ -1,7 +1,6 @@
 ﻿#ifndef PARSINGTREECONSTITERATOR_H
 #define PARSINGTREECONSTITERATOR_H
 
-
 #include "parsingtree.h"
 #include <QRegularExpression>
 

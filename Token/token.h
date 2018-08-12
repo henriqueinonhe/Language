@@ -23,7 +23,7 @@ public:
     bool operator==(const Token &other) const;
     bool operator!=(const Token &other) const;
 
-    unsigned int getTokenCharSpan() const;
+    unsigned int getTokenCharacterSpan() const;
 
     virtual QString tokenClass() const;
 

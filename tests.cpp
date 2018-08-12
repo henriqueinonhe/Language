@@ -31,9 +31,113 @@
 #include <QDataStream>
 #include "dirtyfix.h"
 
+
+TEST_CASE("TypeToken")
+{
+    SECTION("Character Admissibility (Input Validation)")
+    {
+        CHECK(TypeToken("(").getSort() == TypeToken::Sort::LeftParenthesis);
+        CHECK(TypeToken(")").getSort() == TypeToken::Sort::RightParenthesis);
+        CHECK(TypeToken("[").getSort() == TypeToken::Sort::LeftSquareBracket);
+        CHECK(TypeToken("]").getSort() == TypeToken::Sort::RightSquareBracket);
+        CHECK(TypeToken(",").getSort() == TypeToken::Sort::Comma);
+        CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
+        CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
+
+        CHECK_THROWS(TypeToken("sd-ad"));
+        CHECK_THROWS(TypeToken("sd,ad"));
+        CHECK_THROWS(TypeToken("sd>ad"));
+        CHECK_THROWS(TypeToken("sd(ad"));
+        CHECK_THROWS(TypeToken("sd)ad"));
+        CHECK_THROWS(TypeToken("sd[ad"));
+        CHECK_THROWS(TypeToken("sd]ad"));
+        CHECK_THROWS(TypeToken("sd{ad"));
+        CHECK_THROWS(TypeToken("sd}ad"));
+        CHECK_THROWS(TypeToken(""));
+        CHECK_THROWS(TypeToken(" "));
+    }
+
+    SECTION("Equality and Inequality")
+    {
+        CHECK(TypeToken("bundinha") == TypeToken("bundinha"));
+        CHECK(TypeToken("(") == TypeToken("("));
+        CHECK(TypeToken(")") == TypeToken(")"));
+        CHECK(TypeToken("[") == TypeToken("["));
+        CHECK(TypeToken("]") == TypeToken("]"));
+        CHECK(TypeToken("->") == TypeToken("->"));
+        CHECK(TypeToken(",") == TypeToken(","));
+
+        CHECK(TypeToken("asdasd") != TypeToken("dsa"));
+    }
+}
+
+TEST_CASE("Pool")
+{
+    Pool<int> pool;
+    PoolRecordPointer<int> ptr1, ptr2, ptr3;
+
+    ptr1 = pool.getPointer(1);
+    ptr2 = pool.getPointer(2);
+    ptr3 = pool.getPointer(1);
+
+    CHECK(*ptr1 == 1);
+    CHECK(*ptr2 == 2);
+    CHECK(*ptr3 == 1);
+
+    auto iter = pool.getRecords().begin();
+
+    CHECK(iter->getObject() == 1);
+    CHECK(iter->getCounter() == 2);
+    CHECK((iter + 1)->getObject() == 2);
+    CHECK((iter + 1)->getCounter() == 1);
+
+    ptr3 = ptr2;
+
+    CHECK(iter->getObject() == 1);
+    CHECK(iter->getCounter() == 1);
+    CHECK((iter + 1)->getObject() == 2);
+    CHECK((iter + 1)->getCounter() == 2);
+}
+
+TEST_CASE("TypeTokenString")
+{
+    SECTION("Lexing and String Conversion")
+    {
+        CHECK_THROWS(TypeTokenString(" "));
+        CHECK_THROWS(TypeTokenString("i-"));
+        CHECK_THROWS(TypeTokenString("a>b"));
+
+        CHECK_NOTHROW(TypeTokenString(""));
+
+        TypeTokenString string = TypeTokenString("[i,o]->o");
+
+        CHECK(string.toString() == "[i,o]->o");
+
+        string = TypeTokenString("o->(o->o)");
+
+        CHECK(string.toString() == "o->(o->o)");
+
+        string = TypeTokenString("[o,o]->o");
+
+        CHECK(string.toString() == "[o,o]->o");
+
+        string = TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType");
+
+        CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
+    }
+
+    SECTION("Equality and Inequality")
+    {
+        CHECK(TypeTokenString("[Proposition,Proposition]->Proposition") == TypeTokenString("[Proposition,Proposition]->Proposition"));
+        CHECK(TypeTokenString("A->(A->(A->(A->B)))") == TypeTokenString("A->(A->(A->(A->B)))"));
+
+        CHECK(TypeTokenString("A") != TypeTokenString("B"));
+    }
+}
+
 TEST_CASE("TypeParsingTrees")
 {
-    SECTION("TypeParsingTrees Nodes methods work")
+    SECTION("TypeParsingTrees Nodes and Iterator")
     {
         TypeParsingTree tree(TypeTokenString("Aflosos"));
         TypeParsingTreeIterator iter(&tree);
@@ -146,128 +250,16 @@ TEST_CASE("TypeParsingTrees")
         iter.goToCoordinates("(1,0,1)");
     }
 
-    SECTION("Other Methods")
+    SECTION("Equality and Inequality")
     {
         CHECK(TypeParsingTree(TypeTokenString("Aflosis")) == TypeParsingTree(TypeTokenString("Aflosis")));
-
         CHECK(TypeParsingTree(TypeTokenString("a")) != TypeParsingTree(TypeTokenString("b")));
     }
-
-}
-
-TEST_CASE("TypeToken")
-{
-    SECTION("Testing lexing")
-    {
-        CHECK(TypeToken("(").getSort() == TypeToken::Sort::LeftParenthesis);
-        CHECK(TypeToken(")").getSort() == TypeToken::Sort::RightParenthesis);
-        CHECK(TypeToken("[").getSort() == TypeToken::Sort::LeftSquareBracket);
-        CHECK(TypeToken("]").getSort() == TypeToken::Sort::RightSquareBracket);
-        CHECK(TypeToken(",").getSort() == TypeToken::Sort::Comma);
-        CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
-        CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
-
-//        CHECK(TypeToken().setString("(").getSort() == TypeToken::Sort::LeftParenthesis);
-//        CHECK(TypeToken().setString(")").getSort() == TypeToken::Sort::RightParenthesis);
-//        CHECK(TypeToken().setString("[").getSort() == TypeToken::Sort::LeftSquareBracket);
-//        CHECK(TypeToken().setString("]").getSort() == TypeToken::Sort::RightSquareBracket);
-//        CHECK(TypeToken().setString(",").getSort() == TypeToken::Sort::Comma);
-//        CHECK(TypeToken().setString("->").getSort() == TypeToken::Sort::CompositionOperator);
-//        CHECK(TypeToken().setString("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
-
-        CHECK_THROWS(TypeToken("sd-ad"));
-        CHECK_THROWS(TypeToken("sd,ad"));
-        CHECK_THROWS(TypeToken("sd>ad"));
-        CHECK_THROWS(TypeToken("sd(ad"));
-        CHECK_THROWS(TypeToken("sd)ad"));
-        CHECK_THROWS(TypeToken("sd[ad"));
-        CHECK_THROWS(TypeToken("sd]ad"));
-        CHECK_THROWS(TypeToken("sd{ad"));
-        CHECK_THROWS(TypeToken("sd}ad"));
-        CHECK_THROWS(TypeToken(""));
-        CHECK_THROWS(TypeToken(" "));
-
-        //CHECK_NOTHROW(TypeToken());
-    }
-
-    SECTION("Other Tests")
-    {
-        CHECK(TypeToken("bundinha") == TypeToken("bundinha"));
-        CHECK(TypeToken("(") == TypeToken("("));
-        CHECK(TypeToken(")") == TypeToken(")"));
-        CHECK(TypeToken("[") == TypeToken("["));
-        CHECK(TypeToken("]") == TypeToken("]"));
-        CHECK(TypeToken("->") == TypeToken("->"));
-        CHECK(TypeToken(",") == TypeToken(","));
-
-        CHECK(TypeToken("asdasd") != TypeToken("dsa"));
-
-    }
-}
-
-TEST_CASE("Pool")
-{
-    Pool<int> pool;
-
-    SECTION("")
-    {
-        PoolRecordPointer<int> ptr;
-
-        ptr = pool.getPointer(1);
-
-        CHECK(*ptr == 1);
-
-        PoolRecordPointer<int> ptr2 = pool.getPointer(1);
-
-        CHECK(*ptr == 1);
-
-        ptr2 = pool.getPointer(2);
-
-        CHECK(*ptr2 == 2);
-
-        PoolRecordPointer<int> ptr3 = pool.getPointer(3);
-
-        CHECK(*ptr3 == 3);
-
-    }
-
-}
-
-TEST_CASE("TypeTokenString")
-{
-
-    TypeTokenString string = TypeTokenString("[i,o]->o");
-
-    CHECK(string.toString() == "[i,o]->o");
-
-    string = TypeTokenString("o->(o->o)");
-
-    CHECK(string.toString() == "o->(o->o)");
-
-    string = TypeTokenString("[o,o]->o");
-
-    CHECK(string.toString() == "[o,o]->o");
-
-    string = TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType");
-
-    CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
-
-    CHECK(TypeTokenString("[Proposition,Proposition]->Proposition") == TypeTokenString("[Proposition,Proposition]->Proposition"));
-    CHECK(TypeTokenString("A->(A->(A->(A->B)))") == TypeTokenString("A->(A->(A->(A->B)))"));
-
-    CHECK(TypeTokenString("A") != TypeTokenString("B"));
-
-    CHECK_THROWS(TypeTokenString(" "));
-    CHECK_THROWS(TypeTokenString("i-"));
-    CHECK_THROWS(TypeTokenString("a>b"));
-
-    //CHECK_NOTHROW(TypeTokenString());
-    CHECK_NOTHROW(TypeTokenString(""));
 }
 
 TEST_CASE("Type")
 {
-    SECTION("Pass")
+    SECTION("Validation Pass")
     {
         CHECK_NOTHROW(Type("AFLUSISS"));
         CHECK_NOTHROW(Type("Proposition->Proposition"));
@@ -282,31 +274,30 @@ TEST_CASE("Type")
         CHECK_NOTHROW(Type("A->(A->(A->(A->B)))"));
     }
 
-    SECTION("Fail")
+    SECTION("Validation Fail")
     {
-        CHECK_THROWS(Type(""));
-        CHECK_THROWS(Type(" "));
-        CHECK_THROWS(Type("[[o]->o]->o"));
-        CHECK_THROWS(Type("[Proposition]->([Proposition]->Proposition)"));
-        CHECK_THROWS(Type("[Proposition]->Proposition"));
-        CHECK_THROWS(Type("Proposition->([Proposition]->Proposition)"));
-        CHECK_THROWS(Type("[o->o]->o"));
-        CHECK_THROWS(Type("(o]->o)"));
-        CHECK_THROWS(Type("[,]->o"));
-        CHECK_THROWS(Type("[o,a)->a"));
-        CHECK_THROWS(Type("o->[i,i]"));
-        CHECK_THROWS(Type("o->(o]"));
-        CHECK_THROWS(Type("o->[i,i]"));
-        CHECK_THROWS(Type("[0,1]"));
-        CHECK_THROWS(Type("[[o,o]]->o"));
-        CHECK_THROWS(Type("((o->o))->o"));
-        CHECK_THROWS(Type("()->o"));
-        CHECK_THROWS(Type("o->(o)")); //FIXME!
-        CHECK_THROWS(Type("o->([a,b,c->d])")); //This REALLY should throw!
-        CHECK_THROWS(Type("o->(o,a,ds,r)"));
+        CHECK_THROWS_WITH(Type(""), "String is empty!");
+        CHECK_THROWS_WITH(Type(" "), "' ' is not a suitable expression for a primitive type.");
+        CHECK_THROWS_WITH(Type("[[o]->o]->o"), "Product types must have at least two arguments!");
+        CHECK_THROWS_WITH(Type("[Proposition]->([Proposition]->Proposition)"), "Product types must have at least two arguments!");
+        CHECK_THROWS_WITH(Type("[Proposition]->Proposition"), "Product types must have at least two arguments!");
+        CHECK_THROWS_WITH(Type("Proposition->([Proposition]->Proposition)"), "Product types must have at least two arguments!");
+        CHECK_THROWS_WITH(Type("[o->o]->o"), "Product types must have at least two arguments!");
+        CHECK_THROWS_WITH(Type("(o]->o)"), "Index out of bounds."); //FIXME Need more information!
+        CHECK_THROWS_WITH(Type("[,]->o"), "Argument End Offset cannot be less than Argument Begin Offset!"); //FIXME
+        CHECK_THROWS_WITH(Type("[o,a)->a"), "Delimiters count do not match!");
+        CHECK_THROWS_WITH(Type("o->[i,i]"), "Composition operator's right side argument should be either a composite type or a primitive type!");
+        CHECK_THROWS_WITH(Type("o->(o]"), "There are uncased parenthesis in the right side argument of composition operator!");
+        CHECK_THROWS_WITH(Type("[0,1]"), "The main type cannot be a product type!");
+        CHECK_THROWS_WITH(Type("[[o,o]]->o"), "Product types must have at least two arguments!");
+        CHECK_THROWS_WITH(Type("((o->o))->o"), "Index out of bounds."); //FIXME
+        CHECK_THROWS_WITH(Type("()->o"), "Type cannot be empty!");
+        CHECK_THROWS_WITH(Type("o->(o)"), "Index out of bounds."); //FIXME
+        CHECK_THROWS_WITH(Type("o->([a,b,c->d])"), "Index out of bounds."); //FIXME
+        CHECK_THROWS_WITH(Type("o->(o,a,ds,r)"), "Composition operator (->) was expected here!");
     }
 
-    SECTION("Other Methods")
+    SECTION("Other")
     {
         CHECK(Type("o->o") == Type("o->o"));
 
@@ -324,67 +315,66 @@ TEST_CASE("ParsingErrorException")
     SECTION("Type Parsing Error Exception")
     {
         TypeTokenString str("[o,o]->[o,o]");
-//        try
-//        {
-//            throw ParsingErrorException<TypeTokenString>("The right hand side argument of the composition operator cannot be a product type!",
-//                                                         6,
-//                                                         10,
-//                                                         str);
-//        }
-//        catch(ParsingErrorException<TypeTokenString> &e)
-//        {
-//            CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
-//                              "[o,o]->[o,o]\n"
-//                              "       ^^^^^"));
-//        }
+        ParsingErrorException<TypeTokenString> e("The right hand side argument of the composition operator cannot be a product type!",
+                                                 6,
+                                                 10,
+                                                 str);
 
-//        TypeTokenString str2("[Aflisis,Aflosis]->(a->b");
+        CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
+                                           "[o,o]->[o,o]\n"
+                                           "       ^^^^^"));
     }
 
 }
 
 TEST_CASE("Punctuation Token")
 {
-    CHECK_NOTHROW(PunctuationToken("("));
-    CHECK_NOTHROW(PunctuationToken(")"));
+    SECTION("Validation")
+    {
+        CHECK_NOTHROW(PunctuationToken("("));
+        CHECK_NOTHROW(PunctuationToken(")"));
 
-    CHECK_THROWS(PunctuationToken(","));
-    CHECK_THROWS(PunctuationToken(" "));
-    CHECK_THROWS(PunctuationToken("Abacateiro"));
-    CHECK_THROWS(PunctuationToken("Abacate"));
-    CHECK_THROWS(PunctuationToken("( "));
-    CHECK_THROWS(PunctuationToken(" )"));
-    CHECK_THROWS(PunctuationToken(" , "));
-    CHECK_THROWS(PunctuationToken("(("));
-    CHECK_THROWS(PunctuationToken("(,)"));
+        CHECK_THROWS(PunctuationToken(","));
+        CHECK_THROWS(PunctuationToken(" "));
+        CHECK_THROWS(PunctuationToken("Abacateiro"));
+        CHECK_THROWS(PunctuationToken("Abacate"));
+        CHECK_THROWS(PunctuationToken("( "));
+        CHECK_THROWS(PunctuationToken(" )"));
+        CHECK_THROWS(PunctuationToken(" , "));
+        CHECK_THROWS(PunctuationToken("(("));
+        CHECK_THROWS(PunctuationToken("(,)"));
+    }
 }
 
 TEST_CASE("Core Token")
 {
-    Type a(Type("o"));
+    SECTION("Validation")
+    {
+        Type a(Type("o"));
 
-    CHECK_NOTHROW(CoreToken("asdsad", a));
-    CHECK_NOTHROW(CoreToken("Abacate", a));
-    CHECK_NOTHROW(CoreToken("Afleflesis", a));
-    CHECK_NOTHROW(CoreToken("Afleisis", a));
-    CHECK_NOTHROW(CoreToken("+", a));
-    CHECK_NOTHROW(CoreToken(">", a));
-    CHECK_NOTHROW(CoreToken("<", a));
-    CHECK_NOTHROW(CoreToken("-", a));
-    CHECK_NOTHROW(CoreToken("->", a));
-    CHECK_NOTHROW(CoreToken("<-", a));
-    CHECK_NOTHROW(CoreToken("&", a));
-    CHECK_NOTHROW(CoreToken("=", a));
-    CHECK_NOTHROW(CoreToken("|", a));
-    CHECK_NOTHROW(CoreToken("\\", a));
-    CHECK_NOTHROW(CoreToken("*", a));
+        CHECK_NOTHROW(CoreToken("asdsad", a));
+        CHECK_NOTHROW(CoreToken("Abacate", a));
+        CHECK_NOTHROW(CoreToken("Afleflesis", a));
+        CHECK_NOTHROW(CoreToken("Afleisis", a));
+        CHECK_NOTHROW(CoreToken("+", a));
+        CHECK_NOTHROW(CoreToken(">", a));
+        CHECK_NOTHROW(CoreToken("<", a));
+        CHECK_NOTHROW(CoreToken("-", a));
+        CHECK_NOTHROW(CoreToken("->", a));
+        CHECK_NOTHROW(CoreToken("<-", a));
+        CHECK_NOTHROW(CoreToken("&", a));
+        CHECK_NOTHROW(CoreToken("=", a));
+        CHECK_NOTHROW(CoreToken("|", a));
+        CHECK_NOTHROW(CoreToken("\\", a));
+        CHECK_NOTHROW(CoreToken("*", a));
 
-    CHECK_THROWS(CoreToken("(", a));
-    CHECK_THROWS(CoreToken(")", a));
-    CHECK_THROWS(CoreToken(",", a));
-    CHECK_THROWS(CoreToken("das sdsd", a));
-    CHECK_THROWS(CoreToken("asdsd,dsds", a));
-    CHECK_THROWS(CoreToken("IASD(dds", a));
+        CHECK_THROWS(CoreToken("(", a));
+        CHECK_THROWS(CoreToken(")", a));
+        CHECK_THROWS(CoreToken(",", a));
+        CHECK_THROWS(CoreToken("das sdsd", a));
+        CHECK_THROWS(CoreToken("asdsd,dsds", a));
+        CHECK_THROWS(CoreToken("IASD(dds", a));
+    }
 }
 
 TEST_CASE("Lexer, Table Signature and Type Token String")

@@ -40,7 +40,7 @@ private:
 
         for(unsigned int tokenIndex = 0; tokenIndex < errorBeginIndex; tokenIndex++)
         {
-            for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharSpan(); charIndex++)
+            for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharacterSpan(); charIndex++)
             {
                 highlight += " ";
             }
@@ -48,7 +48,7 @@ private:
 
         for(unsigned int tokenIndex = errorBeginIndex; tokenIndex <= errorEndIndex; tokenIndex++)
         {
-            for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharSpan(); charIndex++)
+            for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharacterSpan(); charIndex++)
             {
                 highlight += "^";
             }
@@ -60,7 +60,7 @@ private:
         {
             for(unsigned int tokenIndex = errorEndIndex + 1; tokenIndex < errorString.size() - zeroIndexCompensation; tokenIndex++)
             {
-                for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharSpan(); charIndex++)
+                for(unsigned int charIndex = 0; charIndex < errorString[tokenIndex].getTokenCharacterSpan(); charIndex++)
                 {
                     highlight += " ";
                 }

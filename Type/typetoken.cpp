@@ -7,78 +7,45 @@ TypeToken::TypeToken()
 
 TypeToken::TypeToken(QDataStream &stream)
 {
-    stream >> (qint8 &) sort >> string;
+    stream >> string;
 }
 
-TypeToken::TypeToken(const QString &string)
+TypeToken::TypeToken(const QString &string) :
+    string(string)
 {
-    assignSort(string);
-    this->string = string;
+    //Validating input
+    getSort();
 }
 
 TypeToken::Sort TypeToken::getSort() const
 {
-    return sort;
-}
-
-bool TypeToken::operator ==(const TypeToken &other) const
-{
-    return this->getString() == other.getString() &&
-            this->sort == other.sort;
-}
-
-bool TypeToken::operator !=(const TypeToken &other) const
-{
-    return !(*this == other);
-}
-
-QString TypeToken::getString() const
-{
-    return string;
-}
-
-//TypeToken TypeToken::setString(const QString &value)
-//{
-//    assignSort(value);
-//    string = value;
-
-//    return *this;
-//}
-
-unsigned int TypeToken::getTokenCharSpan() const
-{
-    return string.size();
-}
-
-void TypeToken::assignSort(const QString &string)
-{
     if(string == "(")
     {
-        sort = Sort::LeftParenthesis;
+        return Sort::LeftParenthesis;
     }
     else if(string == ")")
     {
-        sort = Sort::RightParenthesis;
+        return Sort::RightParenthesis;
     }
     else if(string == "[")
     {
-        sort = Sort::LeftSquareBracket;
+        return Sort::LeftSquareBracket;
     }
     else if(string == "]")
     {
-        sort = Sort::RightSquareBracket;
+        return Sort::RightSquareBracket;
     }
     else if(string == ",")
     {
-        sort = Sort::Comma;
+        return Sort::Comma;
     }
     else if(string == "->")
     {
-        sort = Sort::CompositionOperator;
+        return Sort::CompositionOperator;
     }
     else if(QRegularExpression("^([a-z]|[A-Z]|[0-9])+$").match(string).hasMatch())
     {
-        sort = Sort::PrimitiveType;
+        return Sort::PrimitiveType;
     }
     else
     {
@@ -92,17 +59,30 @@ void TypeToken::assignSort(const QString &string)
     }
 }
 
+bool TypeToken::operator ==(const TypeToken &other) const
+{
+    return this->getString() == other.getString();
+}
+
+bool TypeToken::operator !=(const TypeToken &other) const
+{
+    return !(*this == other);
+}
+
+QString TypeToken::getString() const
+{
+    return string;
+}
+
+unsigned int TypeToken::getTokenCharacterSpan() const
+{
+    return string.size();
+}
+
 
 QDataStream &operator <<(QDataStream &stream, const TypeToken &token)
 {
-    stream << (qint8 &) token.sort << token.string;
+    stream << token.string;
 
     return stream;
 }
-
-//QDataStream &operator >>(QDataStream &stream, TypeToken &token)
-//{
-//    stream >> (qint8 &) token.sort >> token.string;
-
-//    return stream;
-//}
