@@ -19,7 +19,6 @@ public:
     bool operator==(const Formula &other) const;
     bool operator!=(const Formula &other) const;
 
-
     Type getWffType() const;
     const ParsingTree &getParsingTree() const;
 
