@@ -23,7 +23,7 @@ public:
 
     PoolRecordPointer<T> getPointer(const T &sample)
     {
-        //TODO Implement sorting ang binary search here!
+        //TODO Implement sorting and binary search here!
         //But as this is a small optimization, this should be delayed!
         /* Searches for already existing record containing the sample
          * and returns the record's pointer if it exists. */
