@@ -1,4 +1,4 @@
-﻿#include "tablesignature.h"
+#include "tablesignature.h"
 
 TableSignature::TableSignature(QDataStream &stream)
 {
@@ -61,7 +61,12 @@ void TableSignature::addToken(const Token &token)
 {
     if(tokenIsAlreadyPresentInSignature(token))
     {
-        throw std::invalid_argument("This token is already present in the table!");
+        QString errorMsg;
+        errorMsg += "This token (\"";
+        errorMsg += token.getString();
+        errorMsg += "\") is already present in the table!";
+
+        throw std::invalid_argument(errorMsg.toStdString());
     }
     else
     {

@@ -1,4 +1,4 @@
-﻿#include "signature.h"
+#include "signature.h"
 
 QDataStream &operator <<(QDataStream &stream, const Signature &signature)
 {
@@ -13,3 +13,4 @@ QDataStream &operator >>(QDataStream &stream, Signature &signature)
 
     return stream;
 }
+

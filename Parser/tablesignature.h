@@ -1,4 +1,4 @@
-﻿#ifndef TABLESIGNATURE_H
+#ifndef TABLESIGNATURE_H
 #define TABLESIGNATURE_H
 
 #include "signature.h"

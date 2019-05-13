@@ -1,4 +1,4 @@
-﻿#include "parser.h"
+#include "parser.h"
 
 Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaType) :
     lexer(signature),
@@ -9,9 +9,7 @@ Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaT
 Formula Parser::parse(const QString &sentence)
 {
     buildParsingTree(sentence);
-
     performTypeChecking();
-
     performVariableBindingChecking();
 
     //std::cout << parsingTree->print().toStdString();

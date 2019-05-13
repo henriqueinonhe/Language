@@ -1,10 +1,11 @@
-﻿#ifndef FORMATTER_H
+#ifndef FORMATTER_H
 #define FORMATTER_H
 
 #include <QString>
 #include <QVector>
 #include "stringprocessor.h"
 #include "tokenstring.h"
+#include "QDataStream"
 
 class Formatter
 {
@@ -84,6 +85,12 @@ private:
     void checkIndexIsWithinBounds(const unsigned int index);
 
     QVector<ProcessorEntry> processors;
+
+    friend QDataStream &operator <<(QDataStream &stream, const Formatter &formatter);
+    friend QDataStream &operator >>(QDataStream &stream, Formatter &formatter);
 };
+
+QDataStream &operator <<(QDataStream &stream, const Formatter &formatter);
+QDataStream &operator >>(QDataStream &stream, Formatter &formatter);
 
 #endif // FORMATTER_H

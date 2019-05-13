@@ -1,4 +1,4 @@
-﻿#include "formatter.h"
+#include "formatter.h"
 
 Formatter::Formatter()
 {
@@ -76,4 +76,18 @@ void Formatter::checkIndexIsWithinBounds(const unsigned int index)
     {
         throw std::invalid_argument("Processor index is out of bounds!");
     }
+}
+
+QDataStream &operator <<(QDataStream &stream, const Formatter &formatter)
+{
+    //TODO
+
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, Formatter &formatter)
+{
+    //TODO
+
+    return stream;
 }
