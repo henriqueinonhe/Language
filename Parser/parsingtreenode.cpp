@@ -1,5 +1,8 @@
-﻿#include "parsingtreenode.h"
-#include "ParsingTree.h"
+#include "parsingtreenode.h"
+#include "parsingtree.h"
+#include <QVector>
+#include "tokenstring.h"
+#include "variabletoken.h"
 
 ParsingTreeNode::ParsingTreeNode(const ParsingTree *tree, const ParsingTreeNode *parent, const unsigned int BeginIndex, const unsigned int EndIndex) :
     tree(tree),

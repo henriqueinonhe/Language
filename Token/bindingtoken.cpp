@@ -1,4 +1,6 @@
-﻿#include "bindingtoken.h"
+#include "bindingtoken.h"
+#include <QDataStream>
+#include "containerauxiliarytools.h"
 
 BindingToken::BindingToken(QDataStream &stream) :
     CoreToken(stream)

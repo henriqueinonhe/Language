@@ -1,4 +1,7 @@
-﻿#include "lexer.h"
+#include "lexer.h"
+#include "signature.h"
+#include <QString>
+#include "tokenstring.h"
 
 Lexer::Lexer(const Signature * const signature) :
     signature(signature)

@@ -1,9 +1,7 @@
-﻿#ifndef BINDINGRECORD_H
+#ifndef BINDINGRECORD_H
 #define BINDINGRECORD_H
 
-#include "containerauxiliarytools.h"
 #include <QVector>
-#include <QDataStream>
 
 struct BindingRecord
 {
@@ -20,6 +18,7 @@ public:
 
     unsigned int bindingArgumentIndex;
     QVector<unsigned int> boundArgumentsIndexes;
+
 private:
     void checkBoundArgumentIndexesDuplicates(const QVector<unsigned int> &boundArgumentsIndexes);
 

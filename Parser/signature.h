@@ -1,10 +1,9 @@
 #ifndef SIGNATURE_H
 #define SIGNATURE_H
 
-#include "coretoken.h"
-#include "type.h"
-#include <QDataStream>
-#include <memory.h>
+class Token;
+class QDataStream;
+class QString;
 
 class Signature
 {

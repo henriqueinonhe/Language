@@ -1,4 +1,5 @@
-﻿#include "classicfunctionnotationpreprocessor.h"
+#include "classicfunctionnotationpreprocessor.h"
+#include <QString>
 
 ClassicFunctionNotationPreProcessor::ClassicFunctionNotationPreProcessor(Signature *signature) :
     signature(signature)

@@ -1,4 +1,6 @@
-﻿#include "bindingrecord.h"
+#include "bindingrecord.h"
+#include "containerauxiliarytools.h"
+#include <QDataStream>
 
 BindingRecord::BindingRecord()
 {

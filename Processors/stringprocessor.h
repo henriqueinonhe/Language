@@ -1,7 +1,7 @@
-﻿#ifndef STRINGPROCESSOR_H
+#ifndef STRINGPROCESSOR_H
 #define STRINGPROCESSOR_H
 
-#include <QString>
+class QString;
 
 class StringProcessor
 {

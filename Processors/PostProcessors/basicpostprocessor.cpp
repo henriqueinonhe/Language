@@ -1,4 +1,5 @@
-﻿#include "basicpostprocessor.h"
+#include "basicpostprocessor.h"
+#include "signature.h"
 
 BasicPostProcessor::BasicPostProcessor(const Signature * const signature) :
     BasicProcessor(signature)

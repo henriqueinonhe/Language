@@ -1,11 +1,12 @@
-﻿#ifndef BASICPROCESSOR_H
+#ifndef BASICPROCESSOR_H
 #define BASICPROCESSOR_H
 
 #include "stringprocessor.h"
 #include "basicprocessortokenrecord.h"
-#include "lexer.h"
 
-class BasicProcessor : virtual public StringProcessor
+class Signature;
+
+class BasicProcessor : public StringProcessor
 {
 public:
     BasicProcessor(const Signature * const signature);

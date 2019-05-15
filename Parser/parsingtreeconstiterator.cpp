@@ -1,4 +1,7 @@
-﻿#include "parsingtreeconstiterator.h"
+#include "parsingtreeconstiterator.h"
+#include <QRegularExpression>
+#include "parsingtreenode.h"
+#include "parsingtree.h"
 
 //NOTE Refactor using templates and helper classes!
 

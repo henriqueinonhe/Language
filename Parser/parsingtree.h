@@ -1,10 +1,11 @@
 #ifndef PARSINGTREE_H
 #define PARSINGTREE_H
 
-#include <QString>
 #include <memory>
 #include "parsingtreenode.h"
 #include "tokenstring.h"
+
+class QString;
 
 using namespace std;
 

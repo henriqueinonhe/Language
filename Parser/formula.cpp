@@ -1,6 +1,8 @@
-﻿#include "formula.h"
-
+#include "formula.h"
+#include "parsingtree.h"
+#include "parsingtreeiterator.h"
 #include "parser.h"
+#include <QDataStream>
 
 Formula::Formula(QDataStream &stream, const Signature *signature)
 {

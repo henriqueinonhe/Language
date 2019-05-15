@@ -1,8 +1,10 @@
-﻿#ifndef PARSINGTREECONSTITERATOR_H
+#ifndef PARSINGTREECONSTITERATOR_H
 #define PARSINGTREECONSTITERATOR_H
 
-#include "parsingtree.h"
-#include <QRegularExpression>
+template <class T> class QVector;
+class ParsingTree;
+class ParsingTreeNode;
+class QString;
 
 class ParsingTreeConstIterator
 {

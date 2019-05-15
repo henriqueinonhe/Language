@@ -2,13 +2,12 @@
 #define TABLESIGNATURE_H
 
 #include "signature.h"
-#include "punctuationtoken.h"
 #include <memory>
-#include <QDataStream>
+#include <QVector>
 
 using namespace std;
 
-class TableSignature : public virtual Signature
+class TableSignature : public Signature
 {
 public:
     TableSignature(QDataStream &stream);

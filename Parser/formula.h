@@ -1,13 +1,19 @@
-﻿#ifndef FORMULA_H
+#ifndef FORMULA_H
 #define FORMULA_H
 
-#include "tokenstring.h"
-#include "type.h"
-#include "parsingtree.h"
-#include <QDataStream>
+#include <memory>
 
+template <class T> class QLinkedList;
+template <class T> class QVector;
+class Type;
+class ParsingTree;
+class QString;
+class Signature;
+class QDataStream;
 class Parser;
 class ProofLinks;
+
+using namespace std;
 
 class Formula
 {

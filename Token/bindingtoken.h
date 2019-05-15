@@ -1,9 +1,8 @@
-﻿#ifndef BINDINGTOKEN_H
+#ifndef BINDINGTOKEN_H
 #define BINDINGTOKEN_H
 
 #include "coretoken.h"
 #include "bindingrecord.h"
-#include <QDataStream>
 
 class BindingToken : public CoreToken
 {

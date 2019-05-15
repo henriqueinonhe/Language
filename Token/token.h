@@ -4,7 +4,6 @@
 #include <QString>
 #include <memory>
 #include <typeinfo>
-#include <QDataStream>
 
 using namespace std;
 

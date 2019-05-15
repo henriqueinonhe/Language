@@ -1,4 +1,7 @@
-﻿#include "basicprocessor.h"
+#include "basicprocessor.h"
+#include "signature.h"
+#include "tokenstring.h"
+#include "lexer.h"
 
 BasicProcessor::BasicProcessor(const Signature * const signature) :
     signature(signature)

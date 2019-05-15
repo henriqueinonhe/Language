@@ -1,4 +1,6 @@
-﻿#include "parsingtreeiterator.h"
+#include "parsingtreeiterator.h"
+#include "parsingtree.h"
+#include <QRegularExpression>
 
 ParsingTreeIterator::ParsingTreeIterator(ParsingTree *tree) :
     tree(tree),

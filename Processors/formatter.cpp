@@ -1,4 +1,5 @@
 #include "formatter.h"
+#include <QDataStream>
 
 Formatter::Formatter()
 {

@@ -1,20 +1,16 @@
-﻿#ifndef PARSER_H
+#ifndef PARSER_H
 #define PARSER_H
 
-#include "signature.h"
-#include "lexer.h"
 #include <memory>
-#include "formula.h"
-#include "parsingtree.h"
-#include "parsingerrorexception.hpp"
-#include "parsingtreeiterator.h"
-#include "parsingtreenode.h"
-#include "parsingauxiliarytools.h"
-#include "variabletoken.h"
-#include "bindingtoken.h"
-#include <iostream>
+#include "lexer.h"
+#include "type.h"
 
 using namespace std;
+
+class Signature;
+class Formula;
+class ParsingTree;
+class ParsingTreeIterator;
 
 class Parser
 {

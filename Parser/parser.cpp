@@ -1,4 +1,15 @@
 #include "parser.h"
+#include "formula.h"
+#include "parsingerrorexception.hpp"
+#include "parsingtreeiterator.h"
+#include "parsingauxiliarytools.h"
+#include "variabletoken.h"
+#include "bindingtoken.h"
+#include "punctuationtoken.h"
+#include "tokenstring.h"
+#include "parsingtree.h"
+#include "parsingtreenode.h"
+#include <iostream>
 
 Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaType) :
     lexer(signature),

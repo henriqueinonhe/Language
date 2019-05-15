@@ -1,9 +1,12 @@
-﻿#ifndef TOKENSTRING_H
+#ifndef TOKENSTRING_H
 #define TOKENSTRING_H
 
-#include "token.h"
-#include "signature.h"
-#include <QDataStream>
+#include <QVector>
+
+class QString;
+class QDataStream;
+class Signature;
+class Token;
 
 class Lexer;
 class Parser;

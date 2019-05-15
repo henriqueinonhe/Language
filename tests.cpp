@@ -31,7 +31,7 @@
 #include <QFile>
 #include <QDataStream>
 #include "dirtyfix.h"
-
+#include "bindingrecord.h"
 
 TEST_CASE("TypeToken")
 {

@@ -1,6 +1,7 @@
-﻿#include "tokenstring.h"
-
+#include "tokenstring.h"
+#include "token.h"
 #include "lexer.h"
+#include <QDataStream>
 
 TokenString::TokenString()
 {

@@ -1,4 +1,6 @@
 #include "tablesignature.h"
+#include "punctuationtoken.h"
+#include <QDataStream>
 
 TableSignature::TableSignature(QDataStream &stream)
 {

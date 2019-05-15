@@ -4,8 +4,9 @@
 #include <QString>
 #include <QVector>
 #include "stringprocessor.h"
-#include "tokenstring.h"
-#include "QDataStream"
+
+class QDataStream;
+class StringProcessor;
 
 class Formatter
 {

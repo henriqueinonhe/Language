@@ -1,4 +1,5 @@
-﻿#include "coretoken.h"
+#include "coretoken.h"
+#include <QRegularExpression>
 
 CoreToken::CoreToken(QDataStream &stream) :
     Token(stream),

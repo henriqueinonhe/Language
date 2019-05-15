@@ -1,8 +1,9 @@
-﻿#ifndef CLASSICFUNCTIONNOTATIONPREPROCESSOR_H
+#ifndef CLASSICFUNCTIONNOTATIONPREPROCESSOR_H
 #define CLASSICFUNCTIONNOTATIONPREPROCESSOR_H
 
 #include "stringprocessor.h"
-#include "signature.h"
+
+class Signature;
 
 class ClassicFunctionNotationPreProcessor : virtual StringProcessor
 {

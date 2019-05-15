@@ -1,5 +1,7 @@
 #include "signature.h"
 
+#include <QDataStream>
+
 QDataStream &operator <<(QDataStream &stream, const Signature &signature)
 {
     signature.serialize(stream);

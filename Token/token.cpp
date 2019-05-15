@@ -1,5 +1,6 @@
-﻿#include "token.h"
+#include "token.h"
 
+#include <QDataStream>
 #include "punctuationtoken.h"
 #include "variabletoken.h"
 #include "coretoken.h"

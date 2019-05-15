@@ -1,4 +1,4 @@
-﻿#include "basicprocessortokenrecord.h"
+#include "basicprocessortokenrecord.h"
 
 BasicProcessorTokenRecord::BasicProcessorTokenRecord()
 {

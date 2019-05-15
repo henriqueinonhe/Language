@@ -1,9 +1,8 @@
-﻿#ifndef CORETOKEN_H
+#ifndef CORETOKEN_H
 #define CORETOKEN_H
 
 #include "token.h"
 #include "type.h"
-#include <QRegularExpression>
 
 class CoreToken : public Token
 {

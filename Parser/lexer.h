@@ -1,10 +1,10 @@
-﻿#ifndef LEXER_H
+#ifndef LEXER_H
 #define LEXER_H
 
-#include "signature.h"
-#include "tokenstring.h"
-#include "punctuationtoken.h"
-#include "coretoken.h"
+class Signature;
+class TokenString;
+class QString;
+class QChar;
 
 class Lexer
 {
