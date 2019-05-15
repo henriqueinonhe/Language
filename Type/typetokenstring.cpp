@@ -1,4 +1,4 @@
-﻿#include "typetokenstring.h"
+#include "typetokenstring.h"
 
 Pool<TypeToken> TypeTokenString::pool;
 

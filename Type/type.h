@@ -1,9 +1,8 @@
-﻿#ifndef TOKENTYPE_H
+#ifndef TOKENTYPE_H
 #define TOKENTYPE_H
 
 #include "typetokenstring.h"
 #include <memory>
-#include <QDataStream>
 
 class TypeParser;
 class ParsingTreeNode;

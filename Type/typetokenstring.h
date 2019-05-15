@@ -1,12 +1,11 @@
-﻿#ifndef TYPETOKENSTRING_H
+#ifndef TYPETOKENSTRING_H
 #define TYPETOKENSTRING_H
 
-#include "typetoken.h"
 #include "pool.h"
 #include <QVector>
-#include <QString>
-#include <QLinkedList>
-#include <QDataStream>
+#include "typetoken.h"
+
+class TypeToken;
 
 class TypeTokenString
 {

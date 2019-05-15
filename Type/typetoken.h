@@ -1,9 +1,7 @@
-﻿#ifndef TYPETOKEN_H
+#ifndef TYPETOKEN_H
 #define TYPETOKEN_H
 
 #include <QString>
-#include <QRegularExpression>
-#include <QDataStream>
 
 class TypeToken
 {

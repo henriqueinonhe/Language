@@ -1,4 +1,5 @@
-﻿#include "typeparsingtreeiterator.h"
+#include "typeparsingtreeiterator.h"
+#include <QRegularExpression>
 
 TypeParsingTreeIterator::TypeParsingTreeIterator(TypeParsingTree *tree) :
     tree(tree),

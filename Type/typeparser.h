@@ -1,16 +1,16 @@
-﻿#ifndef TYPEPARSER_H
+#ifndef TYPEPARSER_H
 #define TYPEPARSER_H
-
-#include <iostream>
 #include <memory>
-#include <QVector>
-#include <QString>
-#include "typeparsingtree.h"
-#include "typeparsingtreeiterator.h"
-#include "parsingauxiliarytools.h"
-#include "parsingerrorexception.hpp"
-#include "type.h"
-#include "dirtyfix.h"
+
+using namespace std;
+
+class TypeToken;
+template <class T> class QVector;
+class QString;
+class TypeTokenString;
+class Type;
+class TypeParsingTree;
+class TypeParsingTreeIterator;
 
 class TypeParser
 {

@@ -1,4 +1,9 @@
-﻿#include "typeparser.h"
+#include "typeparser.h"
+#include <iostream>
+#include "parsingauxiliarytools.h"
+#include "parsingerrorexception.hpp"
+#include "typeparsingtreeiterator.h"
+#include "type.h"
 
 shared_ptr<TypeParsingTree> TypeParser::parsingTree;
 

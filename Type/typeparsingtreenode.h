@@ -1,11 +1,11 @@
-﻿#ifndef TYPEPARSINGTREENODE_H
+#ifndef TYPEPARSINGTREENODE_H
 #define TYPEPARSINGTREENODE_H
 
 #include <QString>
 #include <QVector>
 #include <memory>
-#include "typetokenstring.h"
 
+class TypeTokenString;
 class TypeParsingTreeIterator;
 class TypeParsingTree;
 class Type;

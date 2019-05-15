@@ -1,5 +1,5 @@
-﻿#include "type.h"
-
+#include "type.h"
+#include <QDataStream>
 #include "typeparser.h"
 
 Type::Type(QDataStream &stream) :

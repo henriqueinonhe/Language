@@ -1,4 +1,4 @@
-﻿#ifndef PARSINGTREE_H
+#ifndef PARSINGTREE_H
 #define PARSINGTREE_H
 
 #include <QString>
@@ -37,5 +37,11 @@ friend class ParsingTreeNode;
 
 };
 
+
+//Reminder to self: There is no sensible way to serialize this parsing tree without
+//rebuilding it, mainly because Tokens are stored in a pool (signature) and therefore
+//to deserealize a TokenString (and therefore whatever constructs that depend on it)
+//we need to provide a signature as well, so given that right now performance isn't an issue
+//I won't implement serializtion of parsing trees
 
 #endif // PARSINGTREE_H

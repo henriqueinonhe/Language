@@ -1,4 +1,5 @@
-﻿#include "typetoken.h"
+#include "typetoken.h"
+#include <QRegularExpression>
 
 TypeToken::TypeToken()
 {

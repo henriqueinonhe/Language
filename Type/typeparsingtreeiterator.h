@@ -1,8 +1,7 @@
-﻿#ifndef TYPEPARSINGTREEITERATOR_H
+#ifndef TYPEPARSINGTREEITERATOR_H
 #define TYPEPARSINGTREEITERATOR_H
 
 #include "TypeParsingTree.h"
-#include <QRegularExpression>
 
 class TypeParsingTreeIterator
 {
