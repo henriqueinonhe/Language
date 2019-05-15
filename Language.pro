@@ -7,6 +7,8 @@ TARGET = Language
 CONFIG += console
 CONFIG -= app_bundle
 
+PRECOMPILED_HEADER = pch.h
+
 INCLUDEPATH += Parser \
                Processors \
                Processors/PreProcessors \
@@ -107,5 +109,6 @@ HEADERS += \
     Utils/dirtyfix.h \
     Utils/parsingauxiliarytools.h \
     Utils/pool.h \
-    Parser/parsingtreeconstiterator.h
+    Parser/parsingtreeconstiterator.h \
+    pch.h
 
