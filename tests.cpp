@@ -35,41 +35,37 @@
 
 TEST_CASE("TypeToken")
 {
-    SECTION("Character Admissibility (Input Validation)")
-    {
-        CHECK(TypeToken("(").getSort() == TypeToken::Sort::LeftParenthesis);
-        CHECK(TypeToken(")").getSort() == TypeToken::Sort::RightParenthesis);
-        CHECK(TypeToken("[").getSort() == TypeToken::Sort::LeftSquareBracket);
-        CHECK(TypeToken("]").getSort() == TypeToken::Sort::RightSquareBracket);
-        CHECK(TypeToken(",").getSort() == TypeToken::Sort::Comma);
-        CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
-        CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
+    //Character Admissibiity (Input Validation)
+    CHECK(TypeToken("(").getSort() == TypeToken::Sort::LeftParenthesis);
+    CHECK(TypeToken(")").getSort() == TypeToken::Sort::RightParenthesis);
+    CHECK(TypeToken("[").getSort() == TypeToken::Sort::LeftSquareBracket);
+    CHECK(TypeToken("]").getSort() == TypeToken::Sort::RightSquareBracket);
+    CHECK(TypeToken(",").getSort() == TypeToken::Sort::Comma);
+    CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
+    CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
 
-        CHECK_THROWS(TypeToken("sd-ad"));
-        CHECK_THROWS(TypeToken("sd,ad"));
-        CHECK_THROWS(TypeToken("sd>ad"));
-        CHECK_THROWS(TypeToken("sd(ad"));
-        CHECK_THROWS(TypeToken("sd)ad"));
-        CHECK_THROWS(TypeToken("sd[ad"));
-        CHECK_THROWS(TypeToken("sd]ad"));
-        CHECK_THROWS(TypeToken("sd{ad"));
-        CHECK_THROWS(TypeToken("sd}ad"));
-        CHECK_THROWS(TypeToken(""));
-        CHECK_THROWS(TypeToken(" "));
-    }
+    CHECK_THROWS(TypeToken("sd-ad"));
+    CHECK_THROWS(TypeToken("sd,ad"));
+    CHECK_THROWS(TypeToken("sd>ad"));
+    CHECK_THROWS(TypeToken("sd(ad"));
+    CHECK_THROWS(TypeToken("sd)ad"));
+    CHECK_THROWS(TypeToken("sd[ad"));
+    CHECK_THROWS(TypeToken("sd]ad"));
+    CHECK_THROWS(TypeToken("sd{ad"));
+    CHECK_THROWS(TypeToken("sd}ad"));
+    CHECK_THROWS(TypeToken(""));
+    CHECK_THROWS(TypeToken(" "));
 
-    SECTION("Equality and Inequality")
-    {
-        CHECK(TypeToken("bundinha") == TypeToken("bundinha"));
-        CHECK(TypeToken("(") == TypeToken("("));
-        CHECK(TypeToken(")") == TypeToken(")"));
-        CHECK(TypeToken("[") == TypeToken("["));
-        CHECK(TypeToken("]") == TypeToken("]"));
-        CHECK(TypeToken("->") == TypeToken("->"));
-        CHECK(TypeToken(",") == TypeToken(","));
+    //Equality and Inequality
+    CHECK(TypeToken("bundinha") == TypeToken("bundinha"));
+    CHECK(TypeToken("(") == TypeToken("("));
+    CHECK(TypeToken(")") == TypeToken(")"));
+    CHECK(TypeToken("[") == TypeToken("["));
+    CHECK(TypeToken("]") == TypeToken("]"));
+    CHECK(TypeToken("->") == TypeToken("->"));
+    CHECK(TypeToken(",") == TypeToken(","));
 
-        CHECK(TypeToken("asdasd") != TypeToken("dsa"));
-    }
+    CHECK(TypeToken("asdasd") != TypeToken("dsa"));
 }
 
 TEST_CASE("Pool")
@@ -102,46 +98,43 @@ TEST_CASE("Pool")
 
 TEST_CASE("TypeTokenString")
 {
-    SECTION("Lexing and String Conversion")
-    {
-        CHECK_THROWS(TypeTokenString(" "));
-        CHECK_THROWS(TypeTokenString("i-"));
-        CHECK_THROWS(TypeTokenString("a>b"));
+    //Lexing and String Conversion
+    CHECK_THROWS(TypeTokenString(" "));
+    CHECK_THROWS(TypeTokenString("i-"));
+    CHECK_THROWS(TypeTokenString("a>b"));
 
-        CHECK_NOTHROW(TypeTokenString(""));
+    CHECK_NOTHROW(TypeTokenString(""));
 
-        TypeTokenString string = TypeTokenString("[i,o]->o");
+    TypeTokenString string = TypeTokenString("[i,o]->o");
 
-        CHECK(string.toString() == "[i,o]->o");
+    CHECK(string.toString() == "[i,o]->o");
 
-        string = TypeTokenString("o->(o->o)");
+    string = TypeTokenString("o->(o->o)");
 
-        CHECK(string.toString() == "o->(o->o)");
+    CHECK(string.toString() == "o->(o->o)");
 
-        string = TypeTokenString("[o,o]->o");
+    string = TypeTokenString("[o,o]->o");
 
-        CHECK(string.toString() == "[o,o]->o");
+    CHECK(string.toString() == "[o,o]->o");
 
-        string = TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType");
+    string = TypeTokenString("[Variable,IndividualConstant,PropositionalType]->PropositionalType");
 
-        CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
-    }
+    CHECK(string.toString() == "[Variable,IndividualConstant,PropositionalType]->PropositionalType");
 
-    SECTION("Equality and Inequality")
-    {
-        CHECK(TypeTokenString("[Proposition,Proposition]->Proposition") == TypeTokenString("[Proposition,Proposition]->Proposition"));
-        CHECK(TypeTokenString("A->(A->(A->(A->B)))") == TypeTokenString("A->(A->(A->(A->B)))"));
+    //Equality and Inequality
+    CHECK(TypeTokenString("[Proposition,Proposition]->Proposition") == TypeTokenString("[Proposition,Proposition]->Proposition"));
+    CHECK(TypeTokenString("A->(A->(A->(A->B)))") == TypeTokenString("A->(A->(A->(A->B)))"));
 
-        CHECK(TypeTokenString("A") != TypeTokenString("B"));
-    }
+    CHECK(TypeTokenString("A") != TypeTokenString("B"));
 }
 
 TEST_CASE("TypeParsingTrees")
 {
+    TypeParsingTree tree(TypeTokenString("Aflosos"));
+    TypeParsingTreeIterator iter(&tree);
+
     SECTION("TypeParsingTrees Nodes and Iterator")
     {
-        TypeParsingTree tree(TypeTokenString("Aflosos"));
-        TypeParsingTreeIterator iter(&tree);
 
         CHECK(iter->coordinatesToString() == QString("()"));
         CHECK(iter->getHeight() == 0);
@@ -178,9 +171,6 @@ TEST_CASE("TypeParsingTrees")
 
     SECTION("Tree methods and Tree Height")
     {
-        TypeParsingTree tree(TypeTokenString("Aflosis"));
-        TypeParsingTreeIterator iter(&tree);
-
         CHECK(iter.getTree().getHeight() == 0);
 
         iter->appendChild(0,0);
@@ -202,9 +192,6 @@ TEST_CASE("TypeParsingTrees")
 
     SECTION("TypeParsingTree Iterator Paths")
     {
-        TypeParsingTree tree(TypeTokenString("Aflisis"));
-        TypeParsingTreeIterator iter(&tree);
-
         iter->appendChild(0,0);
         iter->appendChild(0,0);
 
@@ -251,100 +238,88 @@ TEST_CASE("TypeParsingTrees")
         iter.goToCoordinates("(1,0,1)");
     }
 
-    SECTION("Equality and Inequality")
-    {
-        CHECK(TypeParsingTree(TypeTokenString("Aflosis")) == TypeParsingTree(TypeTokenString("Aflosis")));
-        CHECK(TypeParsingTree(TypeTokenString("a")) != TypeParsingTree(TypeTokenString("b")));
-    }
+    //Equality and Inequality
+    CHECK(TypeParsingTree(TypeTokenString("Aflosis")) == TypeParsingTree(TypeTokenString("Aflosis")));
+    CHECK(TypeParsingTree(TypeTokenString("a")) != TypeParsingTree(TypeTokenString("b")));
 }
 
 TEST_CASE("Type")
 {
-    SECTION("Validation Pass")
-    {
-        CHECK_NOTHROW(Type("AFLUSISS"));
-        CHECK_NOTHROW(Type("Proposition->Proposition"));
-        CHECK_NOTHROW(Type("[Proposition,Proposition]->Proposition"));
-        CHECK_NOTHROW(Type("[IndividualVariable,IndividualConstant,"
-                           "IndividualVariable,IndividualConstant]->Proposition"));
-        CHECK_NOTHROW(Type("[IndividualVariable,Proposition]->Proposition"));
-        CHECK_NOTHROW(Type("Proposition->(Proposition->Proposition)"));
-        CHECK_NOTHROW(Type("(o->o)->o"));
-        CHECK_NOTHROW(Type("[o->o,o->o]->o"));
-        CHECK_NOTHROW(Type("[a,b,c,d,e,f,g,h,i,j]->k"));
-        CHECK_NOTHROW(Type("A->(A->(A->(A->B)))"));
-    }
+    //Validation Pass
+    CHECK_NOTHROW(Type("AFLUSISS"));
+    CHECK_NOTHROW(Type("Proposition->Proposition"));
+    CHECK_NOTHROW(Type("[Proposition,Proposition]->Proposition"));
+    CHECK_NOTHROW(Type("[IndividualVariable,IndividualConstant,"
+                       "IndividualVariable,IndividualConstant]->Proposition"));
+    CHECK_NOTHROW(Type("[IndividualVariable,Proposition]->Proposition"));
+    CHECK_NOTHROW(Type("Proposition->(Proposition->Proposition)"));
+    CHECK_NOTHROW(Type("(o->o)->o"));
+    CHECK_NOTHROW(Type("[o->o,o->o]->o"));
+    CHECK_NOTHROW(Type("[a,b,c,d,e,f,g,h,i,j]->k"));
+    CHECK_NOTHROW(Type("A->(A->(A->(A->B)))"));
 
-    SECTION("Validation Fail")
-    {
-        CHECK_THROWS_WITH(Type(""), "String is empty!");
-        CHECK_THROWS_WITH(Type(" "), "' ' is not a suitable expression for a primitive type.");
-        CHECK_THROWS_WITH(Type("[[o]->o]->o"), "Product types must have at least two arguments!");
-        CHECK_THROWS_WITH(Type("[Proposition]->([Proposition]->Proposition)"), "Product types must have at least two arguments!");
-        CHECK_THROWS_WITH(Type("[Proposition]->Proposition"), "Product types must have at least two arguments!");
-        CHECK_THROWS_WITH(Type("Proposition->([Proposition]->Proposition)"), "Product types must have at least two arguments!");
-        CHECK_THROWS_WITH(Type("[o->o]->o"), "Product types must have at least two arguments!");
-        CHECK_THROWS_WITH(Type("(o]->o)"), "Index out of bounds."); //FIXME Need more information!
-        CHECK_THROWS_WITH(Type("[,]->o"), "Argument End Offset cannot be less than Argument Begin Offset!"); //FIXME
-        CHECK_THROWS_WITH(Type("[o,a)->a"), "Delimiters count do not match!");
-        CHECK_THROWS_WITH(Type("o->[i,i]"), "Composition operator's right side argument should be either a composite type or a primitive type!");
-        CHECK_THROWS_WITH(Type("o->(o]"), "There are uncased parenthesis in the right side argument of composition operator!");
-        CHECK_THROWS_WITH(Type("[0,1]"), "The main type cannot be a product type!");
-        CHECK_THROWS_WITH(Type("[[o,o]]->o"), "Product types must have at least two arguments!");
-        CHECK_THROWS_WITH(Type("((o->o))->o"), "Index out of bounds."); //FIXME
-        CHECK_THROWS_WITH(Type("()->o"), "Type cannot be empty!");
-        CHECK_THROWS_WITH(Type("o->(o)"), "Index out of bounds."); //FIXME
-        CHECK_THROWS_WITH(Type("o->([a,b,c->d])"), "Index out of bounds."); //FIXME
-        CHECK_THROWS_WITH(Type("o->(o,a,ds,r)"), "Composition operator (->) was expected here!");
-    }
+    //Validation Fail
+    CHECK_THROWS_WITH(Type(""), "String is empty!");
+    CHECK_THROWS_WITH(Type(" "), "' ' is not a suitable expression for a primitive type.");
+    CHECK_THROWS_WITH(Type("[[o]->o]->o"), "Product types must have at least two arguments!");
+    CHECK_THROWS_WITH(Type("[Proposition]->([Proposition]->Proposition)"), "Product types must have at least two arguments!");
+    CHECK_THROWS_WITH(Type("[Proposition]->Proposition"), "Product types must have at least two arguments!");
+    CHECK_THROWS_WITH(Type("Proposition->([Proposition]->Proposition)"), "Product types must have at least two arguments!");
+    CHECK_THROWS_WITH(Type("[o->o]->o"), "Product types must have at least two arguments!");
+    CHECK_THROWS_WITH(Type("(o]->o)"), "Index out of bounds."); //FIXME Need more information!
+    CHECK_THROWS_WITH(Type("[,]->o"), "Argument End Offset cannot be less than Argument Begin Offset!"); //FIXME
+    CHECK_THROWS_WITH(Type("[o,a)->a"), "Delimiters count do not match!");
+    CHECK_THROWS_WITH(Type("o->[i,i]"), "Composition operator's right side argument should be either a composite type or a primitive type!");
+    CHECK_THROWS_WITH(Type("o->(o]"), "There are uncased parenthesis in the right side argument of composition operator!");
+    CHECK_THROWS_WITH(Type("[0,1]"), "The main type cannot be a product type!");
+    CHECK_THROWS_WITH(Type("[[o,o]]->o"), "Product types must have at least two arguments!");
+    CHECK_THROWS_WITH(Type("((o->o))->o"), "Index out of bounds."); //FIXME
+    CHECK_THROWS_WITH(Type("()->o"), "Type cannot be empty!");
+    CHECK_THROWS_WITH(Type("o->(o)"), "Index out of bounds."); //FIXME
+    CHECK_THROWS_WITH(Type("o->([a,b,c->d])"), "Index out of bounds."); //FIXME
+    CHECK_THROWS_WITH(Type("o->(o,a,ds,r)"), "Composition operator (->) was expected here!");
 
-    SECTION("Other")
-    {
-        CHECK(Type("o->o") == Type("o->o"));
+    //Other
+    CHECK(Type("o->o") == Type("o->o"));
 
-        CHECK(Type("o") != Type("a->([c,d]->g)"));
+    CHECK(Type("o") != Type("a->([c,d]->g)"));
 
-        shared_ptr<TypeParsingTree> tree = Type("o").getParsingTree();
-        Type("i").getParsingTree();
+    shared_ptr<TypeParsingTree> tree = Type("o").getParsingTree();
+    Type("i").getParsingTree();
 
-        CHECK_NOTHROW(tree.get()->getHeight());
-    }
+    CHECK_NOTHROW(tree.get()->getHeight());
 }
 
 TEST_CASE("ParsingErrorException")
 {
-    SECTION("Type Parsing Error Exception")
-    {
-        TypeTokenString str("[o,o]->[o,o]");
-        ParsingErrorException<TypeTokenString> e("The right hand side argument of the composition operator cannot be a product type!",
-                                                 6,
-                                                 10,
-                                                 str);
+    //Type Parsing Error Exception
+    TypeTokenString str("[o,o]->[o,o]");
+    ParsingErrorException<TypeTokenString> e("The right hand side argument of the composition operator cannot be a product type!",
+                                             6,
+                                             10,
+                                             str);
 
-        CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
-                                           "[o,o]->[o,o]\n"
-                                           "       ^^^^^"));
-    }
+    CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
+                                       "[o,o]->[o,o]\n"
+                                       "       ^^^^^"));
 
 }
 
 TEST_CASE("Punctuation Token")
 {
-    SECTION("Validation")
-    {
-        CHECK_NOTHROW(PunctuationToken("("));
-        CHECK_NOTHROW(PunctuationToken(")"));
+    //Validation
+    CHECK_NOTHROW(PunctuationToken("("));
+    CHECK_NOTHROW(PunctuationToken(")"));
 
-        CHECK_THROWS(PunctuationToken(","));
-        CHECK_THROWS(PunctuationToken(" "));
-        CHECK_THROWS(PunctuationToken("Abacateiro"));
-        CHECK_THROWS(PunctuationToken("Abacate"));
-        CHECK_THROWS(PunctuationToken("( "));
-        CHECK_THROWS(PunctuationToken(" )"));
-        CHECK_THROWS(PunctuationToken(" , "));
-        CHECK_THROWS(PunctuationToken("(("));
-        CHECK_THROWS(PunctuationToken("(,)"));
-    }
+    CHECK_THROWS(PunctuationToken(","));
+    CHECK_THROWS(PunctuationToken(" "));
+    CHECK_THROWS(PunctuationToken("Abacateiro"));
+    CHECK_THROWS(PunctuationToken("Abacate"));
+    CHECK_THROWS(PunctuationToken("( "));
+    CHECK_THROWS(PunctuationToken(" )"));
+    CHECK_THROWS(PunctuationToken(" , "));
+    CHECK_THROWS(PunctuationToken("(("));
+    CHECK_THROWS(PunctuationToken("(,)"));
 }
 
 TEST_CASE("Core Token")
@@ -430,12 +405,11 @@ TEST_CASE("ParsingTrees")
     signature.addToken(CoreToken("A", Type("i")));
 
     Lexer lexer(&signature);
+    ParsingTree tree(lexer.lex("A"));
+    ParsingTreeIterator iter(&tree);
 
     SECTION("ParsingTrees Nodes methods work")
     {
-        ParsingTree tree(lexer.lex("A"));
-        ParsingTreeIterator iter(&tree);
-
         CHECK(iter->coordinatesToString() == QString("()"));
         CHECK(iter->getHeight() == 0);
         CHECK(iter->isRoot());
@@ -471,9 +445,6 @@ TEST_CASE("ParsingTrees")
 
     SECTION("Tree methods and Tree Height")
     {
-        ParsingTree tree(lexer.lex("A"));
-        ParsingTreeIterator iter(&tree);
-
         CHECK(iter.getTree().getHeight() == 0);
 
         iter->appendChild(0,0);
@@ -495,9 +466,6 @@ TEST_CASE("ParsingTrees")
 
     SECTION("ParsingTree Iterator Paths")
     {
-        ParsingTree tree(lexer.lex("A"));
-        ParsingTreeIterator iter(&tree);
-
         iter->appendChild(0,0);
         iter->appendChild(0,0);
 
@@ -562,51 +530,47 @@ TEST_CASE("Parser Propositional Logic")
 
     //END SETUP
 
-    SECTION("Pass")
-    {
-        CHECK_NOTHROW(parser.parse("P"));
-        CHECK_NOTHROW(parser.parse("Q"));
-        CHECK_NOTHROW(parser.parse("(And P Q)"));
-        CHECK_NOTHROW(parser.parse("(And Q P)"));
-        CHECK_NOTHROW(parser.parse("(Not P)"));
-        CHECK_NOTHROW(parser.parse("(Not Q)"));
-        CHECK_NOTHROW(parser.parse("(And (Not Q) (Not P))"));
+    //Pass
 
-        CHECK_NOTHROW(parser.parse("(Equivalent (And P Q) (And Q P))"));
-        CHECK_NOTHROW(parser.parse("(Implies (And P Q) P)"));
-        CHECK_NOTHROW(parser.parse("(Implies (And P Q) Q)"));
-        CHECK_NOTHROW(parser.parse("(Implies (And (Or P Q) (Not Q) ) P)"));
-        CHECK_NOTHROW(parser.parse("(Implies (And (Or P Q) (Not P) ) Q)"));
-        CHECK_NOTHROW(parser.parse("(Implies (And (Implies P Q) P)  Q )"));
-    }
+    CHECK_NOTHROW(parser.parse("P"));
+    CHECK_NOTHROW(parser.parse("Q"));
+    CHECK_NOTHROW(parser.parse("(And P Q)"));
+    CHECK_NOTHROW(parser.parse("(And Q P)"));
+    CHECK_NOTHROW(parser.parse("(Not P)"));
+    CHECK_NOTHROW(parser.parse("(Not Q)"));
+    CHECK_NOTHROW(parser.parse("(And (Not Q) (Not P))"));
 
-    SECTION("Fail Due To Structure")
-    {
-        CHECK_THROWS(parser.parse(""));
-        CHECK_THROWS(parser.parse("("));
-        CHECK_THROWS(parser.parse("()"));
-        CHECK_THROWS(parser.parse("F"));
-        CHECK_THROWS(parser.parse("AndP"));
-        CHECK_THROWS(parser.parse("PQ"));
-        CHECK_THROWS(parser.parse("(P)"));
-        CHECK_THROWS(parser.parse("(())"));
-        CHECK_THROWS(parser.parse("Not P"));
-        CHECK_THROWS(parser.parse("((Not P))"));
-        CHECK_THROWS(parser.parse("(Not (P))"));
-        CHECK_THROWS(parser.parse(")Not P("));
-    }
+    CHECK_NOTHROW(parser.parse("(Equivalent (And P Q) (And Q P))"));
+    CHECK_NOTHROW(parser.parse("(Implies (And P Q) P)"));
+    CHECK_NOTHROW(parser.parse("(Implies (And P Q) Q)"));
+    CHECK_NOTHROW(parser.parse("(Implies (And (Or P Q) (Not Q) ) P)"));
+    CHECK_NOTHROW(parser.parse("(Implies (And (Or P Q) (Not P) ) Q)"));
+    CHECK_NOTHROW(parser.parse("(Implies (And (Implies P Q) P)  Q )"));
 
-    SECTION("Fail Due To Type Checking")
-    {
-        CHECK_THROWS(parser.parse("(Not (And P Q) P)"));
-    }
+    //Fail Due To Structure
+    CHECK_THROWS(parser.parse(""));
+    CHECK_THROWS(parser.parse("("));
+    CHECK_THROWS(parser.parse("()"));
+    CHECK_THROWS(parser.parse("F"));
+    CHECK_THROWS(parser.parse("AndP"));
+    CHECK_THROWS(parser.parse("PQ"));
+    CHECK_THROWS(parser.parse("(P)"));
+    CHECK_THROWS(parser.parse("(())"));
+    CHECK_THROWS(parser.parse("Not P"));
+    CHECK_THROWS(parser.parse("((Not P))"));
+    CHECK_THROWS(parser.parse("(Not (P))"));
+    CHECK_THROWS(parser.parse(")Not P("));
+
+    //Fail Due To Type Checking
+    CHECK_THROWS(parser.parse("(Not (And P Q) P)"));
+
 
 }
 
 TEST_CASE("Container Auxiliary Tools")
 {
-    SECTION("Check For Duplicates")
     {
+        //Check For Duplicates
         QVector<int> v1{1,1,2,3,4};
         QVector<int> v2{3,5,2,5432,6,5432};
         QVector<int> v3{0,1,2,3,4};
@@ -618,8 +582,8 @@ TEST_CASE("Container Auxiliary Tools")
         CHECK(!ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v4));
     }
 
-    SECTION("Containers Are Disjoint")
     {
+        //Containers Are Disjoint
         QVector<int> v1{1,2,3,4,5};
         QVector<int> v2{5,6,7,8};
         QVector<int> v3{2,3,4};
@@ -633,25 +597,20 @@ TEST_CASE("Container Auxiliary Tools")
 
 TEST_CASE("Binding and Variable Tokens")
 {
+    //Variable Token
+    VariableToken v1("Aflisis", Type("Prop->Prop"));
+    CHECK(v1.tokenClass() == "VariableToken");
 
-    SECTION("Variable Token")
-    {
-        VariableToken v1("Aflisis", Type("Prop->Prop"));
-        CHECK(v1.tokenClass() == "VariableToken");
-    }
+    //Binding Token
+    QVector<BindingRecord> records;
 
-    SECTION("Binding Token")
-    {
-        QVector<BindingRecord> records;
+    BindingRecord record1(0, QVector<unsigned int>{1});
+    records.push_back(record1);
 
-        BindingRecord record1(0, QVector<unsigned int>{1});
-        records.push_back(record1);
+    CHECK_NOTHROW(BindingToken("Forall", Type("[i,o]->o"), records));
 
-        CHECK_NOTHROW(BindingToken("Forall", Type("[i,o]->o"), records));
-
-        CHECK_THROWS(BindingToken("P", Type("i->o"), records));
-        CHECK_THROWS(BindingToken("Q", Type("o"), records));
-    }
+    CHECK_THROWS(BindingToken("P", Type("i->o"), records));
+    CHECK_THROWS(BindingToken("Q", Type("o"), records));
 }
 
 TEST_CASE("First Order Logic (With TableSignature)")
@@ -683,18 +642,14 @@ TEST_CASE("First Order Logic (With TableSignature)")
 
     Parser parser(&signature, Type("o"));
 
-    SECTION("Pass")
-    {
-        CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (P x)))"));
-        CHECK_NOTHROW(parser.parse("(Forall x (Exists y (R x y)))"));
-        CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (Exists y (And (R x y) (Forall z (Implies (R x z) (Equals z y)))   ) ) ) )"));
-    }
+    //Pass
+    CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (P x)))"));
+    CHECK_NOTHROW(parser.parse("(Forall x (Exists y (R x y)))"));
+    CHECK_NOTHROW(parser.parse("(Forall x (Implies (P x) (Exists y (And (R x y) (Forall z (Implies (R x z) (Equals z y)))   ) ) ) )"));
 
-    SECTION("Fail")
-    {
-        CHECK_THROWS(parser.parse("(Forall y (Implies (P x) (P x)))"));
-        CHECK_THROWS(parser.parse("(Forall x (Forall x (P x)))"));
-    }
+    //Fail
+    CHECK_THROWS(parser.parse("(Forall y (Implies (P x) (P x)))"));
+    CHECK_THROWS(parser.parse("(Forall x (Forall x (P x)))"));
 }
 
 TEST_CASE("Elementary Arithmetic (Table Signature)")
@@ -718,21 +673,16 @@ TEST_CASE("Elementary Arithmetic (Table Signature)")
 
     Parser parser(&signature, Type("i"));
 
-    SECTION("Pass")
-    {
-        CHECK_NOTHROW(parser.parse("1"));
-        CHECK_NOTHROW(parser.parse("7"));
-        CHECK_NOTHROW(parser.parse("9"));
+    //Pass
+    CHECK_NOTHROW(parser.parse("1"));
+    CHECK_NOTHROW(parser.parse("7"));
+    CHECK_NOTHROW(parser.parse("9"));
 
-        CHECK_NOTHROW(parser.parse("(Plus 1 3)"));
-        CHECK_NOTHROW(parser.parse("(Times (Plus 2 3) (Plus 4 7))"));
-        CHECK_NOTHROW(parser.parse("(Div (Times (Plus 3 4) 5) (Plus (Times 0 2) (Minus 3 5)))"));
-    }
+    CHECK_NOTHROW(parser.parse("(Plus 1 3)"));
+    CHECK_NOTHROW(parser.parse("(Times (Plus 2 3) (Plus 4 7))"));
+    CHECK_NOTHROW(parser.parse("(Div (Times (Plus 3 4) 5) (Plus (Times 0 2) (Minus 3 5)))"));
 
-    SECTION("Fail")
-    {
-
-    }
+    //Fail
 
 }
 
