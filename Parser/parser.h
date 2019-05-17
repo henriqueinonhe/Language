@@ -39,7 +39,7 @@ private:
 
     void parseSentence(ParsingTreeIterator currentNodeIter);
     void parseApplication(ParsingTreeIterator currentNodeIter);
-    void analyzeError(ParsingTreeIterator iter);
+    [[noreturn]] void analyzeError(ParsingTreeIterator iter);
 
     bool isAtomic(const TokenString &tokenString) const;
     bool hasMolecularForm(const TokenString &tokenString) const;

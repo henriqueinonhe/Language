@@ -1,4 +1,4 @@
-﻿#include "typeparsingtree.h"
+#include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
 
 TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
@@ -28,7 +28,7 @@ QString TypeParsingTree::print()
     QVector<TypeParsingTreeNode *> nextLevelNodes{&(*iter)};
     QString str;
 
-    for(int currentLevel = 0; currentLevel <= (int) this->getHeight(); currentLevel++)
+    for(int currentLevel = 0; currentLevel <= static_cast<int>(this->getHeight()); currentLevel++)
     {
         QVector<TypeParsingTreeNode *> nextLevelNodes2;
         std::for_each(nextLevelNodes.begin(),

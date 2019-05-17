@@ -9,7 +9,7 @@ BindingRecord::BindingRecord()
 
 void BindingRecord::checkBoundArgumentIndexesDuplicates(const QVector<unsigned int> &boundArgumentsIndexes)
 {
-    if(ContainerAuxiliaryTools<QVector<unsigned int>>::checkForDuplicates(boundArgumentsIndexes))
+    if(ContainerAuxiliaryTools::checkForDuplicates(boundArgumentsIndexes))
     {
         throw std::invalid_argument("There are duplicates in the bound argument indexes vector!");
     }

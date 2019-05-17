@@ -32,12 +32,12 @@ QString TypeTokenString::toString() const
 
 unsigned int TypeTokenString::size() const
 {
-    return tokenList.size();
+    return static_cast<unsigned int>(tokenList.size());
 }
 
 TypeTokenString TypeTokenString::mid(const unsigned int startPos, const unsigned int n) const
 {
-    return TypeTokenString(tokenList.mid(startPos, n));
+    return TypeTokenString(tokenList.mid(static_cast<int>(startPos), static_cast<int>(n)));
 }
 
 TypeToken TypeTokenString::operator[](unsigned int index) const
@@ -47,7 +47,7 @@ TypeToken TypeTokenString::operator[](unsigned int index) const
         throw std::invalid_argument("Index out of bounds.");
     }
 
-    return *tokenList[index];
+    return *tokenList[static_cast<int>(index)];
 }
 
 TypeToken TypeTokenString::first() const
@@ -67,7 +67,7 @@ TypeToken TypeTokenString::last() const
         throw std::invalid_argument("String is empty!");
     }
 
-    return *tokenList[size() - 1];
+    return *tokenList[static_cast<int>(size()) - 1];
 }
 
 bool TypeTokenString::isLastIndex(const unsigned int index) const

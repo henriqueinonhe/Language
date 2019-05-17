@@ -32,6 +32,11 @@ Token *CoreToken::getAllocatedClone() const
     return new CoreToken(*this);
 }
 
+CoreToken::~CoreToken()
+{
+
+}
+
 void CoreToken::serialize(QDataStream &stream) const
 {
     Token::serialize(stream);

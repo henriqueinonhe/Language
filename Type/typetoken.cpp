@@ -77,7 +77,7 @@ QString TypeToken::getString() const
 
 unsigned int TypeToken::getTokenCharacterSpan() const
 {
-    return string.size();
+    return static_cast<unsigned int>(string.size());
 }
 
 

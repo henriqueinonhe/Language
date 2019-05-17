@@ -77,7 +77,7 @@ void BindingToken::checkEmptyRecords(const QVector<BindingRecord> &bindingRecord
 
 void BindingToken::checkDuplicateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
 {
-    if(ContainerAuxiliaryTools<QVector<BindingRecord>>::checkForDuplicates(bindingRecords))
+    if(ContainerAuxiliaryTools::checkForDuplicates(bindingRecords))
     {
         throw std::invalid_argument("There are duplicates in the binding records!");
     }
@@ -101,7 +101,7 @@ unsigned int BindingToken::getGreatestBoundArgumentNumber(const QVector<unsigned
 
 void BindingToken::checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned int> &bindingArgumentsIndexes) const
 {
-    if(ContainerAuxiliaryTools<QVector<unsigned int>>::checkForDuplicates(bindingArgumentsIndexes))
+    if(ContainerAuxiliaryTools::checkForDuplicates(bindingArgumentsIndexes))
     {
         throw std::invalid_argument("There are at least two different binding records with the same binding index!");
     }
@@ -109,7 +109,7 @@ void BindingToken::checkDuplicatesBindingArgumentsIndexes(const QVector<unsigned
 
 void BindingToken::checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const
 {
-    if(!ContainerAuxiliaryTools<QVector<unsigned int>>::containersAreDisjoint(bindingArgumentsIndexes, boundArgumentsIndexes))
+    if(!ContainerAuxiliaryTools::containersAreDisjoint(bindingArgumentsIndexes, boundArgumentsIndexes))
     {
         throw std::invalid_argument("There is at least one index in the binding records that is assigned simultaneously to a binding index and a bound index!");
     }
@@ -133,7 +133,7 @@ void BindingToken::validateBindingRecordsArguments(const QVector<BindingRecord> 
 
     const unsigned int greatestBindingArgumentNumber = getGreatestBindingArgumentNumber(bindingArgumentsIndexes);
     const unsigned int greatestBoundArgumentNumber = getGreatestBoundArgumentNumber(boundArgumentsIndexes);
-    const unsigned int numberOfArguments = type.getArgumentsTypes().size();
+    const unsigned int numberOfArguments = static_cast<unsigned int>(type.getArgumentsTypes().size());
 
     checkNumberOfArgumentsConsistency(greatestBindingArgumentNumber, greatestBoundArgumentNumber, numberOfArguments);
 }

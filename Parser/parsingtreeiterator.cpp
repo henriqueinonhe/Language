@@ -11,12 +11,12 @@ ParsingTreeIterator::ParsingTreeIterator(ParsingTree *tree) :
 
 ParsingTreeIterator &ParsingTreeIterator::goToChild(const unsigned int index)
 {
-    if(index >= (uint) currentNode->children.size())
+    if(index >= static_cast<uint>(currentNode->children.size()))
     {
         throw std::invalid_argument("This child does not exist.");
     }
 
-    currentNode = currentNode->children[index].get();
+    currentNode = currentNode->children[static_cast<int>(index)].get();
 
     return *this;
 }
@@ -109,7 +109,7 @@ QVector<unsigned int> ParsingTreeIterator::convertStringToPath(const QString &pa
 
     std::for_each(coordinatesList.begin(), coordinatesList.end(), [&](const QString &str)
     {
-        pathVector.push_back(str.toInt());
+        pathVector.push_back(static_cast<uint>(str.toInt()));
     });
 
     return pathVector;
@@ -119,5 +119,5 @@ QString ParsingTreeIterator::removeOuterParenthesis(const QString &path) const
 {
     const unsigned int parenthesisPadding = 1;
     const unsigned int numberOfParenthesis = 2;
-    return path.mid(parenthesisPadding, path.size() - numberOfParenthesis * parenthesisPadding);
+    return path.mid(parenthesisPadding, static_cast<int>(static_cast<uint>(path.size()) - numberOfParenthesis * parenthesisPadding));
 }

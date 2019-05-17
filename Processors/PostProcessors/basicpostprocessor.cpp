@@ -169,7 +169,7 @@ void BasicPostProcessor::parenthesisAnalysis(const QVector<SubSentenceRecord> &s
     }
     else
     {
-        std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [&mainOperatorRecord, &tokenString, this](const SubSentenceRecord &record)
+        std::for_each(subSentenceRecords.begin() + mainOperatorCompensation, subSentenceRecords.end(), [ &tokenString, this](const SubSentenceRecord &record)
         {
             if(!record.isAtomicSentence &&
                record.hasAtomicOperator())

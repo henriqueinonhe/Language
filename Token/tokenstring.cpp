@@ -57,7 +57,7 @@ QString TokenString::formattedString() const
 
 unsigned int TokenString::size() const
 {
-    return tokenList.size();
+    return static_cast<unsigned int>(tokenList.size());
 }
 
 TokenString TokenString::mid(const unsigned int beginIndex, const unsigned int size) const
@@ -66,7 +66,7 @@ TokenString TokenString::mid(const unsigned int beginIndex, const unsigned int s
 
     for(unsigned int counter = 0; counter < size; counter++)
     {
-        newString.tokenList.push_back(this->tokenList[beginIndex + counter]);
+        newString.tokenList.push_back(this->tokenList[static_cast<int>(beginIndex + counter)]);
     }
 
     return newString;
@@ -79,7 +79,7 @@ const Token &TokenString::operator[](const unsigned int index) const
         throw std::invalid_argument("Index is out of bounds!");
     }
 
-    return *(tokenList[index]);
+    return *(tokenList[static_cast<int>(index)]);
 }
 
 const Token &TokenString::first() const

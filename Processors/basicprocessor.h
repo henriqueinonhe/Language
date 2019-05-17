@@ -29,6 +29,8 @@ public:
 
     QString toString() const = 0;
 
+    virtual ~BasicProcessor();
+
 protected:
     struct TokenWrapper
     {

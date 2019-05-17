@@ -1,5 +1,5 @@
-﻿#include "typeparsingtreenode.h"
-#include "TypeParsingTree.h"
+#include "typeparsingtreenode.h"
+#include "typeparsingtree.h"
 
 TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
     tree(tree),
@@ -51,7 +51,6 @@ QString TypeParsingTreeNode::mainOperatorToString() const
     else
     {
         throw std::logic_error("Main Operator is not set!");
-        return "";
     }
 }
 
@@ -139,20 +138,20 @@ unsigned int TypeParsingTreeNode::getHeight() const
 
 unsigned int TypeParsingTreeNode::getChildrenNumber() const
 {
-    return children.size();
+    return static_cast<unsigned int>(children.size());
 }
 
 unsigned int TypeParsingTreeNode::getOwnChildNumber() const
 {
     const TypeParsingTreeNode *ptr = parent;
 
-    unsigned int ownChildNumber = 0;
+    int ownChildNumber = 0;
     while(ptr->children[ownChildNumber].get() != this)
     {
         ownChildNumber++;
     }
 
-    return ownChildNumber;
+    return static_cast<unsigned int>(ownChildNumber);
 }
 
 unsigned int TypeParsingTreeNode::getGreatestDescendantHeight() const

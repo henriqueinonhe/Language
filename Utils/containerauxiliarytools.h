@@ -1,11 +1,11 @@
-﻿#ifndef CONTAINERAUXILIARYTOOLS_H
+#ifndef CONTAINERAUXILIARYTOOLS_H
 #define CONTAINERAUXILIARYTOOLS_H
+#include <memory>
 
-template<class T>
 class ContainerAuxiliaryTools
 {
 public:
-    static bool checkForDuplicates(const T &container)
+    template <class T> static bool checkForDuplicates(const T &container)
     {
         for(int index = 0; index < container.size(); index++)
         {
@@ -22,7 +22,7 @@ public:
         return false;
     }
 
-    static bool containersAreDisjoint(const T &container1, const T &container2)
+    template <class T> static bool containersAreDisjoint(const T &container1, const T &container2)
     {
         for(int index1 = 0; index1 < container1.size(); index1++)
         {
@@ -36,6 +36,22 @@ public:
         }
 
         return true;
+    }
+
+    template <class T1, class T2> static void adaptToSmartPointerContainer(const T1 &source, T2 &target)
+    {
+        std::for_each(source.begin(), source.end(), [&target](const typename T1::value_type &content)
+        {
+            target.push_back(typename T2::value_type(content));
+        });
+    }
+
+    template <class T1, class T2> static void serializeSmartPointerContainer(T1 &stream, const T2 &container)
+    {
+        std::for_each(container.begin(), container.end(), [&stream](const typename T2::value_type &content)
+        {
+             stream << *content;
+        });
     }
 
 private:

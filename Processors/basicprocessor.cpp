@@ -155,6 +155,11 @@ BasicProcessorTokenRecord::Associativity BasicProcessor::getOperatorAssociativit
     return associativity;
 }
 
+BasicProcessor::~BasicProcessor()
+{
+
+}
+
 const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString &token) const
 {
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
@@ -278,7 +283,7 @@ BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorLeftParen
 {
     unsigned int argumentsBeforeOperatorCount = 0;
     unsigned int reverseIteratorCompensation = 1;
-    TokenStringWrapperReverseIterator leftParenthesisIterator(tokenStringIter + reverseIteratorCompensation);
+    TokenStringWrapperReverseIterator leftParenthesisIterator(tokenStringIter + static_cast<int>(reverseIteratorCompensation));
     while(argumentsBeforeOperatorCount != numberOfArgumentsBeforeOperator)
     {
         leftParenthesisIterator++;
@@ -308,7 +313,7 @@ BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorLeftParen
         argumentsBeforeOperatorCount++;
     }
 
-    return (leftParenthesisIterator + reverseIteratorCompensation).base();
+    return (leftParenthesisIterator + static_cast<int>(reverseIteratorCompensation)).base();
 }
 
 BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorRightParenthesisIterator(const TokenStringWrapper &tokenString, const unsigned int numberOfArgumentsAfterOperator, const TokenStringWrapperIterator &tokenStringIter) const

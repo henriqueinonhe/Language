@@ -39,7 +39,7 @@ void Parser::buildParsingTree(const QString &sentence)
     parseSentence(iter);
 }
 
-void Parser::analyzeError(ParsingTreeIterator currentNodeIter)
+[[noreturn]] void Parser::analyzeError(ParsingTreeIterator currentNodeIter)
 {
     const TokenString tokenString = currentNodeIter->getTokenString();
     const unsigned int beginIndex = currentNodeIter->getBeginIndex();
@@ -338,8 +338,8 @@ QVector<QVector<ParsingTreeNode *> > Parser::orderNodesByLevel() const
     {
         const unsigned int parentRowCompensation = 1;
         QVector<ParsingTreeNode *> currentRow;
-        std::for_each(nodesMatrix[currentHeight - parentRowCompensation].begin(),
-                      nodesMatrix[currentHeight - parentRowCompensation].end(),
+        std::for_each(nodesMatrix[static_cast<int>(currentHeight - parentRowCompensation)].begin(),
+                      nodesMatrix[static_cast<int>(currentHeight - parentRowCompensation)].end(),
                       [&currentRow](ParsingTreeNode *parentNode)
         {
             std::for_each(parentNode->children.begin(),
@@ -379,24 +379,24 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode)
     {
         const unsigned int firstChildIsBindingTokenItselfCompensation = 1;
         const unsigned int bindingArgumentChildIndex = record.bindingArgumentIndex + firstChildIsBindingTokenItselfCompensation;
-        if(!isVariableToken(children[bindingArgumentChildIndex]->getTokenString()))
+        if(!isVariableToken(children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString()))
         {
             throw std::invalid_argument("Variable Token expected here!");
         }
         else
         {
-            const VariableToken *currentBindingVariable = dynamic_cast<const VariableToken *>(&children[bindingArgumentChildIndex]->getTokenString().first());
+            const VariableToken *currentBindingVariable = dynamic_cast<const VariableToken *>(&children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString().first());
 
             std::for_each(record.boundArgumentsIndexes.begin(),
                           record.boundArgumentsIndexes.end(),
                           [&currentBindingVariable, &parentNode, &children](const unsigned int boundArgumentIndex)
             {
                 const unsigned int boundArgumentChildIndex = boundArgumentIndex + firstChildIsBindingTokenItselfCompensation;
-                if(children[boundArgumentChildIndex]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
+                if(children[static_cast<int>(boundArgumentChildIndex)]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
                 {
                     throw std::invalid_argument("Variable is already bound!"); //Variable is already bound!
                 }
-                else if(!children[boundArgumentChildIndex]->freeVariables.contains(currentBindingVariable))
+                else if(!children[static_cast<int>(boundArgumentChildIndex)]->freeVariables.contains(currentBindingVariable))
                 {
                     throw std::invalid_argument("This variable doesn't exist in this context!"); //Variable is not free in this context!
                 }

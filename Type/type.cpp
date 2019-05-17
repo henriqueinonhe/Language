@@ -75,7 +75,7 @@ shared_ptr<TypeParsingTree> Type::getParsingTree() const
 
 unsigned int Type::getNumberOfArguments() const
 {
-    return argumentsTypes.size();
+    return static_cast<unsigned int>(argumentsTypes.size());
 }
 
 bool Type::isOperator() const

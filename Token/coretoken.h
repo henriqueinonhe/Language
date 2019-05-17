@@ -16,6 +16,7 @@ public:
 
     virtual Token *getAllocatedClone() const;
 
+    virtual ~CoreToken();
 
 protected:
     virtual void serialize(QDataStream &stream) const;

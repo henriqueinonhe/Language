@@ -38,7 +38,7 @@ void ParsingTreeNode::printNodeToString(QString &str) const
     {
         const unsigned int zeroIndexCompensation = 1;
         const unsigned int fatherNodeCompensation = 1;
-        str += QString::number(coordinates[coordinates.size() - zeroIndexCompensation - fatherNodeCompensation]);
+        str += QString::number(coordinates[static_cast<int>(static_cast<unsigned int>(coordinates.size()) - zeroIndexCompensation - fatherNodeCompensation)]);
     }
     if(height != 0)
     {
@@ -175,7 +175,7 @@ unsigned int ParsingTreeNode::getHeight() const
 
 unsigned int ParsingTreeNode::getChildrenNumber() const
 {
-    return children.size();
+    return static_cast<uint>(children.size());
 }
 
 unsigned int ParsingTreeNode::getOwnChildNumber() const
@@ -183,7 +183,7 @@ unsigned int ParsingTreeNode::getOwnChildNumber() const
     const ParsingTreeNode *ptr = parent;
 
     unsigned int ownChildNumber = 0;
-    while(ptr->children[ownChildNumber].get() != this)
+    while(ptr->children[static_cast<int>(ownChildNumber)].get() != this)
     {
         ownChildNumber++;
     }

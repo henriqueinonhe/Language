@@ -2,6 +2,7 @@
 #define FORMULA_H
 
 #include <memory>
+#include "parsingtree.h"
 
 template <class T> class QLinkedList;
 template <class T> class QVector;

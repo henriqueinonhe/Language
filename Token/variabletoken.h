@@ -1,4 +1,4 @@
-﻿#ifndef VARIABLETOKEN_H
+#ifndef VARIABLETOKEN_H
 #define VARIABLETOKEN_H
 
 #include "coretoken.h"
@@ -12,6 +12,8 @@ public:
     virtual QString tokenClass() const;
 
     virtual Token *getAllocatedClone() const;
+
+    virtual ~VariableToken();
 
 protected:
     virtual bool isEqual(const Token &other) const;

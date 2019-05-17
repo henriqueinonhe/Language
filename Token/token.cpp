@@ -75,7 +75,7 @@ bool Token::operator!=(const Token &other) const
 
 unsigned int Token::getTokenCharacterSpan() const
 {
-    return string.size();
+    return static_cast<unsigned int>(string.size());
 }
 
 QString Token::tokenClass() const
@@ -86,6 +86,11 @@ QString Token::tokenClass() const
 Token *Token::getAllocatedClone() const
 {
     return new Token(*this);
+}
+
+Token::~Token()
+{
+
 }
 
 void Token::serialize(QDataStream &stream) const

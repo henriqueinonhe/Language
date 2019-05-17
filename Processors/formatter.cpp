@@ -25,7 +25,7 @@ void Formatter::removeProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors.remove(index);
+    processors.remove(static_cast<int>(index));
 }
 
 void Formatter::moveProcessor(const unsigned int locationIndex, const unsigned int targetIndex)
@@ -33,30 +33,30 @@ void Formatter::moveProcessor(const unsigned int locationIndex, const unsigned i
     checkIndexIsWithinBounds(locationIndex);
     checkIndexIsWithinBounds(targetIndex);
 
-    ProcessorEntry tempLocationProcessor = processors[locationIndex];
-    processors.remove(locationIndex);
-    processors.insert(targetIndex, tempLocationProcessor);
+    ProcessorEntry tempLocationProcessor = processors[static_cast<int>(locationIndex)];
+    processors.remove(static_cast<int>(locationIndex));
+    processors.insert(static_cast<int>(targetIndex), tempLocationProcessor);
 }
 
 void Formatter::turnOnProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors[index].turnOn();
+    processors[static_cast<int>(index)].turnOn();
 }
 
 void Formatter::turnOffProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors[index].turnOff();
+    processors[static_cast<int>(index)].turnOff();
 }
 
 void Formatter::toggleProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors[index].toggle();
+    processors[static_cast<int>(index)].toggle();
 }
 
 QString Formatter::toString() const

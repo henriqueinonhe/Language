@@ -1,7 +1,7 @@
 #ifndef TYPEPARSINGTREEITERATOR_H
 #define TYPEPARSINGTREEITERATOR_H
 
-#include "TypeParsingTree.h"
+#include "typeparsingtree.h"
 
 class TypeParsingTreeIterator
 {

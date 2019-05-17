@@ -28,6 +28,8 @@ public:
 
     virtual Token *getAllocatedClone() const;
 
+    virtual ~Token();
+
 
 protected:
     Token(QDataStream &stream);
