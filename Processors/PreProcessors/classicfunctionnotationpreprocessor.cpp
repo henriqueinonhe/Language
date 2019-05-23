@@ -16,3 +16,8 @@ QString ClassicFunctionNotationPreProcessor::toString() const
 {
     return "Classic Function Notation Pre Processor";
 }
+
+ClassicFunctionNotationPreProcessor::~ClassicFunctionNotationPreProcessor()
+{
+
+}

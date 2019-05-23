@@ -20,8 +20,11 @@ class Formula
 {
 public:
     Formula(QDataStream &stream, const Signature * signature);
-    static QLinkedList<Formula> unserializeList(QDataStream &stream, const Signature * signature);
+    static QLinkedList<Formula> unserializeList(QDataStream &stream, const Signature * const signature); //Use templates later
+    static QVector<Formula> unserializeVector(QDataStream &stream, const Signature * const signature);
     Formula(const Formula &other);
+
+    Formula &operator=(const Formula &other);
 
     bool operator==(const Formula &other) const;
     bool operator!=(const Formula &other) const;
@@ -38,15 +41,20 @@ private:
 
     unique_ptr<const ParsingTree> parsingTree;
 
+    friend class LineOfProof;
     friend class Parser;
     friend class QVector<Formula>;
     friend class QLinkedList<Formula>;
     friend QDataStream &operator <<(QDataStream &stream, const Formula &formula);
     friend QDataStream &operator <<(QDataStream &stream, const QLinkedList<Formula> &list);
+    friend QDataStream &operator >>(QDataStream &stream, QLinkedList<Formula> &list);
+    friend QDataStream &operator <<(QDataStream &stream, const QVector<Formula> &list);
+    friend QDataStream &operator >>(QDataStream &stream, QVector<Formula> &list);
 };
 
 QDataStream &operator <<(QDataStream &stream, const Formula &formula);
 QDataStream &operator <<(QDataStream &stream, const QLinkedList<Formula> &list);
+QDataStream &operator <<(QDataStream &stream, const QVector<Formula> &vec);
 
 #endif // FORMULA_H
 

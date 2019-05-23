@@ -124,6 +124,8 @@ QDataStream &operator <<(QDataStream &stream, const shared_ptr<Token> &token)
 
 QDataStream &operator >>(QDataStream &stream, shared_ptr<Token> &token)
 {
+    //NOTE I could take some precautions regarding deserialization on a Token Table that has already been
+    //initialized and is in use, so whoever is using the old pointers don't lose references!
     token = Token::unserializePtr(stream);
     return stream;
 }

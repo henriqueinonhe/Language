@@ -16,7 +16,7 @@ Formula::Formula(QDataStream &stream, const Signature *signature)
     parsingTree.reset(formula.parsingTree.release());
 }
 
-QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, const Signature *signature)
+QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, const Signature * const signature)
 {
     int size;
     stream >> size;
@@ -30,9 +30,28 @@ QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, const Signatu
     return list;
 }
 
+QVector<Formula> Formula::unserializeVector(QDataStream &stream, const Signature * const signature)
+{
+    int size;
+    stream >> size;
+
+    QVector<Formula> vec;
+    for(int index = 0; index < size; index++)
+    {
+        vec.push_back(Formula(stream, signature));
+    }
+
+    return vec;
+}
+
 Formula::Formula(const Formula &other) :
     parsingTree(new ParsingTree(other.getParsingTree()))
 {
+}
+
+Formula &Formula::operator=(const Formula &other)
+{
+    parsingTree.reset(new ParsingTree(other.getParsingTree()));
 }
 
 bool Formula::operator==(const Formula &other) const
@@ -92,5 +111,16 @@ QDataStream &operator <<(QDataStream &stream, const QLinkedList<Formula> &list)
         stream << formula;
     });
 
+    return stream;
+}
+
+
+QDataStream &operator <<(QDataStream &stream, const QVector<Formula> &vec)
+{
+    stream << vec.size();
+    for(const Formula &formula : vec)
+    {
+        stream << formula;
+    }
     return stream;
 }

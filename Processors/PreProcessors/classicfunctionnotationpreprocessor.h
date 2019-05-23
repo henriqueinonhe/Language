@@ -5,13 +5,15 @@
 
 class Signature;
 
-class ClassicFunctionNotationPreProcessor : virtual StringProcessor
+class ClassicFunctionNotationPreProcessor : public StringProcessor
 {
 public:
     ClassicFunctionNotationPreProcessor(Signature *signature);
 
     QString processString(const QString &string) const;
     QString toString() const;
+
+    ~ClassicFunctionNotationPreProcessor();
 
 private:
     Signature *signature;

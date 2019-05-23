@@ -2,6 +2,7 @@
 #define STRINGPROCESSOR_H
 
 class QString;
+class QDataStream;
 
 class StringProcessor
 {

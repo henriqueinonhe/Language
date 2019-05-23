@@ -16,3 +16,8 @@ QDataStream &operator >>(QDataStream &stream, Signature &signature)
     return stream;
 }
 
+
+Signature::~Signature()
+{
+
+}

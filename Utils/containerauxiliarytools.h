@@ -40,6 +40,7 @@ public:
 
     template <class T1, class T2> static void adaptToSmartPointerContainer(const T1 &source, T2 &target)
     {
+        //WARNING This is probably VERY dangerous and broken and should't be used!
         std::for_each(source.begin(), source.end(), [&target](const typename T1::value_type &content)
         {
             target.push_back(typename T2::value_type(content));
@@ -51,6 +52,14 @@ public:
         std::for_each(container.begin(), container.end(), [&stream](const typename T2::value_type &content)
         {
              stream << *content;
+        });
+    }
+
+    template <class T1, class T2> static void unserializeSmartPointerContainer(T1 &stream, T2 &container)
+    {
+        std::for_each(container.begin(), container.end(), [&stream](typename T2::value_type &content)
+        {
+            stream >> *content;
         });
     }
 

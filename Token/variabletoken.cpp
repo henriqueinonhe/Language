@@ -1,4 +1,4 @@
-﻿#include "variabletoken.h"
+#include "variabletoken.h"
 
 VariableToken::VariableToken(QDataStream &stream) :
     CoreToken(stream)
@@ -19,6 +19,11 @@ QString VariableToken::tokenClass() const
 Token *VariableToken::getAllocatedClone() const
 {
     return new VariableToken(*this);
+}
+
+VariableToken::~VariableToken()
+{
+
 }
 
 bool VariableToken::isEqual(const Token &other) const
