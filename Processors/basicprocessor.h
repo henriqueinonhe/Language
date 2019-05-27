@@ -9,7 +9,7 @@ class Signature;
 class BasicProcessor : public StringProcessor
 {
 public:
-    BasicProcessor(const Signature * const signature);
+    BasicProcessor(Signature * const signature);
 
     void addTokenRecord(const QString &token,
                         const unsigned int position,
@@ -71,7 +71,7 @@ protected:
     bool tokenNeedsSubsequentSeparation(const TokenStringWrapper &tokenString, const TokenStringWrapperIterator &iter) const;
 
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
-    const Signature *signature;
+    Signature *signature;
 
 private:
     void checkExistsConflictingTokenRecord(const QString &token);

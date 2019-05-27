@@ -19,9 +19,9 @@ using namespace std;
 class Formula
 {
 public:
-    Formula(QDataStream &stream, const Signature * signature);
-    static QLinkedList<Formula> unserializeList(QDataStream &stream, const Signature * const signature); //Use templates later
-    static QVector<Formula> unserializeVector(QDataStream &stream, const Signature * const signature);
+    Formula(QDataStream &stream, Signature * const signature);
+    static QLinkedList<Formula> unserializeList(QDataStream &stream, Signature * const signature); //Use templates later
+    static QVector<Formula> unserializeVector(QDataStream &stream, Signature * const signature);
     Formula(const Formula &other);
 
     Formula &operator=(const Formula &other);

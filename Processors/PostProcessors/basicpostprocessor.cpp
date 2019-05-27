@@ -1,7 +1,7 @@
 #include "basicpostprocessor.h"
 #include "signature.h"
 
-BasicPostProcessor::BasicPostProcessor(const Signature * const signature) :
+BasicPostProcessor::BasicPostProcessor(Signature * const signature) :
     BasicProcessor(signature)
 {
 

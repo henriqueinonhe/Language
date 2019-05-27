@@ -8,7 +8,7 @@ TokenString::TokenString()
 
 }
 
-TokenString::TokenString(QDataStream &stream, const Signature * const signature)
+TokenString::TokenString(QDataStream &stream, Signature * const signature)
 {
     Lexer lexer(signature);
     QString formattedString;
@@ -40,6 +40,7 @@ QString TokenString::toString() const
 
 QString TokenString::formattedString() const
 {
+    //NOTE Document difference between toString and formattedString
     QString string;
 
     for(int index = 0; index < tokenList.size(); index++)

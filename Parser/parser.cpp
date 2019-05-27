@@ -11,13 +11,13 @@
 #include "parsingtreenode.h"
 #include <iostream>
 
-Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaType) :
+Parser::Parser(Signature * const signature, const Type &wellFormedFormulaType) :
     lexer(signature),
     wellFormedFormulaType(wellFormedFormulaType)
 {
 }
 
-Formula Parser::parse(const QString &sentence)
+Formula Parser::parse(const QString &sentence) const
 {
     buildParsingTree(sentence);
     performTypeChecking();
@@ -28,7 +28,12 @@ Formula Parser::parse(const QString &sentence)
     return Formula(parsingTree.release());
 }
 
-void Parser::buildParsingTree(const QString &sentence)
+Signature *Parser::getSignature() const
+{
+    return lexer.getSignature();
+}
+
+void Parser::buildParsingTree(const QString &sentence) const
 {
     const TokenString tokenString(lexer.lex(sentence));
 
@@ -39,7 +44,7 @@ void Parser::buildParsingTree(const QString &sentence)
     parseSentence(iter);
 }
 
-[[noreturn]] void Parser::analyzeError(ParsingTreeIterator currentNodeIter)
+[[noreturn]] void Parser::analyzeError(ParsingTreeIterator currentNodeIter) const
 {
     const TokenString tokenString = currentNodeIter->getTokenString();
     const unsigned int beginIndex = currentNodeIter->getBeginIndex();
@@ -75,7 +80,7 @@ void Parser::buildParsingTree(const QString &sentence)
     }
 }
 
-void Parser::checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString)
+void Parser::checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString) const
 {
     const unsigned int minimumApplicatonArgumentNumber = 2;
     if(argumentsOffsets.size() < static_cast<int>(minimumApplicatonArgumentNumber))
@@ -90,7 +95,7 @@ void Parser::checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets
     }
 }
 
-void Parser::appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter)
+void Parser::appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter) const
 {
     std::for_each(argumentsOffsets.begin(), argumentsOffsets.end(), [&currentNodeIter](const ArgumentOffsets &offsets)
     {
@@ -101,7 +106,7 @@ void Parser::appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffse
     });
 }
 
-void Parser::parseArgumentsNodes(ParsingTreeIterator currentNodeIter)
+void Parser::parseArgumentsNodes(ParsingTreeIterator currentNodeIter) const
 {
     for(unsigned int childIndex = 0; childIndex < currentNodeIter->getChildrenNumber(); childIndex++)
     {
@@ -111,7 +116,7 @@ void Parser::parseArgumentsNodes(ParsingTreeIterator currentNodeIter)
     }
 }
 
-void Parser::parseApplication(ParsingTreeIterator currentNodeIter)
+void Parser::parseApplication(ParsingTreeIterator currentNodeIter) const
 {
     const TokenString tokenString = currentNodeIter->getTokenString();
     QVector<ArgumentOffsets> argumentsOffsets = separateArgumentOffsets(currentNodeIter);
@@ -122,7 +127,7 @@ void Parser::parseApplication(ParsingTreeIterator currentNodeIter)
     parseArgumentsNodes(currentNodeIter);
 }
 
-void Parser::parseSentence(ParsingTreeIterator currentNodeIter)
+void Parser::parseSentence(ParsingTreeIterator currentNodeIter) const
 {
     const TokenString tokenString = currentNodeIter->getTokenString();
 
@@ -222,7 +227,7 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
     return offsets;
 }
 
-void Parser::performTypeChecking()
+void Parser::performTypeChecking() const
 {
     ParsingTreeIterator rootIter(parsingTree.get());
 
@@ -238,7 +243,7 @@ void Parser::performTypeChecking()
     }
 }
 
-void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter)
+void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter) const
 {
     for(unsigned int childNumber = 1; childNumber < currentNodeIter->getChildrenNumber(); childNumber++)
     {
@@ -249,7 +254,7 @@ void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, Parsing
     }
 }
 
-const Type Parser::setMainOperatorType(ParsingTreeIterator iter)
+const Type Parser::setMainOperatorType(ParsingTreeIterator iter) const
 {
     iter.goToChild(0);
     checkType(iter);
@@ -259,7 +264,7 @@ const Type Parser::setMainOperatorType(ParsingTreeIterator iter)
     return mainOperatorType;
 }
 
-void Parser::checkType(ParsingTreeIterator iter)
+void Parser::checkType(ParsingTreeIterator iter) const
 {
     const TokenString tokenString = iter->getTokenString();
 
@@ -279,7 +284,7 @@ void Parser::checkType(ParsingTreeIterator iter)
     }
 }
 
-void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
+void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix) const
 {
     std::for_each(nodesMatrix.begin(), nodesMatrix.end(), [this](QVector<ParsingTreeNode *> &nodesRow)
     {
@@ -294,7 +299,7 @@ void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
     });
 }
 
-void Parser::performVariableBindingChecking()
+void Parser::performVariableBindingChecking() const
 {
     QVector<QVector<ParsingTreeNode *>> nodesMatrix = orderNodesByLevel();
     setVariablesNodes(nodesMatrix);
@@ -367,7 +372,7 @@ bool Parser::nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const
             node->children.first()->getTokenString().first().tokenClass() == "BindingToken";
 }
 
-void Parser::performVariableBinding(ParsingTreeNode *parentNode)
+void Parser::performVariableBinding(ParsingTreeNode *parentNode) const
 {
     const BindingToken *bindingToken = dynamic_cast<const BindingToken *>(&parentNode->children.first()->getTokenString().first());
     QVector<std::shared_ptr<ParsingTreeNode>> &children = parentNode->children;
@@ -409,7 +414,7 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode)
     });
 }
 
-void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode)
+void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode) const
 {
     std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](std::shared_ptr<ParsingTreeNode> childNode)
     {

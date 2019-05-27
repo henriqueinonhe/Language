@@ -15,7 +15,7 @@ class TokenString
 {
 public:
     TokenString();
-    TokenString(QDataStream &stream, const Signature * const signature);
+    TokenString(QDataStream &stream, Signature * const signature);
 
     QString toString() const;
     QString formattedString() const;

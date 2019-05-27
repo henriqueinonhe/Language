@@ -85,6 +85,7 @@ QString Token::tokenClass() const
 
 Token *Token::getAllocatedClone() const
 {
+    //This is due to polymorphic Token creation
     return new Token(*this);
 }
 

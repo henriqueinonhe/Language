@@ -15,8 +15,9 @@ class ParsingTreeIterator;
 class Parser
 {
 public:
-    Parser(const Signature * const signature, const Type &wellFormedFormulaType);
-    Formula parse(const QString &sentence);
+    Parser(Signature * const signature, const Type &wellFormedFormulaType);
+    Formula parse(const QString &sentence) const;
+    Signature * getSignature() const;
 
 private:
     struct ArgumentOffsets
@@ -35,41 +36,41 @@ private:
     };
 
     //Parsing Methods
-    void buildParsingTree(const QString &sentence);
+    void buildParsingTree(const QString &sentence) const;
 
-    void parseSentence(ParsingTreeIterator currentNodeIter);
-    void parseApplication(ParsingTreeIterator currentNodeIter);
-    [[noreturn]] void analyzeError(ParsingTreeIterator iter);
+    void parseSentence(ParsingTreeIterator currentNodeIter) const;
+    void parseApplication(ParsingTreeIterator currentNodeIter) const;
+    [[noreturn]] void analyzeError(ParsingTreeIterator iter) const;
 
     bool isAtomic(const TokenString &tokenString) const;
     bool hasMolecularForm(const TokenString &tokenString) const;
     bool isDelimiter(const Token &token) const;
     bool outermostParenthesisMismatch(const TokenString &tokenString) const;
-    void checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString);
+    void checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString) const;
 
     QVector<ArgumentOffsets> separateArgumentOffsets(ParsingTreeIterator currentNodeIter) const;
-    void setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter);
-    void appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter);
-    void parseArgumentsNodes(ParsingTreeIterator currentNodeIter);
+    void setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter) const;
+    void appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter) const;
+    void parseArgumentsNodes(ParsingTreeIterator currentNodeIter) const;
 
     //Type Checking Methods
-    void performTypeChecking();
-    void checkType(ParsingTreeIterator iter);
+    void performTypeChecking() const;
+    void checkType(ParsingTreeIterator iter) const;
 
     //Variable Binding Checking Methods
-    void performVariableBindingChecking();
+    void performVariableBindingChecking() const;
     QVector<QVector<ParsingTreeNode *>> orderNodesByLevel() const;
     bool isVariableToken(const TokenString &tokenString) const;
     bool nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const;
-    void performVariableBinding(ParsingTreeNode *parentNode);
-    void propagateFreeAndBoundVariables(ParsingTreeNode *parentNode);
+    void performVariableBinding(ParsingTreeNode *parentNode) const;
+    void propagateFreeAndBoundVariables(ParsingTreeNode *parentNode) const;
 
-    const Type setMainOperatorType(ParsingTreeIterator iter);
-    void setVariablesNodes(QVector<QVector<ParsingTreeNode *> > &nodesMatrix);
+    const Type setMainOperatorType(ParsingTreeIterator iter) const;
+    void setVariablesNodes(QVector<QVector<ParsingTreeNode *> > &nodesMatrix) const;
 
     Lexer lexer;
     Type wellFormedFormulaType;
-    unique_ptr<ParsingTree> parsingTree;
+    mutable unique_ptr<ParsingTree> parsingTree;
 };
 
 #endif // PARSER_H

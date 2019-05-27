@@ -3,7 +3,7 @@
 #include "tokenstring.h"
 #include "lexer.h"
 
-BasicProcessor::BasicProcessor(const Signature * const signature) :
+BasicProcessor::BasicProcessor(Signature * const signature) :
     signature(signature)
 {
 

@@ -9,8 +9,10 @@ class QChar;
 class Lexer
 {
 public:
-    Lexer(const Signature * const signature);
+    Lexer(Signature * const signature);
     TokenString lex(const QString &string) const;
+
+    Signature *getSignature() const;
 
 private:
     bool isSeparator(const QChar &character) const;
@@ -18,7 +20,7 @@ private:
     int findTokenBreakpointIndex(const QString &string, int beginIndex) const;
     void lexCoreToken(TokenString &tokenString, int &index, const QString &string) const;
 
-    const Signature *signature;
+    Signature *signature;
 };
 
 #endif // LEXER_H

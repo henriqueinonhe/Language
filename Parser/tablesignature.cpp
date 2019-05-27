@@ -22,7 +22,7 @@ bool TableSignature::tokenIsAlreadyPresentInSignature(const Token &token) const
     });
 }
 
-const Token *TableSignature::getTokenPointer(const QString &token) const
+const Token *TableSignature::getTokenPointer(const QString &token)
 {
     for(int index = 0; index < tokenTable.size(); index++)
     {

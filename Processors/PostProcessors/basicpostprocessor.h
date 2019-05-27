@@ -1,4 +1,4 @@
-﻿#ifndef BASICPOSTPROCESSOR_H
+#ifndef BASICPOSTPROCESSOR_H
 #define BASICPOSTPROCESSOR_H
 
 #include "basicprocessor.h"
@@ -6,7 +6,7 @@
 class BasicPostProcessor : public BasicProcessor
 {
 public:
-    BasicPostProcessor(const Signature * const signature);
+    BasicPostProcessor(Signature * const signature);
 
     QString processString(const QString &string) const;
 

@@ -8,7 +8,7 @@ class QString;
 class Signature
 {
 public:
-    virtual const Token *getTokenPointer(const QString &token) const = 0;
+    virtual const Token *getTokenPointer(const QString &token) = 0;
     virtual void addToken(const Token &token) = 0;
 
     virtual ~Signature() = 0;
@@ -19,7 +19,6 @@ protected:
 
     friend QDataStream &operator <<(QDataStream &stream, const Signature &signature);
     friend QDataStream &operator >>(QDataStream &stream, Signature &signature);
-
 };
 
 QDataStream &operator <<(QDataStream &stream, const Signature &signature);

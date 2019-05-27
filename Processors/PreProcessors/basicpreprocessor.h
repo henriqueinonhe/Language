@@ -1,4 +1,4 @@
-﻿#ifndef BASICPREPROCESSOR_H
+#ifndef BASICPREPROCESSOR_H
 #define BASICPREPROCESSOR_H
 
 #include "basicprocessor.h"
@@ -7,7 +7,7 @@
 class BasicPreProcessor : public BasicProcessor
 {
 public:
-    BasicPreProcessor(const Signature * const signature);
+    BasicPreProcessor(Signature * const signature);
 
     QString processString(const QString &string) const;
 

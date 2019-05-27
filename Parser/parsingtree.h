@@ -43,6 +43,6 @@ friend class ParsingTreeNode;
 //rebuilding it, mainly because Tokens are stored in a pool (signature) and therefore
 //to deserealize a TokenString (and therefore whatever constructs that depend on it)
 //we need to provide a signature as well, so given that right now performance isn't an issue
-//I won't implement serializtion of parsing trees
+//I won't implement serialization on parsing trees
 
 #endif // PARSINGTREE_H

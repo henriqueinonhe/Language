@@ -1,5 +1,7 @@
-﻿#ifndef PARSINGAUXILIARYTOOLS_H
+#ifndef PARSINGAUXILIARYTOOLS_H
 #define PARSINGAUXILIARYTOOLS_H
+
+#include <stdexcept>
 
 namespace ParsingAuxiliaryTools
 {
@@ -158,6 +160,7 @@ typename StringClass::reverse_iterator findDelimiterScopeEndReverseIterator(cons
     const unsigned int tokenLookaheadCompensation = 1;
     return iter - tokenLookaheadCompensation;
 }
+
 
 }
 
