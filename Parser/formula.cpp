@@ -47,11 +47,13 @@ QVector<Formula> Formula::unserializeVector(QDataStream &stream, Signature * con
 Formula::Formula(const Formula &other) :
     parsingTree(new ParsingTree(other.getParsingTree()))
 {
+
 }
 
 Formula &Formula::operator=(const Formula &other)
 {
     parsingTree.reset(new ParsingTree(other.getParsingTree()));
+    return *this;
 }
 
 bool Formula::operator==(const Formula &other) const
