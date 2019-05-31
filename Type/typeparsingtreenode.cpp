@@ -1,5 +1,6 @@
 #include "typeparsingtreenode.h"
 #include "typeparsingtree.h"
+#include <QDataStream>
 
 TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
     tree(tree),
@@ -8,6 +9,24 @@ TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const Type
     typeEndIndex(typeEndIndex),
     mainOperator(mainOperator)
 {
+}
+
+TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTreeNode &other)
+{
+    *this = other;
+}
+
+TypeParsingTreeNode &TypeParsingTreeNode::operator=(const TypeParsingTreeNode &other)
+{
+    this->typeBeginIndex = other.typeEndIndex;
+    this->typeEndIndex = other.typeEndIndex;
+    this->mainOperator = other.mainOperator;
+    for(int index = 0; index < other.children.size(); index++)
+    {
+        this->appendChild();
+        *this->children[index] = *other.children[index];
+    }
+    return *this;
 }
 
 void TypeParsingTreeNode::printNodeToString(QString &str) const
@@ -54,9 +73,19 @@ QString TypeParsingTreeNode::mainOperatorToString() const
     }
 }
 
+void TypeParsingTreeNode::appendChild()
+{
+    children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, 0, 0)));
+}
+
 unsigned int TypeParsingTreeNode::getTypeEndIndex() const
 {
     return typeEndIndex;
+}
+
+TypeParsingTreeNode::TypeParsingTreeNode(QDataStream &stream)
+{
+    stream >> *this;
 }
 
 unsigned int TypeParsingTreeNode::getTypeBeginIndex() const
@@ -177,6 +206,69 @@ unsigned int TypeParsingTreeNode::getGreatestDescendantHeight() const
 
 void TypeParsingTreeNode::appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex)
 {
-    children.push_back(make_shared<TypeParsingTreeNode>(TypeParsingTreeNode(this->tree, this, typeBeginIndex, typeEndIndex)));
+    children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, typeBeginIndex, typeEndIndex))); //NOTE Be aware!
 }
 
+
+QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode &node)
+{
+    stream << node.typeBeginIndex << node.typeEndIndex << node.mainOperator;
+    stream << node.getChildrenNumber();
+    for(const auto &child : node.children)
+    {
+        stream << *child;
+    }
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode &node)
+{
+    stream >> node.typeBeginIndex >> node.typeEndIndex >> node.mainOperator;
+    unsigned int childrenNumber;
+    stream >> childrenNumber;
+    for(unsigned int index = 0; index < childrenNumber; index++)
+    {
+        node.appendChild();
+    }
+    for(auto &child : node.children)
+    {
+        stream >> *child;
+    }
+    return stream;
+}
+
+QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode::MainOperator mainOperator)
+{
+    if(mainOperator == TypeParsingTreeNode::MainOperator::Primitive)
+    {
+        stream << 0;
+    }
+    else if(mainOperator == TypeParsingTreeNode::MainOperator::Composition)
+    {
+        stream << 1;
+    }
+    else
+    {
+        stream << 2;
+    }
+    return stream;
+}
+
+QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode::MainOperator &mainOperator)
+{
+    unsigned int number;
+    stream >> number;
+    if(number == 0)
+    {
+        mainOperator = TypeParsingTreeNode::MainOperator::Primitive;
+    }
+    else if(number == 1)
+    {
+        mainOperator = TypeParsingTreeNode::MainOperator::Composition;
+    }
+    else
+    {
+        mainOperator = TypeParsingTreeNode::MainOperator::Product;
+    }
+    return stream;
+}

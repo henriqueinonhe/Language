@@ -20,7 +20,8 @@ public:
     TypeToken(QDataStream &stream);
     TypeToken(const QString &string);
 
-    Sort getSort() const;
+    Sort sort() const;
+    static Sort sort(const QString &string);
 
     bool operator ==(const TypeToken &other) const;
     bool operator !=(const TypeToken &other) const;

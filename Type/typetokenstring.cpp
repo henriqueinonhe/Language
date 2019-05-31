@@ -9,9 +9,7 @@ TypeTokenString::TypeTokenString()
 
 TypeTokenString::TypeTokenString(QDataStream &stream)
 {
-    QString stringnizedTypeString;
-    stream >> stringnizedTypeString;
-    lexString(stringnizedTypeString);
+    stream >> *this;
 }
 
 TypeTokenString::TypeTokenString(const QString &string)
@@ -208,7 +206,7 @@ QDataStream &operator >>(QDataStream &stream, TypeTokenString &string)
     QString stringnizedTypeString;
     stream >> stringnizedTypeString;
 
-    string = TypeTokenString(stringnizedTypeString);
+    string.lexString(stringnizedTypeString);
 
     return stream;
 }

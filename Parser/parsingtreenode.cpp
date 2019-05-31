@@ -214,6 +214,6 @@ unsigned int ParsingTreeNode::getGreatestDescendantHeight() const
 
 void ParsingTreeNode::appendChild(const unsigned int BeginIndex, const unsigned int EndIndex)
 {
-    children.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(this->tree, this, BeginIndex, EndIndex)));
+    children.push_back(shared_ptr<ParsingTreeNode>(new ParsingTreeNode(this->tree, this, BeginIndex, EndIndex)));
 }
 

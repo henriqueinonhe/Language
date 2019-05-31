@@ -15,12 +15,15 @@ using namespace std;
 class TypeParsingTreeNode
 {
 public:
-    enum class MainOperator
+    enum class MainOperator : unsigned int
     {
         Primitive,
         Composition,
         Product
     };
+
+    TypeParsingTreeNode(const TypeParsingTreeNode &other);
+    TypeParsingTreeNode &operator=(const TypeParsingTreeNode &other);
 
     void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
 
@@ -44,14 +47,17 @@ public:
     unsigned int getTypeEndIndex() const;
 
 private:
+    TypeParsingTreeNode(QDataStream &stream);
     TypeParsingTreeNode(const TypeParsingTree *tree,
                         const TypeParsingTreeNode *parent,
                         const unsigned int typeBeginIndex,
                         const unsigned int typeEndIndex,
                         const MainOperator mainOperator = MainOperator::Primitive);
 
+
     void printNodeToString(QString &str) const;
     QString mainOperatorToString() const;
+    void appendChild();
 
     const TypeParsingTree *tree;
     const TypeParsingTreeNode *parent;
@@ -62,7 +68,14 @@ private:
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTree;
+friend QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode &node);
+friend QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode &node);
 
 };
+
+QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode &node);
+QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode &node);
+QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode::MainOperator mainOperator);
+QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode::MainOperator &mainOperator);
 
 #endif // TYPEPARSINGTREENODE_H

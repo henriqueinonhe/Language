@@ -5,7 +5,7 @@
 #include "typeparsingtreeiterator.h"
 #include "type.h"
 
-shared_ptr<TypeParsingTree> TypeParser::parsingTree;
+unique_ptr<TypeParsingTree> TypeParser::parsingTree = nullptr;
 
 bool TypeParser::typeIsEmpty(const TypeTokenString &typeString)
 {
@@ -20,8 +20,8 @@ bool TypeParser::hasProductTypeForm(const TypeTokenString &typeString)
      * therefore, the only case where the first and last characters
      * are square brackets are when the type is a product type. */
 
-    return typeString.first().getSort() == TypeToken::Sort::LeftSquareBracket &&
-           typeString.last().getSort() == TypeToken::Sort::RightSquareBracket;
+    return typeString.first().sort() == TypeToken::Sort::LeftSquareBracket &&
+           typeString.last().sort() == TypeToken::Sort::RightSquareBracket;
 }
 
 bool TypeParser::isWithinProductTypeMainScope(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount)
@@ -32,7 +32,7 @@ bool TypeParser::isWithinProductTypeMainScope(const unsigned int leftSquareBrack
 bool TypeParser::isProductArgumentBreakPoint(const unsigned int leftSquarteBracketCount, const unsigned int rightSquareBracketCount, const TypeToken &token)
 {
     return isWithinProductTypeMainScope(leftSquarteBracketCount, rightSquareBracketCount) &&
-            token.getSort() == TypeToken::Sort::Comma;
+            token.sort() == TypeToken::Sort::Comma;
 }
 
 bool TypeParser::isProductArgumentsScopeEnd(const unsigned int leftSquareBracketCount, const unsigned int rightSquareBracketCount)
@@ -53,11 +53,11 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
     unsigned int compositionOperatorOffset;
     const unsigned int compositionOperatorCompensation = 1;
 
-    if(tokenString.first().getSort() == TypeToken::Sort::PrimitiveType)
+    if(tokenString.first().sort() == TypeToken::Sort::PrimitiveType)
     {
         compositionOperatorOffset = 1;
     }
-    else if(tokenString.first().getSort() == TypeToken::Sort::LeftParenthesis)
+    else if(tokenString.first().sort() == TypeToken::Sort::LeftParenthesis)
     {
         try
         {
@@ -74,7 +74,7 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
                                                          iter.goToRoot()->getTypeString());
         }
     }
-    else if(tokenString.first().getSort() == TypeToken::Sort::LeftSquareBracket)
+    else if(tokenString.first().sort() == TypeToken::Sort::LeftSquareBracket)
     {
         compositionOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
                                                                                TypeToken("["),
@@ -89,7 +89,7 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
                                     iter.goToRoot()->getTypeString());
     }
 
-    if(!(tokenString[compositionOperatorOffset].getSort() == TypeToken::Sort::CompositionOperator))
+    if(!(tokenString[compositionOperatorOffset].sort() == TypeToken::Sort::CompositionOperator))
     {
         /* Even though it finds the composition operator index, it must also certify that the token that
          * occupies that index REALLY is a composition operator. */
@@ -108,7 +108,7 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
 {
     const TypeTokenString tokenString = iter->getTypeString();
     const unsigned int tokenLookaheadCompensation = 1;
-    if(tokenString[compositionOperatorOffset + tokenLookaheadCompensation].getSort() == TypeToken::Sort::PrimitiveType)
+    if(tokenString[compositionOperatorOffset + tokenLookaheadCompensation].sort() == TypeToken::Sort::PrimitiveType)
     {
         if(!tokenString.isLastIndex(compositionOperatorOffset + tokenLookaheadCompensation))
         {
@@ -119,9 +119,9 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
                                                          tokenString);
         }
     }
-    else if(tokenString[compositionOperatorOffset + tokenLookaheadCompensation].getSort() == TypeToken::Sort::LeftParenthesis)
+    else if(tokenString[compositionOperatorOffset + tokenLookaheadCompensation].sort() == TypeToken::Sort::LeftParenthesis)
     {
-        if(tokenString.last().getSort() != TypeToken::Sort::RightParenthesis)
+        if(tokenString.last().sort() != TypeToken::Sort::RightParenthesis)
         {
             const unsigned int zeroIndexCompensation = 1;
             throw ParsingErrorException<TypeTokenString>("There are uncased parenthesis in the right side argument of composition operator!",
@@ -174,12 +174,12 @@ void TypeParser::separateProductArguments(TypeParsingTreeIterator iter, QVector<
                                         iter.goToRoot()->getTypeString());
         }
 
-        if(tokenString[argumentEndOffset].getSort() == TypeToken::Sort::LeftSquareBracket)
+        if(tokenString[argumentEndOffset].sort() == TypeToken::Sort::LeftSquareBracket)
         {
             leftSquareBracketCount++;
         }
 
-        if(tokenString[argumentEndOffset].getSort() == TypeToken::Sort::RightSquareBracket)
+        if(tokenString[argumentEndOffset].sort() == TypeToken::Sort::RightSquareBracket)
         {
             rightSquareBracketCount++;
         }
@@ -261,11 +261,11 @@ void TypeParser::parseCompositeType(TypeParsingTreeIterator iter)
     const unsigned int compositionOperatorCompensation = 1;
     const unsigned int zeroIndexCompensation = 1;
 
-    const unsigned int leftArgumentParenthesisPadding = tokenString.first().getSort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
+    const unsigned int leftArgumentParenthesisPadding = tokenString.first().sort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
     const unsigned int leftArgumentBeginOffset = leftArgumentParenthesisPadding;
     const unsigned int leftArgumentEndOffset = compositionOperatorOffset - compositionOperatorCompensation - leftArgumentParenthesisPadding;
 
-    const unsigned int rightArgumentParenthesisPadding = tokenString[compositionOperatorOffset + compositionOperatorCompensation].getSort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
+    const unsigned int rightArgumentParenthesisPadding = tokenString[compositionOperatorOffset + compositionOperatorCompensation].sort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
     const unsigned int rightArgumentBeginOffset = compositionOperatorOffset + compositionOperatorCompensation + rightArgumentParenthesisPadding;
     const unsigned int rightArgumentEndOffset = tokenString.size() - zeroIndexCompensation - rightArgumentParenthesisPadding;
 
@@ -357,16 +357,17 @@ void TypeParser::parse(const TypeTokenString &type, Type *newType)
     setReturnAndArgumentsTypes(argumentsTypes, iter, returnType);
 
     //Setup New Type
-    newType->typeString = type;
+    //newType->typeString = type;
+    newType->parsingTree.reset(new TypeParsingTree(*parsingTree));
     newType->returnTypeTokenString = returnType;
     newType->argumentsTypes = argumentsTypes;
 }
 
-shared_ptr<TypeParsingTree> TypeParser::getParsingTree(const QString &type)
+TypeParsingTree TypeParser::getParsingTree(const QString &type)
 {
     buildParsingTree(type);
 
-    return parsingTree;
+    return *parsingTree;
 }
 
 void TypeParser::buildParsingTree(const TypeTokenString &typeString)
@@ -397,5 +398,5 @@ void TypeParser::buildParsingTree(const TypeTokenString &typeString)
 
 bool TypeParser::isPrimitiveType(const TypeTokenString &typeString)
 {
-    return typeString.size() == 1 && typeString.first().getSort() == TypeToken::Sort::PrimitiveType;
+    return typeString.size() == 1 && typeString.first().sort() == TypeToken::Sort::PrimitiveType;
 }

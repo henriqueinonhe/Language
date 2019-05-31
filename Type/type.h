@@ -19,6 +19,9 @@ public:
     Type(QDataStream &stream);
     Type(const QString &type);
 
+    Type(const Type &other);
+    Type &operator=(const Type &other);
+
     bool operator==(const Type &other) const;
     bool operator!=(const Type &other) const;
 
@@ -42,10 +45,8 @@ private:
          const QVector<TypeTokenString> argumentsTypes,
          const TypeTokenString &returnTypeTokenString);
 
-    void setTypeString(const TypeTokenString &value);
-
     //TypeTokenString typeString;
-    TypeParsingTree tree;
+    unique_ptr<TypeParsingTree> parsingTree;
     QVector<TypeTokenString> argumentsTypes;
     TypeTokenString returnTypeTokenString;
 

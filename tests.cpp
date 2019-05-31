@@ -36,13 +36,13 @@
 TEST_CASE("TypeToken")
 {
     //Character Admissibiity (Input Validation)
-    CHECK(TypeToken("(").getSort() == TypeToken::Sort::LeftParenthesis);
-    CHECK(TypeToken(")").getSort() == TypeToken::Sort::RightParenthesis);
-    CHECK(TypeToken("[").getSort() == TypeToken::Sort::LeftSquareBracket);
-    CHECK(TypeToken("]").getSort() == TypeToken::Sort::RightSquareBracket);
-    CHECK(TypeToken(",").getSort() == TypeToken::Sort::Comma);
-    CHECK(TypeToken("->").getSort() == TypeToken::Sort::CompositionOperator);
-    CHECK(TypeToken("Abugabugabugauga").getSort() == TypeToken::Sort::PrimitiveType);
+    CHECK(TypeToken("(").sort() == TypeToken::Sort::LeftParenthesis);
+    CHECK(TypeToken(")").sort() == TypeToken::Sort::RightParenthesis);
+    CHECK(TypeToken("[").sort() == TypeToken::Sort::LeftSquareBracket);
+    CHECK(TypeToken("]").sort() == TypeToken::Sort::RightSquareBracket);
+    CHECK(TypeToken(",").sort() == TypeToken::Sort::Comma);
+    CHECK(TypeToken("->").sort() == TypeToken::Sort::CompositionOperator);
+    CHECK(TypeToken("Abugabugabugauga").sort() == TypeToken::Sort::PrimitiveType);
 
     CHECK_THROWS(TypeToken("sd-ad"));
     CHECK_THROWS(TypeToken("sd,ad"));
@@ -284,10 +284,10 @@ TEST_CASE("Type")
 
     CHECK(Type("o") != Type("a->([c,d]->g)"));
 
-    shared_ptr<TypeParsingTree> tree = Type("o").getParsingTree();
+    TypeParsingTree tree = Type("o").getParsingTree();
     Type("i").getParsingTree();
 
-    CHECK_NOTHROW(tree->getHeight());
+    CHECK_NOTHROW(tree.getHeight());
 }
 
 TEST_CASE("ParsingErrorException")
@@ -512,6 +512,7 @@ TEST_CASE("ParsingTrees")
         iter.goToCoordinates("(1,0,1)");
     }
 }
+
 
 TEST_CASE("Parser Propositional Logic")
 {
@@ -1249,7 +1250,7 @@ TEST_CASE("Serialization")
 
 }
 
-TEST_CASE("Dirty Fix")
-{
-    DirtyFix::fix();
-}
+//TEST_CASE("Dirty Fix")
+//{
+//    //DirtyFix::fix();
+//}

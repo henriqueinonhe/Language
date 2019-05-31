@@ -11,14 +11,19 @@ TypeToken::TypeToken(QDataStream &stream)
     stream >> string;
 }
 
-TypeToken::TypeToken(const QString &string) :
-    string(string)
+TypeToken::TypeToken(const QString &string)
 {
     //Validating input
-    getSort();
+    sort(string);
+    this->string = string;
 }
 
-TypeToken::Sort TypeToken::getSort() const
+TypeToken::Sort TypeToken::sort() const
+{
+    return sort(string);
+}
+
+TypeToken::Sort TypeToken::sort(const QString &string)
 {
     if(string == "(")
     {

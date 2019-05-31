@@ -32,7 +32,7 @@ private:
         unsigned int endOffset;
     };
     static void parse(const TypeTokenString &type, Type *newType);
-    static shared_ptr<TypeParsingTree> getParsingTree(const QString &type);
+    static TypeParsingTree getParsingTree(const QString &type);
 
     static void buildParsingTree(const TypeTokenString &typeString);
     static void parseType(TypeParsingTreeIterator iter);
@@ -54,10 +54,9 @@ private:
 
     static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 
-    static shared_ptr<TypeParsingTree> parsingTree;
+    static unique_ptr<TypeParsingTree> parsingTree; //For caching purposes
 
     friend class Type;
-    friend class DirtyFix;
 };
 
 #endif // TYPEPARSER_H

@@ -1,4 +1,4 @@
-﻿#ifndef DIRTYFIX_H
+#ifndef DIRTYFIX_H
 #define DIRTYFIX_H
 
 class TypeParser;
@@ -6,7 +6,6 @@ class TypeParser;
 class DirtyFix
 {
 public:
-    static void fix();
 };
 
 #endif // DIRTYFIX_H

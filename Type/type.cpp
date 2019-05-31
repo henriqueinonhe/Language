@@ -3,20 +3,36 @@
 #include "typeparser.h"
 
 Type::Type(QDataStream &stream) :
-    tree(TypeParser::getParsingTree()),
+    parsingTree(new TypeParsingTree(stream)),
     returnTypeTokenString(stream)
 {
     stream >> argumentsTypes;
 }
 
-Type::Type(const QString &type)
+Type::Type(const QString &type) :
+    parsingTree(new TypeParsingTree(TypeParser::getParsingTree(type)))
 {
     TypeParser::parse(TypeTokenString(type), this);
 }
 
+Type::Type(const Type &other) :
+    parsingTree(new TypeParsingTree(other.getParsingTree())),
+    argumentsTypes(other.argumentsTypes),
+    returnTypeTokenString(other.getReturnType())
+{
+}
+
+Type &Type::operator=(const Type &other)
+{
+    this->parsingTree.reset(new TypeParsingTree(other.getParsingTree()));
+    this->argumentsTypes = other.argumentsTypes;
+    this->returnTypeTokenString = other.returnTypeTokenString;
+    return *this;
+}
+
 bool Type::operator==(const Type &other) const
 {
-    return this->typeString == other.typeString;
+    return this->parsingTree->getTypeString() == other.parsingTree->getTypeString();
 }
 
 bool Type::operator!=(const Type &other) const
@@ -26,7 +42,7 @@ bool Type::operator!=(const Type &other) const
 
 QString Type::toString() const
 {
-    return typeString.toString();
+    return parsingTree->getTypeString().toString();
 }
 
 Type Type::applyArguments(const QVector<TypeTokenString> &argumentsTypes) const
@@ -45,22 +61,18 @@ Type Type::applyArguments(const QVector<TypeTokenString> &argumentsTypes) const
     }
 }
 
-Type::Type()
+Type::Type() :
+    parsingTree(nullptr)
 {
 
 }
 
 Type::Type(const TypeTokenString &typeString, const QVector<TypeTokenString> argumentsTypes, const TypeTokenString &returnType) :
-    typeString(typeString),
+    parsingTree(new TypeParsingTree(TypeParser::getParsingTree(typeString.toString()))),
     argumentsTypes(argumentsTypes),
     returnTypeTokenString(returnType)
 {
 
-}
-
-void Type::setTypeString(const TypeTokenString &value)
-{
-    typeString = value;
 }
 
 TypeTokenString Type::getReturnType() const
@@ -70,7 +82,7 @@ TypeTokenString Type::getReturnType() const
 
 TypeParsingTree Type::getParsingTree() const
 {
-    return tree;
+    return *parsingTree;
 }
 
 unsigned int Type::getNumberOfArguments() const
@@ -90,13 +102,13 @@ QVector<TypeTokenString> Type::getArgumentsTypes() const
 
 TypeTokenString Type::getTypeString() const
 {
-    return typeString;
+    return parsingTree->getTypeString();
 }
 
 
 QDataStream &operator <<(QDataStream &stream, const Type &type)
 {
-    stream << type.typeString << type.returnTypeTokenString << type.argumentsTypes;
+    stream << *type.parsingTree << type.returnTypeTokenString << type.argumentsTypes;
     return stream;
 }
 
