@@ -1,4 +1,4 @@
-﻿#ifndef TYPEPARSINGTREE_H
+#ifndef TYPEPARSINGTREE_H
 #define TYPEPARSINGTREE_H
 
 #include <QString>

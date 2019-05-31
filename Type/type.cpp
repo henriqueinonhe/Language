@@ -3,7 +3,7 @@
 #include "typeparser.h"
 
 Type::Type(QDataStream &stream) :
-    typeString(stream),
+    tree(TypeParser::getParsingTree()),
     returnTypeTokenString(stream)
 {
     stream >> argumentsTypes;
@@ -68,9 +68,9 @@ TypeTokenString Type::getReturnType() const
     return returnTypeTokenString;
 }
 
-shared_ptr<TypeParsingTree> Type::getParsingTree() const
+TypeParsingTree Type::getParsingTree() const
 {
-    return TypeParser::getParsingTree(this->toString());
+    return tree;
 }
 
 unsigned int Type::getNumberOfArguments() const
