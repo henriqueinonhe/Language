@@ -1,4 +1,4 @@
-﻿#include "parsingtree.h"
+#include "parsingtree.h"
 #include "parsingtreeiterator.h"
 #include "parsingtreeconstiterator.h"
 
@@ -84,7 +84,7 @@ void ParsingTree::copyChildrenRecursively(const ParsingTreeNode &copyNode, Parsi
 
     for(int index = 0; index < copyNodeChildren.size(); index++)
     {
-        pasteNodeChildren.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(pasteNode.tree, pasteNode.parent)));
+        pasteNodeChildren.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(pasteNode.tree, &pasteNode)));
         pasteNodeChildren[index]->copyValues(*copyNodeChildren[index]);
         copyChildrenRecursively(*copyNodeChildren[index], *pasteNodeChildren[index]);
     }

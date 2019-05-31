@@ -124,7 +124,7 @@ void Parser::parseApplication(ParsingTreeIterator currentNodeIter) const
 
     appendArgumentsNodes(argumentsOffsets, currentNodeIter);
 
-    parseArgumentsNodes(currentNodeIter);
+    parseArgumentsNodes(currentNodeIter); //FIXME There is a BUG IN HERE!
 }
 
 void Parser::parseSentence(ParsingTreeIterator currentNodeIter) const

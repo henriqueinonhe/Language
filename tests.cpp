@@ -287,7 +287,7 @@ TEST_CASE("Type")
     shared_ptr<TypeParsingTree> tree = Type("o").getParsingTree();
     Type("i").getParsingTree();
 
-    CHECK_NOTHROW(tree.get()->getHeight());
+    CHECK_NOTHROW(tree->getHeight());
 }
 
 TEST_CASE("ParsingErrorException")
@@ -576,10 +576,10 @@ TEST_CASE("Container Auxiliary Tools")
         QVector<int> v3{0,1,2,3,4};
         QVector<int> v4{23,1,2,3,4};
 
-        CHECK(ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v1));
-        CHECK(ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v2));
-        CHECK(!ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v3));
-        CHECK(!ContainerAuxiliaryTools<QVector<int>>::checkForDuplicates(v4));
+        CHECK(ContainerAuxiliaryTools::checkForDuplicates<QVector<int>>(v1));
+        CHECK(ContainerAuxiliaryTools::checkForDuplicates<QVector<int>>(v2));
+        CHECK(!ContainerAuxiliaryTools::checkForDuplicates<QVector<int>>(v3));
+        CHECK(!ContainerAuxiliaryTools::checkForDuplicates<QVector<int>>(v4));
     }
 
     {
@@ -588,9 +588,9 @@ TEST_CASE("Container Auxiliary Tools")
         QVector<int> v2{5,6,7,8};
         QVector<int> v3{2,3,4};
 
-        CHECK(!ContainerAuxiliaryTools<QVector<int>>::containersAreDisjoint(v1,v2));
-        CHECK(!ContainerAuxiliaryTools<QVector<int>>::containersAreDisjoint(v1,v3));
-        CHECK(ContainerAuxiliaryTools<QVector<int>>::containersAreDisjoint(v2,v3));
+        CHECK(!ContainerAuxiliaryTools::containersAreDisjoint<QVector<int>>(v1,v2));
+        CHECK(!ContainerAuxiliaryTools::containersAreDisjoint<QVector<int>>(v1,v3));
+        CHECK(ContainerAuxiliaryTools::containersAreDisjoint<QVector<int>>(v2,v3));
     }
 
 }
