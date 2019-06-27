@@ -357,7 +357,6 @@ void TypeParser::parse(const TypeTokenString &type, Type *newType)
     setReturnAndArgumentsTypes(argumentsTypes, iter, returnType);
 
     //Setup New Type
-    //newType->typeString = type;
     newType->parsingTree.reset(new TypeParsingTree(*parsingTree));
     newType->returnTypeTokenString = returnType;
     newType->argumentsTypes = argumentsTypes;

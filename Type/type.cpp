@@ -12,7 +12,7 @@ Type::Type(QDataStream &stream) :
 Type::Type(const QString &type) :
     parsingTree(new TypeParsingTree(TypeParser::getParsingTree(type)))
 {
-    TypeParser::parse(TypeTokenString(type), this);
+    TypeParser::parse(TypeTokenString(type), this); //Why is this necessary?
 }
 
 Type::Type(const Type &other) :
@@ -97,12 +97,16 @@ bool Type::isOperator() const
 
 QVector<TypeTokenString> Type::getArgumentsTypes() const
 {
+    //FIXME!
+
     return argumentsTypes;
 }
 
 TypeTokenString Type::getTypeString() const
 {
+    //FIXME!
     return parsingTree->getTypeString();
+
 }
 
 

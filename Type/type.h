@@ -45,7 +45,6 @@ private:
          const QVector<TypeTokenString> argumentsTypes,
          const TypeTokenString &returnTypeTokenString);
 
-    //TypeTokenString typeString;
     unique_ptr<TypeParsingTree> parsingTree;
     QVector<TypeTokenString> argumentsTypes;
     TypeTokenString returnTypeTokenString;

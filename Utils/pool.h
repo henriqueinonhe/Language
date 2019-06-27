@@ -1,8 +1,10 @@
-﻿#ifndef POOL_H
+#ifndef POOL_H
 #define POOL_H
 
 #include <QVector>
 #include <QLinkedList>
+
+//FIXME Implement as a HASH TABLE
 
 template<class T>
 class Pool;
@@ -110,7 +112,6 @@ private:
 
     friend class Pool<T>;
     friend class PoolRecordPointer<T>;
-
 };
 
 
