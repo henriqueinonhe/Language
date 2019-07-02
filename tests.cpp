@@ -319,6 +319,17 @@ TEST_CASE("Type")
     Type("i").getParsingTree();
 
     CHECK_NOTHROW(tree.getHeight());
+
+    //Argument Types, Return Types and Application
+    Type t1("i->(i->i)");
+    CHECK(t1.getArgumentsTypes() == QVector<Type>({Type("i")}));
+    CHECK(t1.getReturnType() == Type("i->i"));
+    CHECK(t1.applyArguments(QVector<Type>({Type("i")})) == Type("i->i"));
+
+    Type t2("[i,o,bloggers]->([o,o,o]->i)");
+    CHECK(t2.getArgumentsTypes() == QVector<Type>({Type("i"), Type("o"), Type("bloggers")}));
+    CHECK(t2.getReturnType() == Type("[o,o,o]->i"));
+    CHECK(t2.applyArguments(QVector<Type>({Type("i"), Type("o"), Type("bloggers")})) == Type("[o,o,o]->i"));
 }
 
 TEST_CASE("ParsingErrorException")

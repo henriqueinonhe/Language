@@ -70,7 +70,7 @@ void TypeParsingTreeNode::appendChild()
 
 void TypeParsingTreeNode::copyValues(const TypeParsingTreeNode &other)
 {
-    this->typeBeginIndex = other.typeEndIndex;
+    this->typeBeginIndex = other.typeBeginIndex;
     this->typeEndIndex = other.typeEndIndex;
     this->mainOperator = other.mainOperator;
     for(int index = 0; index < other.children.size(); index++)

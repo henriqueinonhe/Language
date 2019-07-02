@@ -49,7 +49,7 @@ private:
     void checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString) const;
 
     QVector<ArgumentOffsets> separateArgumentOffsets(ParsingTreeIterator currentNodeIter) const;
-    void setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter) const;
+    void setArgumentsTypes(QVector<Type> &argumentsTypes, ParsingTreeIterator &currentNodeIter) const;
     void appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter) const;
     void parseArgumentsNodes(ParsingTreeIterator currentNodeIter) const;
 

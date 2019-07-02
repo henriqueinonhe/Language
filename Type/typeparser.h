@@ -31,14 +31,12 @@ private:
         unsigned int beginOffset;
         unsigned int endOffset;
     };
-    static void parse(const TypeTokenString &type, Type *newType);
     static TypeParsingTree getParsingTree(const QString &type);
 
     static void buildParsingTree(const TypeTokenString &typeString);
     static void parseType(TypeParsingTreeIterator iter);
     static void parseProductType(TypeParsingTreeIterator iter);
     static void parseCompositeType(TypeParsingTreeIterator iter);
-    static void setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, TypeParsingTreeIterator &iter, TypeTokenString  &returnType);
 
     static bool typeIsEmpty(const TypeTokenString &typeString);
     static bool isPrimitiveType(const TypeTokenString &typeString);

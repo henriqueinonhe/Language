@@ -316,53 +316,6 @@ void TypeParser::parseType(TypeParsingTreeIterator iter)
     }
 }
 
-void TypeParser::setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, TypeParsingTreeIterator &iter, TypeTokenString &returnType)
-{
-    if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
-    {
-        returnType = iter->getTypeString();
-    }
-    else if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Composition)
-    {
-        iter.goToChild(1);
-        returnType = iter->getTypeString();
-        iter.goToParent();
-
-        iter.goToChild(0);
-
-        if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
-        {
-            argumentsTypes.push_back(iter->getTypeString());
-        }
-        else
-        {
-            for(unsigned int childNumber = 0; childNumber < iter->getChildrenNumber(); childNumber++)
-            {
-                iter.goToChild(childNumber);
-                argumentsTypes.push_back(iter->getTypeString());
-                iter.goToParent();
-            }
-        }
-    }
-}
-
-void TypeParser::parse(const TypeTokenString &type, Type *newType)
-{
-    //Should be replaced in the future by something that uses the tree to deduce argumentsTypes and return type
-    buildParsingTree(type);
-
-    TypeParsingTreeIterator iter(parsingTree.get());
-    QVector<TypeTokenString> argumentsTypes;
-    TypeTokenString returnType;
-
-    setReturnAndArgumentsTypes(argumentsTypes, iter, returnType);
-
-    //Setup New Type
-    newType->parsingTree.reset(new TypeParsingTree(*parsingTree));
-    newType->returnTypeTokenString = returnType;
-    newType->argumentsTypes = argumentsTypes;
-}
-
 TypeParsingTree TypeParser::getParsingTree(const QString &type)
 {
     buildParsingTree(type);

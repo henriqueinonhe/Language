@@ -1,33 +1,22 @@
 #include "type.h"
 #include <QDataStream>
 #include "typeparser.h"
+#include "typeparsingtreeiterator.h"
+#include <QVector>
 
 Type::Type(QDataStream &stream) :
-    parsingTree(new TypeParsingTree(stream)),
-    returnTypeTokenString(stream)
+    parsingTree(new TypeParsingTree(stream))
 {
-    stream >> argumentsTypes;
 }
 
 Type::Type(const QString &type) :
     parsingTree(new TypeParsingTree(TypeParser::getParsingTree(type)))
 {
-    TypeParser::parse(TypeTokenString(type), this); //Why is this necessary?
 }
 
 Type::Type(const Type &other) :
-    parsingTree(new TypeParsingTree(other.getParsingTree())),
-    argumentsTypes(other.argumentsTypes),
-    returnTypeTokenString(other.getReturnType())
+    parsingTree(new TypeParsingTree(other.getParsingTree()))
 {
-}
-
-Type &Type::operator=(const Type &other)
-{
-    this->parsingTree.reset(new TypeParsingTree(other.getParsingTree()));
-    this->argumentsTypes = other.argumentsTypes;
-    this->returnTypeTokenString = other.returnTypeTokenString;
-    return *this;
 }
 
 bool Type::operator==(const Type &other) const
@@ -45,14 +34,11 @@ QString Type::toString() const
     return parsingTree->getTypeString().toString();
 }
 
-Type Type::applyArguments(const QVector<TypeTokenString> &argumentsTypes) const
+Type Type::applyArguments(const QVector<Type> &argumentsTypes) const
 {
-    if(argumentsTypes == this->argumentsTypes)
+    if(argumentsTypes == this->getArgumentsTypes())
     {
-        Type returnType;
-        TypeParser::parse(returnTypeTokenString, &returnType);
-
-        return returnType;
+        return Type(getReturnType());
     }
     else
     {
@@ -67,17 +53,30 @@ Type::Type() :
 
 }
 
-Type::Type(const TypeTokenString &typeString, const QVector<TypeTokenString> argumentsTypes, const TypeTokenString &returnType) :
-    parsingTree(new TypeParsingTree(TypeParser::getParsingTree(typeString.toString()))),
-    argumentsTypes(argumentsTypes),
-    returnTypeTokenString(returnType)
+Type::Type(const TypeTokenString &typeString) :
+    parsingTree(new TypeParsingTree(TypeParser::getParsingTree(typeString.toString())))
 {
 
 }
 
-TypeTokenString Type::getReturnType() const
+Type &Type::operator =(const Type &other)
 {
-    return returnTypeTokenString;
+    this->parsingTree.reset(new TypeParsingTree(other.getParsingTree()));
+    return *this;
+}
+
+Type Type::getReturnType() const
+{
+    TypeParsingTreeIterator iter(parsingTree.get());
+    if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
+    {
+        return Type(iter->getTypeString());
+    }
+    else //if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Composition)
+    {
+        iter.goToChild(1);
+        return Type(iter->getTypeString());
+    }
 }
 
 TypeParsingTree Type::getParsingTree() const
@@ -87,32 +86,51 @@ TypeParsingTree Type::getParsingTree() const
 
 unsigned int Type::getNumberOfArguments() const
 {
-    return static_cast<unsigned int>(argumentsTypes.size());
+    return static_cast<unsigned int>(getArgumentsTypes().size());
 }
 
 bool Type::isOperator() const
 {
-    return !argumentsTypes.isEmpty();
+    return !getArgumentsTypes().isEmpty();
 }
 
-QVector<TypeTokenString> Type::getArgumentsTypes() const
+QVector<Type> Type::getArgumentsTypes() const
 {
-    //FIXME!
-
-    return argumentsTypes;
+    TypeParsingTreeIterator iter(parsingTree.get());
+    if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
+    {
+        return QVector<Type>();
+    }
+    else //if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Composition)
+    {
+        QVector<Type> argumentsTypes;
+        iter.goToChild(0);
+        if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
+        {
+            argumentsTypes.push_back(Type(iter->getTypeString()));
+        }
+        else
+        {
+            for(unsigned int childNumber = 0; childNumber < iter->getChildrenNumber(); childNumber++)
+            {
+                iter.goToChild(childNumber);
+                argumentsTypes.push_back(iter->getTypeString());
+                iter.goToParent();
+            }
+        }
+        return argumentsTypes;
+    }
 }
 
 TypeTokenString Type::getTypeString() const
 {
-    //FIXME!
     return parsingTree->getTypeString();
-
 }
 
 
 QDataStream &operator <<(QDataStream &stream, const Type &type)
 {
-    stream << *type.parsingTree << type.returnTypeTokenString << type.argumentsTypes;
+    stream << *type.parsingTree;
     return stream;
 }
 

@@ -243,13 +243,13 @@ void Parser::performTypeChecking() const
     }
 }
 
-void Parser::setArgumentsTypes(QVector<TypeTokenString> &argumentsTypes, ParsingTreeIterator &currentNodeIter) const
+void Parser::setArgumentsTypes(QVector<Type> &argumentsTypes, ParsingTreeIterator &currentNodeIter) const
 {
     for(unsigned int childNumber = 1; childNumber < currentNodeIter->getChildrenNumber(); childNumber++)
     {
         currentNodeIter.goToChild(childNumber);
         checkType(currentNodeIter);
-        argumentsTypes.push_back(currentNodeIter->getType().getTypeString());
+        argumentsTypes.push_back(currentNodeIter->getType());
         currentNodeIter.goToParent();
     }
 }
@@ -275,7 +275,7 @@ void Parser::checkType(ParsingTreeIterator iter) const
     }
     else
     {
-        QVector<TypeTokenString> argumentsTypes;
+        QVector<Type> argumentsTypes;
         const Type mainOperatorType = setMainOperatorType(iter);
 
         setArgumentsTypes(argumentsTypes, iter);

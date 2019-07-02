@@ -25,12 +25,12 @@ public:
 
     QString toString() const;
 
-    Type applyArguments(const QVector<TypeTokenString> &argumentsTypes) const;
+    Type applyArguments(const QVector<Type> &argumentsTypes) const;
 
     TypeTokenString getTypeString() const;
 
-    QVector<TypeTokenString> getArgumentsTypes() const;
-    TypeTokenString getReturnType() const;
+    QVector<Type> getArgumentsTypes() const;
+    Type getReturnType() const;
 
     TypeParsingTree getParsingTree() const;
 
@@ -39,15 +39,11 @@ public:
 
 private:
     Type();
-    Type(const TypeTokenString &typeString,
-         const QVector<TypeTokenString> argumentsTypes,
-         const TypeTokenString &returnTypeTokenString);
+    Type(const TypeTokenString &typeString);
 
-    Type &operator=(const Type &other); //This probably shouldn't exist!
+    Type &operator =(const Type &other);
 
     unique_ptr<TypeParsingTree> parsingTree;
-    QVector<TypeTokenString> argumentsTypes;
-    TypeTokenString returnTypeTokenString;
 
     friend class QVector<Type>;
     friend class TypeParser;
