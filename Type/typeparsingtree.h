@@ -15,7 +15,7 @@ public:
     TypeParsingTree(const TypeTokenString &typeString);
 
     TypeParsingTree(const TypeParsingTree &other);
-    TypeParsingTree &operator=(const TypeParsingTree &other);
+    TypeParsingTree &operator=(const TypeParsingTree &other) = delete;
 
     unsigned int getHeight() const;
 

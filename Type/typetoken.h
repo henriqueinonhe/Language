@@ -23,7 +23,7 @@ public:
     TypeToken(const QString &string);
 
     TypeToken(const TypeToken &other) = default;
-    TypeToken &operator =(const TypeToken &) = default;
+    TypeToken &operator =(const TypeToken &) = delete;
 
     Sort sort() const;
     static Sort sort(const QString &string);

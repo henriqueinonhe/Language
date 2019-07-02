@@ -20,13 +20,6 @@ TypeParsingTree::TypeParsingTree(const TypeParsingTree &other) :
 {
 }
 
-TypeParsingTree &TypeParsingTree::operator=(const TypeParsingTree &other)
-{
-    this->root = other.root;
-    this->typeString = other.typeString;
-    return (*this);
-}
-
 unsigned int TypeParsingTree::getHeight() const
 {
     return root.getGreatestDescendantHeight();

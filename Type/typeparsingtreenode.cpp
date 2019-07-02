@@ -15,20 +15,7 @@ TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTreeNode &other, const
     tree(tree),
     parent(nullptr)
 {
-    *this = other;
-}
-
-TypeParsingTreeNode &TypeParsingTreeNode::operator=(const TypeParsingTreeNode &other)
-{
-    this->typeBeginIndex = other.typeEndIndex;
-    this->typeEndIndex = other.typeEndIndex;
-    this->mainOperator = other.mainOperator;
-    for(int index = 0; index < other.children.size(); index++)
-    {
-        this->appendChild();
-        *this->children[index] = *other.children[index];
-    }
-    return *this;
+    copyValues(other);
 }
 
 void TypeParsingTreeNode::printNodeToString(QString &str) const
@@ -79,6 +66,18 @@ void TypeParsingTreeNode::appendChild()
 {
     const unsigned int stubIndex = 0;
     children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, stubIndex, stubIndex)));
+}
+
+void TypeParsingTreeNode::copyValues(const TypeParsingTreeNode &other)
+{
+    this->typeBeginIndex = other.typeEndIndex;
+    this->typeEndIndex = other.typeEndIndex;
+    this->mainOperator = other.mainOperator;
+    for(int index = 0; index < other.children.size(); index++)
+    {
+        this->appendChild();
+        this->children[index]->copyValues(*other.children[index]);
+    }
 }
 
 unsigned int TypeParsingTreeNode::getTypeEndIndex() const

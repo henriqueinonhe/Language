@@ -14,6 +14,8 @@ public:
     TypeTokenString(QDataStream &stream);
     TypeTokenString(const QString &string);
 
+    TypeTokenString &operator =(const TypeTokenString &other) = default;
+
     QString toString() const;
 
     unsigned int size() const;

@@ -348,6 +348,7 @@ void TypeParser::setReturnAndArgumentsTypes(QVector<TypeTokenString> &argumentsT
 
 void TypeParser::parse(const TypeTokenString &type, Type *newType)
 {
+    //Should be replaced in the future by something that uses the tree to deduce argumentsTypes and return type
     buildParsingTree(type);
 
     TypeParsingTreeIterator iter(parsingTree.get());

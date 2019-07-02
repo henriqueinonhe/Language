@@ -24,8 +24,7 @@ public:
 
     TypeParsingTreeNode() = delete;
     TypeParsingTreeNode(const TypeParsingTreeNode &other) = delete;
-    TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree);
-    TypeParsingTreeNode &operator=(const TypeParsingTreeNode &other);
+    TypeParsingTreeNode &operator=(const TypeParsingTreeNode &other) = delete;
 
     void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
 
@@ -53,6 +52,7 @@ public:
 
 private:
     TypeParsingTreeNode(QDataStream &stream);
+    TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree);
     TypeParsingTreeNode(const TypeParsingTree *tree,
                         const TypeParsingTreeNode *parent,
                         const unsigned int typeBeginIndex,
@@ -63,6 +63,8 @@ private:
     void printNodeToString(QString &str) const;
     QString mainOperatorToString() const;
     void appendChild();
+
+    void copyValues(const TypeParsingTreeNode &other);
 
     const TypeParsingTree *tree;
     const TypeParsingTreeNode *parent;
