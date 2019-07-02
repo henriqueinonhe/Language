@@ -70,8 +70,26 @@ TEST_CASE("TypeToken")
 
 TEST_CASE("Pool")
 {
-    Pool<int> pool;
-    PoolRecordPointer<int> ptr1, ptr2, ptr3;
+    class IntWrapper
+    {
+        public:
+        IntWrapper() = default;
+        IntWrapper(const int a) : a(a){}
+        int a;
+
+        bool operator==(const int value) const
+        {
+            return this->a == value;
+        }
+
+        QString getString() const
+        {
+            return QString::number(a);
+        }
+    };
+
+    Pool<IntWrapper> pool;
+    PoolRecordPointer<IntWrapper> ptr1, ptr2, ptr3;
 
     ptr1 = pool.getPointer(1);
     ptr2 = pool.getPointer(2);
@@ -81,19 +99,24 @@ TEST_CASE("Pool")
     CHECK(*ptr2 == 2);
     CHECK(*ptr3 == 1);
 
-    auto iter = pool.getRecords().begin();
+    auto iter = pool.getRecords().find("1");
 
-    CHECK(iter->getObject() == 1);
-    CHECK(iter->getCounter() == 2);
-    CHECK((iter + 1)->getObject() == 2);
-    CHECK((iter + 1)->getCounter() == 1);
+    CHECK(iter->second.getObject() == 1);
+    CHECK(iter->second.getCounter() == 2);
+
+    iter = pool.getRecords().find("2");
+    CHECK(iter->second.getObject() == 2);
+    CHECK(iter->second.getCounter() == 1);
 
     ptr3 = ptr2;
 
-    CHECK(iter->getObject() == 1);
-    CHECK(iter->getCounter() == 1);
-    CHECK((iter + 1)->getObject() == 2);
-    CHECK((iter + 1)->getCounter() == 2);
+    iter = pool.getRecords().find("1");
+    CHECK(iter->second.getObject() == 1);
+    CHECK(iter->second.getCounter() == 1);
+
+    iter = pool.getRecords().find("2");
+    CHECK(iter->second.getObject() == 2);
+    CHECK(iter->second.getCounter() == 2);
 }
 
 TEST_CASE("TypeTokenString")

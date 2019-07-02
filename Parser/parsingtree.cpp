@@ -84,7 +84,7 @@ void ParsingTree::copyChildrenRecursively(const ParsingTreeNode &copyNode, Parsi
 
     for(int index = 0; index < copyNodeChildren.size(); index++)
     {
-        pasteNodeChildren.push_back(make_shared<ParsingTreeNode>(ParsingTreeNode(pasteNode.tree, &pasteNode)));
+        pasteNodeChildren.push_back(shared_ptr<ParsingTreeNode>(new ParsingTreeNode(pasteNode.tree, &pasteNode)));
         pasteNodeChildren[index]->copyValues(*copyNodeChildren[index]);
         copyChildrenRecursively(*copyNodeChildren[index], *pasteNodeChildren[index]);
     }

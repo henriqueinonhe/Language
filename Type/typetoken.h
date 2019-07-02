@@ -3,6 +3,8 @@
 
 #include <QString>
 
+template <class T> class PoolRecord;
+
 class TypeToken
 {
 public:
@@ -32,11 +34,11 @@ public:
 
 private:
     TypeToken();
-
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
     friend QDataStream &operator >>(QDataStream &stream, TypeToken &token);
+    friend class PoolRecord<TypeToken>;
 };
 
 QDataStream &operator <<(QDataStream &stream, const TypeToken &token);

@@ -3,8 +3,12 @@
 
 #include <QVector>
 #include <QLinkedList>
+#include <unordered_map>
+#include <string>
 
-//FIXME Implement as a HASH TABLE
+using namespace std;
+
+//Should be reimplemented as a hash table, however must make sure that addresses won't change upon resizing
 
 template<class T>
 class Pool;
@@ -25,34 +29,23 @@ public:
 
     PoolRecordPointer<T> getPointer(const T &sample)
     {
-        //TODO Implement sorting and binary search here!
-        //But as this is a small optimization, this should be delayed!
-        /* Searches for already existing record containing the sample
-         * and returns the record's pointer if it exists. */
-
-        for(auto iter = records.begin(); iter != records.end(); iter++)
+        const QString key = sample.getString();
+        auto valueIter = records.find(key.toStdString());
+        if(valueIter == records.end())
         {
-            if(iter->getObject() == sample)
-            {
-                return PoolRecordPointer<T>(&(*iter));
-            }
+            records.emplace(key.toStdString(), PoolRecord<T>(sample, this));
         }
 
-        /* If no record containg the sample exists
-         * it creates a new record using sample as "model"*/
-
-        records.push_back(PoolRecord<T>(sample, this));
-
-        return PoolRecordPointer<T>(&records.back());
+        return PoolRecordPointer<T>(&records[key.toStdString()]);
     }
 
-    QLinkedList<PoolRecord<T>> &getRecords()
+    unordered_map<string, PoolRecord<T>> &getRecords()
     {
         return records;
     }
 
 private:
-    QLinkedList<PoolRecord<T>> records; //Needs to be a linked list, so addresses do not change when list resizes!
+    unordered_map<string, PoolRecord<T>> records; //Needs to be a linked list, so addresses do not change when list resizes!
 
 friend class PoolRecordPointer<T>;
 
@@ -173,7 +166,7 @@ private:
 
             if(ptr->counterIsZero())
             {
-                ptr->parent->records.removeOne(*ptr);
+                ptr->parent->records.erase(ptr->getObject().getString().toStdString());
                 ptr = nullptr;
                 isSet = false;
             }
