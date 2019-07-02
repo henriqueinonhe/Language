@@ -1,11 +1,6 @@
 #include "typetoken.h"
 #include <QRegularExpression>
 
-TypeToken::TypeToken()
-{
-
-}
-
 TypeToken::TypeToken(QDataStream &stream)
 {
     stream >> string;

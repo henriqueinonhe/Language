@@ -11,7 +11,9 @@ TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const Type
 {
 }
 
-TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTreeNode &other)
+TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree) :
+    tree(tree),
+    parent(nullptr)
 {
     *this = other;
 }
@@ -75,12 +77,43 @@ QString TypeParsingTreeNode::mainOperatorToString() const
 
 void TypeParsingTreeNode::appendChild()
 {
-    children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, 0, 0)));
+    const unsigned int stubIndex = 0;
+    children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, stubIndex, stubIndex)));
 }
 
 unsigned int TypeParsingTreeNode::getTypeEndIndex() const
 {
     return typeEndIndex;
+}
+
+bool TypeParsingTreeNode::operator==(const TypeParsingTreeNode &other) const
+{
+    if(this->typeBeginIndex != other.typeBeginIndex ||
+       this->typeEndIndex != other.typeEndIndex ||
+       this->mainOperator != other.mainOperator)
+    {
+       return false;
+    }
+
+    if(this->children.size() != other.children.size())
+    {
+        return false;
+    }
+
+    for(int index = 0; index < children.size(); index++)
+    {
+        if(*children[index] != *other.children[index])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool TypeParsingTreeNode::operator!=(const TypeParsingTreeNode &other) const
+{
+    return !(*this == other);
 }
 
 TypeParsingTreeNode::TypeParsingTreeNode(QDataStream &stream)

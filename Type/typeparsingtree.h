@@ -7,9 +7,10 @@
 
 using namespace std;
 
-class TypeParsingTree //NOTE Maybe I should implement e deep copy option here! Or a Const Iterator.
+class TypeParsingTree //NOTE Maybe I should implement a Const Iterator.
 {
 public:
+    TypeParsingTree() = delete;
     TypeParsingTree(QDataStream &stream);
     TypeParsingTree(const TypeTokenString &typeString);
 
@@ -22,6 +23,7 @@ public:
 
     bool operator==(const TypeParsingTree &other) const;
     bool operator!=(const TypeParsingTree &other) const;
+    bool deepEqualityCheck(const TypeParsingTree &other) const;
 
     TypeTokenString getTypeString() const;
 

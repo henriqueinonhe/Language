@@ -22,7 +22,9 @@ public:
         Product
     };
 
-    TypeParsingTreeNode(const TypeParsingTreeNode &other);
+    TypeParsingTreeNode() = delete;
+    TypeParsingTreeNode(const TypeParsingTreeNode &other) = delete;
+    TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree);
     TypeParsingTreeNode &operator=(const TypeParsingTreeNode &other);
 
     void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
@@ -45,6 +47,9 @@ public:
 
     unsigned int getTypeBeginIndex() const;
     unsigned int getTypeEndIndex() const;
+
+    bool operator==(const TypeParsingTreeNode &other) const;
+    bool operator!=(const TypeParsingTreeNode &other) const;
 
 private:
     TypeParsingTreeNode(QDataStream &stream);

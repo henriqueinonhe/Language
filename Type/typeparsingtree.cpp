@@ -15,9 +15,9 @@ TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
 }
 
 TypeParsingTree::TypeParsingTree(const TypeParsingTree &other) :
-    root(other.root)
+    root(other.root, this),
+    typeString(other.typeString)
 {
-    typeString = other.typeString;
 }
 
 TypeParsingTree &TypeParsingTree::operator=(const TypeParsingTree &other)
@@ -82,6 +82,16 @@ bool TypeParsingTree::operator==(const TypeParsingTree &other) const
 bool TypeParsingTree::operator!=(const TypeParsingTree &other) const
 {
     return !(*this == other);
+}
+
+bool TypeParsingTree::deepEqualityCheck(const TypeParsingTree &other) const
+{
+    if(this->typeString != other.typeString)
+    {
+        return false;
+    }
+
+    return this->root == other.root;
 }
 
 TypeTokenString TypeParsingTree::getTypeString() const

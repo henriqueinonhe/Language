@@ -264,6 +264,16 @@ TEST_CASE("TypeParsingTrees")
     //Equality and Inequality
     CHECK(TypeParsingTree(TypeTokenString("Aflosis")) == TypeParsingTree(TypeTokenString("Aflosis")));
     CHECK(TypeParsingTree(TypeTokenString("a")) != TypeParsingTree(TypeTokenString("b")));
+
+    //Deep Equality and Copy Constructor/Assignment
+    TypeParsingTree tree2(TypeTokenString("([i,i,i]->i)->o"));
+    CHECK(tree2 == tree2);
+    TypeParsingTree tree3(tree2);
+    CHECK(tree3 == tree2);
+    TypeParsingTree tree4(TypeTokenString("a"));
+    CHECK(tree3 != tree4);
+    tree4 = tree3;
+    CHECK(tree4 == tree2);
 }
 
 TEST_CASE("Type")

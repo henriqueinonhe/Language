@@ -22,6 +22,9 @@ public:
     TypeToken(QDataStream &stream);
     TypeToken(const QString &string);
 
+    TypeToken(const TypeToken &other) = default;
+    TypeToken &operator =(const TypeToken &) = default;
+
     Sort sort() const;
     static Sort sort(const QString &string);
 
@@ -33,7 +36,7 @@ public:
     unsigned int getTokenCharacterSpan() const;
 
 private:
-    TypeToken();
+    TypeToken() = default;
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
