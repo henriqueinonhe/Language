@@ -1,4 +1,4 @@
-﻿#ifndef PUNCTUATIONTOKEN_H
+#ifndef PUNCTUATIONTOKEN_H
 #define PUNCTUATIONTOKEN_H
 
 #include "token.h"
@@ -18,7 +18,7 @@ protected:
 
 private:
 
-    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::unserializePtr(QDataStream &stream);
 };
 
 #endif // PUNCTUATIONTOKEN_H

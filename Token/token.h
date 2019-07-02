@@ -15,9 +15,11 @@ class VariableToken;
 class Token
 {
 public:
-    static shared_ptr<Token> unserializePtr(QDataStream &stream);
+    static Token *unserializePtr(QDataStream &stream);
 
     QString getString() const;
+
+    Token &operator =(const Token &other) = delete;
 
     bool operator==(const Token &other) const;
     bool operator!=(const Token &other) const;

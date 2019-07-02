@@ -25,7 +25,7 @@ protected:
 
     Type type;
 
-    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::unserializePtr(QDataStream &stream);
     friend QDataStream &operator <<(QDataStream &stream, const CoreToken &token);
 };
 

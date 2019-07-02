@@ -24,26 +24,26 @@ QDataStream &operator <<(QDataStream &stream, const Token &token)
     return stream;
 }
 
-shared_ptr<Token> Token::unserializePtr(QDataStream &stream)
+Token *Token::unserializePtr(QDataStream &stream)
 {
     QString tokenType;
     stream >> tokenType;
 
     if(tokenType == "PunctuationToken")
     {
-        return make_shared<PunctuationToken>(PunctuationToken(stream));
+        return new PunctuationToken(stream);
     }
     else if(tokenType == "CoreToken")
     {
-        return make_shared<CoreToken>(CoreToken(stream));
+        return new CoreToken(stream);
     }
     else if(tokenType == "VariableToken")
     {
-        return make_shared<VariableToken>(VariableToken(stream));
+        return new VariableToken(stream);
     }
     else if(tokenType == "BindingToken")
     {
-        return make_shared<BindingToken>(BindingToken(stream));
+        return new BindingToken(stream);
     }
     else
     {

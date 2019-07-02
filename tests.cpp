@@ -1124,10 +1124,9 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        shared_ptr<Token> t4, t5, t6;
-        t4 = Token::unserializePtr(stream);
-        t5 = Token::unserializePtr(stream);
-        t6 = Token::unserializePtr(stream);
+        unique_ptr<Token> t4(Token::unserializePtr(stream));
+        unique_ptr<Token> t5(Token::unserializePtr(stream));
+        unique_ptr<Token> t6(Token::unserializePtr(stream));
 
         CHECK(t1 == *t4);
         CHECK(t2 == *t5);
@@ -1144,9 +1143,8 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        shared_ptr<Token> t3, t4;
-        t3 = Token::unserializePtr(stream);
-        t4 = Token::unserializePtr(stream);
+        unique_ptr<Token> t3(Token::unserializePtr(stream));
+        unique_ptr<Token> t4(Token::unserializePtr(stream));
 
         CHECK(t1 == *t3);
         CHECK(t2 == *t4);
@@ -1162,10 +1160,9 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        shared_ptr<Token> t4, t5, t6;
-        t4 = Token::unserializePtr(stream);
-        t5 = Token::unserializePtr(stream);
-        t6 = Token::unserializePtr(stream);
+        unique_ptr<Token> t4(Token::unserializePtr(stream));
+        unique_ptr<Token> t5(Token::unserializePtr(stream));
+        unique_ptr<Token> t6(Token::unserializePtr(stream));
 
         CHECK(t1 == *t4);
         CHECK(t2 == *t5);
@@ -1183,8 +1180,7 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        shared_ptr<Token> t2;
-        t2 = Token::unserializePtr(stream);
+        unique_ptr<Token> t2(Token::unserializePtr(stream));
 
         CHECK(t1 == *t2);
     }

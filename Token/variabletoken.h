@@ -18,7 +18,7 @@ public:
 protected:
     virtual bool isEqual(const Token &other) const;
 
-    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::unserializePtr(QDataStream &stream);
 };
 
 #endif // VARIABLETOKEN_H

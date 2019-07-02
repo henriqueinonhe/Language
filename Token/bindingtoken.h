@@ -42,7 +42,7 @@ private:
 
     QVector<BindingRecord> bindingRecords;
 
-    friend shared_ptr<Token> Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::unserializePtr(QDataStream &stream);
 };
 
 #endif // BINDINGTOKEN_H

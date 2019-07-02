@@ -3,15 +3,16 @@
 
 #include "signature.h"
 #include <memory>
-#include <QVector>
+#include <unordered_map>
+#include <string>
 
 using namespace std;
 
 class TableSignature : public Signature
 {
 public:
-    TableSignature(QDataStream &stream);
     TableSignature();
+    TableSignature(QDataStream &stream);
 
     virtual const Token *getTokenPointer(const QString &token);
 
@@ -30,7 +31,7 @@ private:
     bool tokenIsAlreadyPresentInSignature(const Token &token) const;
     void pushTokenPointerToTable(const Token &token);
 
-    QVector<shared_ptr<Token>> tokenTable;
+    unordered_map<string, unique_ptr<Token>> tokenTable;
 
     friend QDataStream &operator <<(QDataStream &stream, const TableSignature &signature);
     friend QDataStream &operator >>(QDataStream &stream, TableSignature &signature);
@@ -38,7 +39,9 @@ private:
 
 QDataStream &operator <<(QDataStream &stream, const TableSignature &signature);
 QDataStream &operator >>(QDataStream &stream, TableSignature &signature);
-QDataStream &operator <<(QDataStream &stream, const shared_ptr<Token> &token);
-QDataStream &operator >>(QDataStream &stream, shared_ptr<Token> &token);
+QDataStream &operator <<(QDataStream &stream, const unique_ptr<Token> &token);
+QDataStream &operator >>(QDataStream &stream, unique_ptr<Token> &token);
+QDataStream &operator <<(QDataStream &stream, const unordered_map<string, unique_ptr<Token>> &map);
+QDataStream &operator >>(QDataStream &stream, unordered_map<string, unique_ptr<Token>> &map);
 
 #endif // TABLESIGNATURE_H
