@@ -52,7 +52,7 @@ private:
 
     static bool parsingTreeCacheCheck(const TypeParsingTree * const tree, const TypeTokenString &tokenString);
 
-    static unique_ptr<TypeParsingTree> parsingTree; //For caching purposes
+    static TypeParsingTree *parsingTree; //For caching purposes
 
     friend class Type;
 };

@@ -5,7 +5,7 @@
 #include "typeparsingtreeiterator.h"
 #include "type.h"
 
-unique_ptr<TypeParsingTree> TypeParser::parsingTree = nullptr;
+TypeParsingTree *TypeParser::parsingTree = nullptr;
 
 bool TypeParser::typeIsEmpty(const TypeTokenString &typeString)
 {
@@ -327,14 +327,15 @@ void TypeParser::buildParsingTree(const TypeTokenString &typeString)
 {
     TypeTokenString tokenString(typeString);
 
-    if(parsingTreeCacheCheck(parsingTree.get(), tokenString))
+    if(parsingTreeCacheCheck(parsingTree, tokenString))
     {
         return;
     }
     else
     {
-        parsingTree.reset(new TypeParsingTree(tokenString));
-        TypeParsingTreeIterator iter(parsingTree.get());
+        delete parsingTree;
+        parsingTree = new TypeParsingTree(tokenString);
+        TypeParsingTreeIterator iter(parsingTree);
 
         if(hasProductTypeForm(tokenString))
         {

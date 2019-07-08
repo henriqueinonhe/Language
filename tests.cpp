@@ -341,7 +341,7 @@ TEST_CASE("ParsingErrorException")
                                              10,
                                              str);
 
-    CHECK(QString(e.what()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
+    CHECK(QString(e.what().data()) == QString("The right hand side argument of the composition operator cannot be a product type!\n"
                                        "[o,o]->[o,o]\n"
                                        "       ^^^^^"));
 

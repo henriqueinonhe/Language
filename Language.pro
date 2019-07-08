@@ -7,6 +7,9 @@ TARGET = Language
 CONFIG += console
 CONFIG -= app_bundle
 
+QMAKE_CXXFLAGS += -g
+QMAKE_CXXFLAGS += -O0
+
 PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += Parser \

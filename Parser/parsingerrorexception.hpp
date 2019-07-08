@@ -1,8 +1,11 @@
-﻿#ifndef PARSINGERROREXCEPTION_HPP
+#ifndef PARSINGERROREXCEPTION_HPP
 #define PARSINGERROREXCEPTION_HPP
 
 #include <stdexcept>
 #include <QString>
+#include <string>
+
+using namespace std;
 
 template <class T>
 class ParsingErrorException : public std::invalid_argument
@@ -20,7 +23,7 @@ public:
     {
     }
 
-    virtual const char *what() noexcept
+    virtual const string what() noexcept
     {
         const QString explanatoryQString(this->explanatoryString);
         const QString errorQString = errorString.toString();
@@ -30,7 +33,7 @@ public:
                              errorQString + "\n" +
                              hightlight;
 
-        return whatString.toLatin1().data();
+        return whatString.toStdString();
     }
 
 private:
