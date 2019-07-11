@@ -9,7 +9,6 @@ class Signature
 {
 public:
     virtual const Token *getTokenPointer(const QString &token) = 0;
-    virtual void addToken(const Token &token) = 0;
 
     virtual ~Signature() = 0;
 

@@ -5,6 +5,7 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
+#include "token.h"
 
 using namespace std;
 

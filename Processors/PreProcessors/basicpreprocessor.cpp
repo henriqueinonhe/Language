@@ -71,9 +71,14 @@ void BasicPreProcessor::processToken(TokenStringWrapper &tokenString, const Toke
 }
 
 
-#include <iostream>
 QString BasicPreProcessor::processString(const QString &string) const
 {
+    //Sanity Check
+    if(signature == nullptr)
+    {
+        throw invalid_argument("Signature has not been set up!");
+    }
+
     //1. Lexing
     TokenStringWrapper tokenString = wrapTokenString(string);
 
@@ -160,3 +165,8 @@ void BasicPreProcessor::considerToken(const TokenStringWrapperIterator &tokenIte
     }
 }
 
+
+BasicPreProcessor::BasicPreProcessor() : BasicProcessor (nullptr)
+{
+
+}

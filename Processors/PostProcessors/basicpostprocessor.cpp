@@ -1,6 +1,11 @@
 #include "basicpostprocessor.h"
 #include "signature.h"
 
+BasicPostProcessor::BasicPostProcessor() : BasicProcessor (nullptr)
+{
+
+}
+
 BasicPostProcessor::BasicPostProcessor(Signature * const signature) :
     BasicProcessor(signature)
 {
@@ -17,6 +22,12 @@ void BasicPostProcessor::setupFirstRecord(SubSentenceRecord &firstRecord, TokenS
 
 QString BasicPostProcessor::processString(const QString &string) const
 {
+    //Sanity Check
+    if(signature == nullptr)
+    {
+        throw invalid_argument("The signature hasn't been set up yet!");
+    }
+
     //1. Lexing
     TokenStringWrapper tokenString = wrapTokenString(string);
 

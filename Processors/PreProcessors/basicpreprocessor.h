@@ -7,6 +7,7 @@
 class BasicPreProcessor : public BasicProcessor
 {
 public:
+    BasicPreProcessor();
     BasicPreProcessor(Signature * const signature);
 
     QString processString(const QString &string) const;

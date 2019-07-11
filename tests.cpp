@@ -920,6 +920,9 @@ TEST_CASE("Formatter")
     postFormatter.addProcessor(&postProcessor);
     CHECK(preFormatter.format("P ^ ~ Q -> ~ Q ^ P") == "(-> (^ P (~ Q)) (^ (~ Q) P))");
     CHECK(postFormatter.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
+
+    //Serialization
+    //This is an issue!
 }
 
 TEST_CASE("First Order Logic With Pre and Post Processor")
