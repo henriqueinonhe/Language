@@ -20,6 +20,7 @@ class Formula
 {
 public:
     Formula(QDataStream &stream, Signature * const signature);
+    Formula(const QString &formula, const Parser &parser);
     static QLinkedList<Formula> unserializeList(QDataStream &stream, Signature * const signature); //Use templates later
     static QVector<Formula> unserializeVector(QDataStream &stream, Signature * const signature);
     Formula(const Formula &other);

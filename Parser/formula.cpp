@@ -16,6 +16,12 @@ Formula::Formula(QDataStream &stream, Signature * const signature)
     parsingTree.reset(formula.parsingTree.release());
 }
 
+Formula::Formula(const QString &formula, const Parser &parser) :
+    parsingTree(new ParsingTree(parser.parse(formula).getParsingTree()))
+{
+
+}
+
 QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, Signature * const signature)
 {
     int size;

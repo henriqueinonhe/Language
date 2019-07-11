@@ -896,9 +896,30 @@ TEST_CASE("Pre and Post Processed One Digit Arithmetic")
 
 TEST_CASE("Formatter")
 {
-    Formatter formatter;
+    //Enviroment Setup
+    TableSignature signature;
+    signature.addToken(CoreToken("P", Type("o")));
+    signature.addToken(CoreToken("Q", Type("o")));
+    signature.addToken(CoreToken("^", Type("[o,o]->o")));
+    signature.addToken(CoreToken("->", Type("[o,o]->o")));
+    signature.addToken(CoreToken("~", Type("o->o")));
 
-    //Isto tem que ser feito depois!
+    BasicPreProcessor preProcessor(&signature);
+    preProcessor.addTokenRecord("->", 1);
+    preProcessor.addTokenRecord("^", 1);
+    preProcessor.addTokenRecord("~", 0);
+
+    BasicPostProcessor postProcessor(&signature);
+    postProcessor.addTokenRecord("->", 1);
+    postProcessor.addTokenRecord("^", 1);
+    postProcessor.addTokenRecord("~", 0);
+
+    //Testing -> We need more processors to test this thoroughly or at least create dummy processors
+    Formatter preFormatter, postFormatter;
+    preFormatter.addProcessor(&preProcessor);
+    postFormatter.addProcessor(&postProcessor);
+    CHECK(preFormatter.format("P ^ ~ Q -> ~ Q ^ P") == "(-> (^ P (~ Q)) (^ (~ Q) P))");
+    CHECK(postFormatter.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
 }
 
 TEST_CASE("First Order Logic With Pre and Post Processor")
