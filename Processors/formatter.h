@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector>
 #include "stringprocessor.h"
+#include <QDataStream>
 
 class QDataStream;
 class StringProcessor;
@@ -12,6 +13,8 @@ class Formatter
 {
 public:
     Formatter();
+    Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors);
+    void unserialize(QDataStream &stream, const QVector<StringProcessor *> &processors);
 
     QString format(QString string) const;
 
@@ -30,6 +33,12 @@ private:
     {
     public:
         ProcessorEntry(){}
+
+        ProcessorEntry(QDataStream &stream, StringProcessor *processor) :
+            processor(processor)
+        {
+            stream >> isOnline;
+        }
 
         ProcessorEntry(StringProcessor *processor) :
             processor(processor),
@@ -81,6 +90,8 @@ private:
     private:
         StringProcessor *processor;
         bool isOnline;
+
+        friend QDataStream &operator <<(QDataStream &stream, const ProcessorEntry &entry);
     };
 
     void checkIndexIsWithinBounds(const unsigned int index);
@@ -88,10 +99,10 @@ private:
     QVector<ProcessorEntry> processors;
 
     friend QDataStream &operator <<(QDataStream &stream, const Formatter &formatter);
-    friend QDataStream &operator >>(QDataStream &stream, Formatter &formatter);
+    friend QDataStream &operator <<(QDataStream &stream, const ProcessorEntry &entry);
 };
 
 QDataStream &operator <<(QDataStream &stream, const Formatter &formatter);
-QDataStream &operator >>(QDataStream &stream, Formatter &formatter);
+QDataStream &operator <<(QDataStream &stream, const Formatter::ProcessorEntry &entry);
 
 #endif // FORMATTER_H

@@ -6,6 +6,28 @@ Formatter::Formatter()
 
 }
 
+Formatter::Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors)
+{
+    int size;
+    stream >> size;
+    for(int index = 0; index < size; index++)
+    {
+        this->processors.push_back(ProcessorEntry(stream, processors[index]));
+    }
+}
+
+void Formatter::unserialize(QDataStream &stream, const QVector<StringProcessor *> &processors)
+{
+    int size;
+    stream >> size;
+    QVector<ProcessorEntry> entries;
+    for(int index = 0; index < size; index++)
+    {
+        entries.push_back(ProcessorEntry(stream, processors[index]));
+    }
+    this->processors = entries;
+}
+
 QString Formatter::format(QString string) const
 {
     std::for_each(processors.begin(), processors.end(), [&string](const ProcessorEntry processor)
@@ -30,6 +52,7 @@ void Formatter::removeProcessor(const unsigned int index)
 
 void Formatter::moveProcessor(const unsigned int locationIndex, const unsigned int targetIndex)
 {
+    //FIXME
     checkIndexIsWithinBounds(locationIndex);
     checkIndexIsWithinBounds(targetIndex);
 
@@ -81,14 +104,12 @@ void Formatter::checkIndexIsWithinBounds(const unsigned int index)
 
 QDataStream &operator <<(QDataStream &stream, const Formatter &formatter)
 {
-    //TODO
-
+    stream << formatter.processors;
     return stream;
 }
 
-QDataStream &operator >>(QDataStream &stream, Formatter &formatter)
+QDataStream &operator <<(QDataStream &stream, const Formatter::ProcessorEntry &entry)
 {
-    //TODO
-
+    stream << entry.isOnline;
     return stream;
 }

@@ -32,6 +32,7 @@
 #include <QDataStream>
 #include "dirtyfix.h"
 #include "bindingrecord.h"
+#include <QBuffer>
 
 TEST_CASE("TypeToken")
 {
@@ -922,7 +923,28 @@ TEST_CASE("Formatter")
     CHECK(postFormatter.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
 
     //Serialization
-    //This is an issue!
+    QBuffer buffer;
+    QDataStream stream(&buffer);
+    buffer.open(QIODevice::WriteOnly);
+    stream << preFormatter << postFormatter;
+
+    buffer.close();
+    buffer.open(QIODevice::ReadOnly);
+    Formatter preFormatter2(stream, QVector<StringProcessor *>({&preProcessor})),
+              postFormatter2(stream, QVector<StringProcessor *>({&postProcessor}));
+
+    CHECK(preFormatter2.format("P ^ ~ Q -> ~ Q ^ P") == "(-> (^ P (~ Q)) (^ (~ Q) P))");
+    CHECK(postFormatter2.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
+
+    buffer.close();
+    buffer.open(QIODevice::ReadOnly);
+    Formatter preFormatter3, postFormatter3;
+    preFormatter3.unserialize(stream, QVector<StringProcessor *>({&preProcessor}));
+    postFormatter3.unserialize(stream, QVector<StringProcessor *>({&postProcessor}));
+
+    CHECK(preFormatter3.format("P ^ ~ Q -> ~ Q ^ P") == "(-> (^ P (~ Q)) (^ (~ Q) P))");
+    CHECK(postFormatter3.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
+
 }
 
 TEST_CASE("First Order Logic With Pre and Post Processor")
