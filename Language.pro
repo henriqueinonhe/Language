@@ -31,6 +31,7 @@ DEPENDPATH += Parser \
               $$PWD
 
 SOURCES += main.cpp \
+    qtclassesdeserialization.cpp \
     tests.cpp \
     Parser/formula.cpp \
     Parser/lexer.cpp \
@@ -61,7 +62,6 @@ SOURCES += main.cpp \
     Type/typeparsingtreenode.cpp \
     Type/typetoken.cpp \
     Type/typetokenstring.cpp \
-    Utils/dirtyfix.cpp \
     Parser/parsingtreeconstiterator.cpp
 
 # The following define makes your compiler emit warnings if you use
@@ -109,9 +109,9 @@ HEADERS += \
     Type/typetoken.h \
     Type/typetokenstring.h \
     Utils/containerauxiliarytools.h \
-    Utils/dirtyfix.h \
     Utils/parsingauxiliarytools.h \
     Utils/pool.h \
     Parser/parsingtreeconstiterator.h \
-    pch.h
+    pch.h \
+    qtclassesdeserialization.h
 

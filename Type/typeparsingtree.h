@@ -34,12 +34,10 @@ private:
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTreeNode;
 friend QDataStream &operator <<(QDataStream &stream, const TypeParsingTree &tree);
-friend QDataStream &operator >>(QDataStream &stream, TypeParsingTree &tree);
 
 };
 
 
 QDataStream &operator <<(QDataStream &stream, const TypeParsingTree &tree);
-QDataStream &operator >>(QDataStream &stream, TypeParsingTree &tree);
 
 #endif // TYPEPARSINGTREE_H

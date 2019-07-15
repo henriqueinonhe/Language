@@ -97,9 +97,3 @@ QDataStream &operator <<(QDataStream &stream, const TypeParsingTree &tree)
     stream << tree.root << tree.typeString;
     return stream;
 }
-
-QDataStream &operator >>(QDataStream &stream, TypeParsingTree &tree)
-{
-    stream >> tree.root >> tree.typeString;
-    return stream;
-}

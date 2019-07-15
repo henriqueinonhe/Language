@@ -7,6 +7,11 @@ BindingRecord::BindingRecord()
 
 }
 
+BindingRecord::BindingRecord(QDataStream &stream)
+{
+    stream >> *this;
+}
+
 void BindingRecord::checkBoundArgumentIndexesDuplicates(const QVector<unsigned int> &boundArgumentsIndexes)
 {
     if(ContainerAuxiliaryTools::checkForDuplicates(boundArgumentsIndexes))

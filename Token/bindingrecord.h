@@ -3,10 +3,13 @@
 
 #include <QVector>
 
+class QDataStream;
+
 struct BindingRecord
 {
 public:
     BindingRecord();
+    BindingRecord(QDataStream &stream);
 
     BindingRecord(const unsigned int bindingArgumentIndex,
                   const QVector<unsigned int> &boundArgumentsIndexes);

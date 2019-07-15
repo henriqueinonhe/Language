@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <string>
 
-using namespace std;
+//NOTE Maybe implement Serialization of this class!
 
-//Should be reimplemented as a hash table, however must make sure that addresses won't change upon resizing
+using namespace std;
 
 template<class T>
 class Pool;
@@ -45,7 +45,7 @@ public:
     }
 
 private:
-    unordered_map<string, PoolRecord<T>> records; //Needs to be a linked list, so addresses do not change when list resizes!
+    unordered_map<string, PoolRecord<T>> records;
 
 friend class PoolRecordPointer<T>;
 

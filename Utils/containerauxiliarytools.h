@@ -47,6 +47,15 @@ public:
         });
     }
 
+    template <class SmartPointerContainer, class RawPointerContainer>
+    static void adatpFromSmartPointerContainer(const SmartPointerContainer &source, RawPointerContainer &target)
+    {
+        for(auto const smartPtr : source)
+        {
+            target.push_back(smartPtr.get());
+        }
+    }
+
     template <class T1, class T2> static void serializeSmartPointerContainer(T1 &stream, const T2 &container)
     {
         std::for_each(container.begin(), container.end(), [&stream](const typename T2::value_type &content)

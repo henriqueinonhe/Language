@@ -1,9 +1,10 @@
 #include "typetoken.h"
 #include <QRegularExpression>
+#include "qtclassesdeserialization.h"
 
-TypeToken::TypeToken(QDataStream &stream)
+TypeToken::TypeToken(QDataStream &stream) :
+    string(QtDeserialization::deserializeQString(stream))
 {
-    stream >> string;
 }
 
 TypeToken::TypeToken(const QString &string)

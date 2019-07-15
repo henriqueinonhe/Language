@@ -40,7 +40,6 @@ private:
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
-    friend QDataStream &operator >>(QDataStream &stream, TypeToken &token);
     friend class PoolRecord<TypeToken>;
 };
 
