@@ -50,6 +50,8 @@ public:
     bool operator==(const TypeParsingTreeNode &other) const;
     bool operator!=(const TypeParsingTreeNode &other) const;
 
+    ~TypeParsingTreeNode() = default;
+
 private:
     TypeParsingTreeNode(QDataStream &stream);
     TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree);

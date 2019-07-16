@@ -14,7 +14,10 @@ class Formatter
 public:
     Formatter();
     Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors);
-    void unserialize(QDataStream &stream, const QVector<StringProcessor *> &processors);
+    Formatter(const Formatter&) = delete;
+
+    Formatter &operator=(const Formatter &) = delete;
+    void deserialize(QDataStream &stream, const QVector<StringProcessor *> &processors);
 
     QString format(QString string) const;
 
@@ -27,6 +30,8 @@ public:
     void toggleProcessor(const unsigned int index);
 
     QString toString() const;
+
+    ~Formatter() = default;
 
 private:
     class ProcessorEntry

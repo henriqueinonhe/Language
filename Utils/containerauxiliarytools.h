@@ -64,7 +64,7 @@ public:
         });
     }
 
-    template <class T1, class T2> static void unserializeSmartPointerContainer(T1 &stream, T2 &container)
+    template <class T1, class T2> static void deserializeSmartPointerContainer(T1 &stream, T2 &container)
     {
         std::for_each(container.begin(), container.end(), [&stream](typename T2::value_type &content)
         {

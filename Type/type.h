@@ -37,6 +37,8 @@ public:
     unsigned int getNumberOfArguments() const;
     bool isOperator() const;
 
+    ~Type() = default;
+
 private:
     Type();
     Type(const TypeTokenString &typeString);

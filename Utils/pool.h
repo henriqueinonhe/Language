@@ -29,7 +29,7 @@ public:
 
     PoolRecordPointer<T> getPointer(const T &sample)
     {
-        const QString key = sample.getString();
+        const auto key = sample.getString();
         auto valueIter = records.find(key.toStdString());
         if(valueIter == records.end())
         {

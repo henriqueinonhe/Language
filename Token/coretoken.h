@@ -12,20 +12,20 @@ public:
 
     Type getType() const;
 
-    virtual QString tokenClass() const;
+    virtual QString tokenClass() const override;
 
-    virtual Token *getAllocatedClone() const;
+    virtual Token *getAllocatedClone() const override;
 
     virtual ~CoreToken();
 
 protected:
-    virtual void serialize(QDataStream &stream) const;
+    virtual void serialize(QDataStream &stream) const override;
 
-    virtual bool isEqual(const Token &other) const;
+    virtual bool isEqual(const Token &other) const override;
 
     Type type;
 
-    friend Token *Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::deserializePtr(QDataStream &stream);
     friend QDataStream &operator <<(QDataStream &stream, const CoreToken &token);
 };
 

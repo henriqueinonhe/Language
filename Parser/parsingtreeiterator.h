@@ -9,7 +9,11 @@ template <class T> class QVector;
 class ParsingTreeIterator
 {
 public:
+    ParsingTreeIterator() = delete;
     ParsingTreeIterator(ParsingTree *tree);
+    ParsingTreeIterator(const ParsingTreeIterator &) = default;
+
+    ParsingTreeIterator &operator=(const ParsingTreeIterator &) = delete;
 
     ParsingTreeIterator &goToChild(const unsigned int index);
     ParsingTreeIterator &goToParent();
@@ -22,6 +26,8 @@ public:
 
     ParsingTreeNode *operator->();
     ParsingTreeNode &operator*();
+
+    ~ParsingTreeIterator() = default;
 
 private:
     bool checkPathStringValidity(const QString &path) const;

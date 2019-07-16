@@ -22,12 +22,12 @@ void BasicProcessor::addTokenRecord(const QString &token, const unsigned int pos
             throw std::invalid_argument("Associativity mismatch!");
         }
 
-        const CoreToken &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
+        const auto &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
         tokenPositionIterator->tokenSubRecordList.push_back(BasicProcessorTokenRecord::TokenSubRecord(coreToken, position, coreToken.getType().getNumberOfArguments()));
     }
     else
     {
-        const int precedenceRankBeforeIteratorCompensation = 1;
+        const auto precedenceRankBeforeIteratorCompensation = 1;
         insertTokenRecord(token, position, precedenceRank + precedenceRankBeforeIteratorCompensation, associativity);
     }
 
@@ -49,7 +49,7 @@ void BasicProcessor::checkExistsConflictingTokenRecord(const QString &token)
 
 void BasicProcessor::insertTokenRecord(const QString &token, const unsigned int position, const int precedenceRank, const BasicProcessorTokenRecord::Associativity associativity)
 {
-    const CoreToken &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
+    const auto &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
     const BasicProcessorTokenRecord newRecord(coreToken, position, associativity);
 
     checkExistsConflictingTokenRecord(token);
@@ -111,7 +111,7 @@ unsigned int BasicProcessor::getOperatorPrecedenceRank(const QString &tokenStrin
 
 unsigned int BasicProcessor::getOperatorPosition(const QString &tokenString) const
 {
-    unsigned int operatorPosition = 0;
+    auto operatorPosition = 0;
     bool tokenFound = false;
 
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
@@ -155,11 +155,6 @@ BasicProcessorTokenRecord::Associativity BasicProcessor::getOperatorAssociativit
     return associativity;
 }
 
-BasicProcessor::~BasicProcessor()
-{
-
-}
-
 const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString &token) const
 {
     for(auto iter = tokenRecords.begin(); iter != tokenRecords.end(); iter++)
@@ -177,7 +172,7 @@ QString BasicProcessor::tokenStringWrapperToString(BasicProcessor::TokenStringWr
 {
     QString string;
 
-    for(TokenStringWrapperIterator iter = tokenString.begin(); iter != tokenString.end(); iter++)
+    for(auto iter = tokenString.begin(); iter != tokenString.end(); iter++)
     {
         string += iter->token;
 
@@ -202,7 +197,7 @@ bool BasicProcessor::tokenNeedsSubsequentSeparation(const BasicProcessor::TokenS
 BasicProcessor::TokenStringWrapper BasicProcessor::wrapTokenString(const QString &string) const
 {
     TokenStringWrapper tokenString;
-    TokenString tempString = Lexer(signature).lex(string);
+    const auto tempString = Lexer(signature).lex(string);
 
     for(unsigned int index = 0; index < tempString.size(); index++)
     {
@@ -214,8 +209,8 @@ BasicProcessor::TokenStringWrapper BasicProcessor::wrapTokenString(const QString
 
 BasicProcessor::TokenStringWrapperIterator BasicProcessor::findDelimiterScopeEndIterator(const BasicProcessor::TokenStringWrapper &tokenString, BasicProcessor::TokenStringWrapperIterator iter) const //NOTE Maybe give a end iterator instead of a tokenString!
 {
-    unsigned int leftParenthesisCount = 0;
-    unsigned int rightParenthesisCount = 0;
+    auto leftParenthesisCount = 0;
+    auto rightParenthesisCount = 0;
 
     do
     {
@@ -240,7 +235,7 @@ BasicProcessor::TokenStringWrapperIterator BasicProcessor::findDelimiterScopeEnd
         }
     } while(leftParenthesisCount != rightParenthesisCount);
 
-    const unsigned int tokenLookaheadCompensation = 1;
+    const auto tokenLookaheadCompensation = 1;
     iter = iter - tokenLookaheadCompensation;
 
     return iter;
@@ -248,8 +243,8 @@ BasicProcessor::TokenStringWrapperIterator BasicProcessor::findDelimiterScopeEnd
 
 void BasicProcessor::findDelimiterScopeEndReverseIterator(const BasicProcessor::TokenStringWrapper &tokenString, TokenStringWrapperReverseIterator &iter) const
 {
-    unsigned int leftParenthesisCount = 0;
-    unsigned int rightParenthesisCount = 0;
+    auto leftParenthesisCount = 0;
+    auto rightParenthesisCount = 0;
 
     do
     {
@@ -275,7 +270,7 @@ void BasicProcessor::findDelimiterScopeEndReverseIterator(const BasicProcessor::
 
     } while(leftParenthesisCount != rightParenthesisCount);
 
-    const unsigned int tokenLookaheadCompensation = 1;
+    const auto tokenLookaheadCompensation = 1;
     iter = iter - tokenLookaheadCompensation;
 }
 
@@ -319,7 +314,7 @@ BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorLeftParen
 BasicProcessor::TokenStringWrapperIterator BasicProcessor::findOperatorRightParenthesisIterator(const TokenStringWrapper &tokenString, const unsigned int numberOfArgumentsAfterOperator, const TokenStringWrapperIterator &tokenStringIter) const
 {
     unsigned int argumentsAfterOperatorCount = 0;
-    TokenStringWrapperIterator rightParenthesisIterator = tokenStringIter;
+    auto rightParenthesisIterator = tokenStringIter;
     while(argumentsAfterOperatorCount != numberOfArgumentsAfterOperator)
     {
         rightParenthesisIterator++;

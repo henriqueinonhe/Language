@@ -9,16 +9,16 @@ public:
     PunctuationToken(QDataStream &stream);
     PunctuationToken(const QString &string);
 
-    virtual QString tokenClass() const;
+    virtual QString tokenClass() const override;
 
-    virtual Token *getAllocatedClone() const;
+    virtual Token *getAllocatedClone() const override;
 
 protected:
-    virtual bool isEqual(const Token &other) const;
+    virtual bool isEqual(const Token &other) const override;
 
 private:
 
-    friend Token *Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::deserializePtr(QDataStream &stream);
 };
 
 #endif // PUNCTUATIONTOKEN_H

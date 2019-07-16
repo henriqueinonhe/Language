@@ -11,7 +11,7 @@ QDataStream &operator <<(QDataStream &stream, const Signature &signature)
 
 QDataStream &operator >>(QDataStream &stream, Signature &signature)
 {
-    signature.unserialize(stream);
+    signature.deserialize(stream);
 
     return stream;
 }

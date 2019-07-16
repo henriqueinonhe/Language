@@ -20,6 +20,11 @@ TypeParsingTree::TypeParsingTree(const TypeParsingTree &other) :
 {
 }
 
+TypeParsingTreeIterator TypeParsingTree::getIter()
+{
+    return TypeParsingTreeIterator(this);
+}
+
 unsigned int TypeParsingTree::getHeight() const
 {
     return root.getGreatestDescendantHeight();
@@ -37,27 +42,22 @@ QString TypeParsingTree::print()
      * the first vector anymore, therefore we can copy all of the elements of the
      * second vector to the first, saving memory. */
 
-    TypeParsingTreeIterator iter(this);
+    auto iter = getIter();
     QVector<TypeParsingTreeNode *> nextLevelNodes{&(*iter)};
     QString str;
 
-    for(int currentLevel = 0; currentLevel <= static_cast<int>(this->getHeight()); currentLevel++)
+    for(auto currentLevel = 0; currentLevel <= static_cast<int>(this->getHeight()); currentLevel++)
     {
         QVector<TypeParsingTreeNode *> nextLevelNodes2;
-        std::for_each(nextLevelNodes.begin(),
-                      nextLevelNodes.end(),
-                      [&str, &nextLevelNodes2](TypeParsingTreeNode *node)
+
+        for(auto node : nextLevelNodes)
         {
-
             node->printNodeToString(str);
-
-            std::for_each(node->children.begin(),
-                          node->children.end(),
-                          [&nextLevelNodes2](const shared_ptr<TypeParsingTreeNode> &node)
+            for(const auto &childNode : node->children)
             {
-                nextLevelNodes2.push_back(node.get());
-            });
-        });
+                nextLevelNodes2.push_back(childNode.get());
+            }
+        }
         str += "\n\n";
         nextLevelNodes.swap(nextLevelNodes2);
     }
@@ -87,7 +87,7 @@ bool TypeParsingTree::deepEqualityCheck(const TypeParsingTree &other) const
     return this->root == other.root;
 }
 
-TypeTokenString TypeParsingTree::getTypeString() const
+const TypeTokenString &TypeParsingTree::getTypeString() const
 {
     return typeString;
 }

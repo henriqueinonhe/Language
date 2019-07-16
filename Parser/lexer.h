@@ -9,7 +9,12 @@ class QChar;
 class Lexer
 {
 public:
+    Lexer() = delete;
     Lexer(Signature * const signature);
+    Lexer(const Lexer &) = delete;
+
+    Lexer &operator =(const Lexer &) = delete;
+
     TokenString lex(const QString &string) const;
 
     Signature *getSignature() const;

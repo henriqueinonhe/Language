@@ -10,11 +10,11 @@ struct BindingRecord
 public:
     BindingRecord();
     BindingRecord(QDataStream &stream);
-
+    BindingRecord(const BindingRecord &) = default;
     BindingRecord(const unsigned int bindingArgumentIndex,
                   const QVector<unsigned int> &boundArgumentsIndexes);
 
-    BindingRecord(const QString &string);
+    BindingRecord &operator =(const BindingRecord &other) = default;
 
     bool operator==(const BindingRecord &other) const;
     bool operator!=(const BindingRecord &other) const;

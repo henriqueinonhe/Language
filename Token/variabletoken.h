@@ -9,16 +9,16 @@ public:
     VariableToken(QDataStream &stream);
     VariableToken(const QString &token, const Type &type);
 
-    virtual QString tokenClass() const;
+    virtual QString tokenClass() const override;
 
-    virtual Token *getAllocatedClone() const;
+    virtual Token *getAllocatedClone() const override;
 
-    virtual ~VariableToken();
+    virtual ~VariableToken() override;
 
 protected:
-    virtual bool isEqual(const Token &other) const;
+    virtual bool isEqual(const Token &other) const override;
 
-    friend Token *Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::deserializePtr(QDataStream &stream);
 };
 
 #endif // VARIABLETOKEN_H

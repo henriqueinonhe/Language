@@ -15,7 +15,12 @@ class ParsingTreeIterator;
 class Parser
 {
 public:
+    Parser() = delete;
     Parser(Signature * const signature, const Type &wellFormedFormulaType);
+    Parser(const Parser &) = delete;
+
+    Parser &operator =(const Parser &) = delete;
+
     Formula parse(const QString &sentence) const;
     Signature * getSignature() const;
 

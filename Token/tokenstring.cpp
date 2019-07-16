@@ -19,7 +19,7 @@ TokenString::TokenString(QDataStream &stream, Signature * const signature)
 
 bool TokenString::tokenNeedsSubsequentSeparation(const QVector<const Token *> &tokenList, const int index) const
 {
-    const int tokenLookaheadCompensation = 1;
+    const auto tokenLookaheadCompensation = 1;
 
     return tokenList[index]->getString() != "(" &&
            index < tokenList.size() - tokenLookaheadCompensation &&
@@ -29,10 +29,9 @@ bool TokenString::tokenNeedsSubsequentSeparation(const QVector<const Token *> &t
 QString TokenString::toString() const
 {
     QString string;
-
-    for(int index = 0; index < tokenList.size(); index++)
+    for(const auto token : tokenList)
     {
-        string += tokenList[index]->getString();
+        string += token->getString();
     }
 
     return string;
@@ -42,8 +41,7 @@ QString TokenString::formattedString() const
 {
     //NOTE Document difference between toString and formattedString
     QString string;
-
-    for(int index = 0; index < tokenList.size(); index++)
+    for(auto index = 0; index < tokenList.size(); index++)
     {
         string += tokenList[index]->getString();
 
@@ -100,7 +98,7 @@ const Token &TokenString::last() const
         throw std::invalid_argument("Token String is empty!");
     }
 
-    const unsigned int zeroIndexCompensation = 1;
+    const auto zeroIndexCompensation = 1;
 
     return (*this)[this->size() - zeroIndexCompensation];
 }
@@ -119,7 +117,7 @@ bool TokenString::operator==(const TokenString &other) const
 {
     if(this->tokenList.size() == other.tokenList.size())
     {
-        for(int index = 0; index < this->tokenList.size(); index++)
+        for(auto index = 0; index < this->tokenList.size(); index++)
         {
             if(*this->tokenList[index] != *other.tokenList[index])
             {

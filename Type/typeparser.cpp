@@ -51,7 +51,7 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
      * analyzing a composite type canditate and no other option is viable. */
 
     unsigned int compositionOperatorOffset;
-    const unsigned int compositionOperatorCompensation = 1;
+    const auto compositionOperatorCompensation = 1;
 
     if(tokenString.first().sort() == TypeToken::Sort::PrimitiveType)
     {
@@ -94,7 +94,7 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
         /* Even though it finds the composition operator index, it must also certify that the token that
          * occupies that index REALLY is a composition operator. */
 
-        unsigned int compositionOperatorIndex = iter->getTypeBeginIndex() + compositionOperatorOffset;
+        auto compositionOperatorIndex = iter->getTypeBeginIndex() + compositionOperatorOffset;
         throw ParsingErrorException<TypeTokenString>("Composition operator (->) was expected here!",
                                         compositionOperatorIndex,
                                         compositionOperatorIndex,
@@ -106,13 +106,13 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
 
 void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator iter, const unsigned int compositionOperatorOffset)
 {
-    const TypeTokenString tokenString = iter->getTypeString();
-    const unsigned int tokenLookaheadCompensation = 1;
+    const auto tokenString = iter->getTypeString();
+    const auto tokenLookaheadCompensation = 1;
     if(tokenString[compositionOperatorOffset + tokenLookaheadCompensation].sort() == TypeToken::Sort::PrimitiveType)
     {
         if(!tokenString.isLastIndex(compositionOperatorOffset + tokenLookaheadCompensation))
         {
-            const unsigned int zeroIndexCompensation = 1;
+            const auto zeroIndexCompensation = 1;
             throw ParsingErrorException<TypeTokenString>("Right side argument of composition operator is a primtiive type, yet it has more tokens than it should!",
                                                          compositionOperatorOffset,
                                                          tokenString.size() - zeroIndexCompensation,
@@ -123,7 +123,7 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
     {
         if(tokenString.last().sort() != TypeToken::Sort::RightParenthesis)
         {
-            const unsigned int zeroIndexCompensation = 1;
+            const auto zeroIndexCompensation = 1;
             throw ParsingErrorException<TypeTokenString>("There are uncased parenthesis in the right side argument of composition operator!",
                                                          compositionOperatorOffset,
                                                          tokenString.size() - zeroIndexCompensation,
@@ -131,11 +131,11 @@ void TypeParser::validateCompositionRightSideArgument(TypeParsingTreeIterator it
         }
         else
         {
-            const unsigned int tokenLookaheadCompensation = 1;
-            const unsigned int argumentParenthesisPadding = 1;
-            const unsigned int argumentBeginIndex = compositionOperatorOffset + argumentParenthesisPadding + tokenLookaheadCompensation;
-            const unsigned int argumentSize = tokenString.size() - argumentBeginIndex - argumentParenthesisPadding;
-            const TypeTokenString rightSideArgument = tokenString.mid(argumentBeginIndex, argumentSize);
+            const auto tokenLookaheadCompensation = 1;
+            const auto argumentParenthesisPadding = 1;
+            const auto argumentBeginIndex = compositionOperatorOffset + argumentParenthesisPadding + tokenLookaheadCompensation;
+            const auto argumentSize = tokenString.size() - argumentBeginIndex - argumentParenthesisPadding;
+            const auto rightSideArgument = tokenString.mid(argumentBeginIndex, argumentSize);
             findCompositionOperatorOffsetAndValidateLeftSideArgument(rightSideArgument, iter);
         }
     }
@@ -155,19 +155,19 @@ bool TypeParser::parsingTreeCacheCheck(const TypeParsingTree * const tree, const
 
 void TypeParser::separateProductArguments(TypeParsingTreeIterator iter, QVector<ProductArgumentOffsets> &offsetList)
 {
-    const TypeTokenString tokenString = iter->getTypeString();
-    const unsigned int tokenLookaheadCompensation = 1;
-    unsigned int leftSquareBracketCount = 1;
-    unsigned int rightSquareBracketCount = 0;
-    unsigned int argumentBeginOffset = 1;
-    unsigned int argumentEndOffset = 1;
+    const auto tokenString = iter->getTypeString();
+    const auto tokenLookaheadCompensation = 1;
+    auto leftSquareBracketCount = 1;
+    auto rightSquareBracketCount = 0;
+    auto argumentBeginOffset = 1;
+    auto argumentEndOffset = 1;
 
     while(true)
     {
         if(!tokenString.indexIsWithinBounds(argumentEndOffset))
         {
-            const unsigned int argumentBeginIndex = iter->getTypeBeginIndex() + argumentBeginOffset;
-            const unsigned int argumentEndIndex = iter->getTypeBeginIndex() + argumentEndOffset;
+            const auto argumentBeginIndex = iter->getTypeBeginIndex() + argumentBeginOffset;
+            const auto argumentEndIndex = iter->getTypeBeginIndex() + argumentEndOffset;
             throw ParsingErrorException<TypeTokenString>("Type Token String ended before expected!",
                                         argumentBeginIndex,
                                         argumentEndIndex,
@@ -228,19 +228,19 @@ void TypeParser::checkProductTypeHasAtLeastTwoArguments(const QVector<ProductArg
 
 void TypeParser::parseProductType(TypeParsingTreeIterator iter)
 {
-    const unsigned int firstLeftSquareBracketCompensation = 1;
+    const auto firstLeftSquareBracketCompensation = 1;
     QVector<ProductArgumentOffsets> offsetList = {ProductArgumentOffsets(firstLeftSquareBracketCompensation, firstLeftSquareBracketCompensation)};
     separateProductArguments(iter, offsetList);
 
     checkProductTypeHasAtLeastTwoArguments(offsetList, iter);
 
-    std::for_each(offsetList.begin(), offsetList.end(), [&iter](const ProductArgumentOffsets &offsets)
+    for(const auto &offsets : offsetList)
     {
-        const unsigned int argumentBeginIndex = iter->getTypeBeginIndex() + offsets.beginOffset;
-        const unsigned int argumentEndIndex = iter->getTypeBeginIndex() + offsets.endOffset;
+        const auto argumentBeginIndex = iter->getTypeBeginIndex() + offsets.beginOffset;
+        const auto argumentEndIndex = iter->getTypeBeginIndex() + offsets.endOffset;
 
         iter->appendChild(argumentBeginIndex, argumentEndIndex);
-    });
+    }
 
     for(unsigned int childIndex = 0; childIndex < iter->getChildrenNumber(); childIndex++)
     {
@@ -254,25 +254,25 @@ void TypeParser::parseProductType(TypeParsingTreeIterator iter)
 
 void TypeParser::parseCompositeType(TypeParsingTreeIterator iter)
 {
-    const TypeTokenString tokenString = iter->getTypeString();
-    unsigned int compositionOperatorOffset = findCompositionOperatorOffsetAndValidateLeftSideArgument(tokenString, iter);
+    const auto tokenString = iter->getTypeString();
+    auto compositionOperatorOffset = findCompositionOperatorOffsetAndValidateLeftSideArgument(tokenString, iter);
     validateCompositionRightSideArgument(iter, compositionOperatorOffset);
 
-    const unsigned int compositionOperatorCompensation = 1;
-    const unsigned int zeroIndexCompensation = 1;
+    const auto compositionOperatorCompensation = 1;
+    const auto zeroIndexCompensation = 1;
 
-    const unsigned int leftArgumentParenthesisPadding = tokenString.first().sort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
-    const unsigned int leftArgumentBeginOffset = leftArgumentParenthesisPadding;
-    const unsigned int leftArgumentEndOffset = compositionOperatorOffset - compositionOperatorCompensation - leftArgumentParenthesisPadding;
+    const auto leftArgumentParenthesisPadding = tokenString.first().sort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
+    const auto leftArgumentBeginOffset = leftArgumentParenthesisPadding;
+    const auto leftArgumentEndOffset = compositionOperatorOffset - compositionOperatorCompensation - leftArgumentParenthesisPadding;
 
-    const unsigned int rightArgumentParenthesisPadding = tokenString[compositionOperatorOffset + compositionOperatorCompensation].sort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
-    const unsigned int rightArgumentBeginOffset = compositionOperatorOffset + compositionOperatorCompensation + rightArgumentParenthesisPadding;
-    const unsigned int rightArgumentEndOffset = tokenString.size() - zeroIndexCompensation - rightArgumentParenthesisPadding;
+    const auto rightArgumentParenthesisPadding = tokenString[compositionOperatorOffset + compositionOperatorCompensation].sort() == TypeToken::Sort::LeftParenthesis ? 1 : 0;
+    const auto rightArgumentBeginOffset = compositionOperatorOffset + compositionOperatorCompensation + rightArgumentParenthesisPadding;
+    const auto rightArgumentEndOffset = tokenString.size() - zeroIndexCompensation - rightArgumentParenthesisPadding;
 
-    const unsigned int leftArgumentBeginIndex = iter->getTypeBeginIndex() + leftArgumentBeginOffset;
-    const unsigned int leftArgumentEndIndex = iter->getTypeBeginIndex() + leftArgumentEndOffset;
-    const unsigned int rightArgumentBeginIndex = iter->getTypeBeginIndex() + rightArgumentBeginOffset;
-    const unsigned int rightArgumentEndIndex = iter->getTypeBeginIndex() + rightArgumentEndOffset;
+    const auto leftArgumentBeginIndex = iter->getTypeBeginIndex() + leftArgumentBeginOffset;
+    const auto leftArgumentEndIndex = iter->getTypeBeginIndex() + leftArgumentEndOffset;
+    const auto rightArgumentBeginIndex = iter->getTypeBeginIndex() + rightArgumentBeginOffset;
+    const auto rightArgumentEndIndex = iter->getTypeBeginIndex() + rightArgumentEndOffset;
 
     iter->appendChild(leftArgumentBeginIndex, leftArgumentEndIndex);
     iter->appendChild(rightArgumentBeginIndex, rightArgumentEndIndex);
@@ -291,7 +291,7 @@ void TypeParser::parseCompositeType(TypeParsingTreeIterator iter)
 
 void TypeParser::parseType(TypeParsingTreeIterator iter)
 {
-    const TypeTokenString tokenString = iter->getTypeString();
+    const auto tokenString = iter->getTypeString();
 
     if(typeIsEmpty(tokenString))
     {
@@ -339,7 +339,7 @@ void TypeParser::buildParsingTree(const TypeTokenString &typeString)
 
         if(hasProductTypeForm(tokenString))
         {
-            const unsigned int zeroIndexCompensation = 1;
+            const auto zeroIndexCompensation = 1;
             throw ParsingErrorException<TypeTokenString>("The main type cannot be a product type!",
                                         0,
                                         tokenString.size() - zeroIndexCompensation,

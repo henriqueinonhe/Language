@@ -16,6 +16,11 @@ using namespace std;
 class ParsingTreeNode
 {
 public:
+    ParsingTreeNode() = delete;
+    ParsingTreeNode(const ParsingTreeNode &) = delete;
+
+    ParsingTreeNode &operator =(const ParsingTreeNode &) = delete;
+
     void appendChild(const unsigned int beginIndex, const unsigned int endIndex);
 
     QVector<unsigned int> getCoordinates() const;
@@ -36,6 +41,8 @@ public:
 
     Type getType() const;
     void setType(const Type &value);
+
+    ~ParsingTreeNode() = default;
 
 private:
     ParsingTreeNode(const ParsingTree *tree,

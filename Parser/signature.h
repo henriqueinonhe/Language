@@ -14,7 +14,7 @@ public:
 
 protected:
     virtual void serialize(QDataStream &stream) const = 0;
-    virtual void unserialize(QDataStream &stream) = 0;
+    virtual void deserialize(QDataStream &stream) = 0;
 
     friend QDataStream &operator <<(QDataStream &stream, const Signature &signature);
     friend QDataStream &operator >>(QDataStream &stream, Signature &signature);

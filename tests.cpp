@@ -938,8 +938,8 @@ TEST_CASE("Formatter")
     buffer.close();
     buffer.open(QIODevice::ReadOnly);
     Formatter preFormatter3, postFormatter3;
-    preFormatter3.unserialize(stream, QVector<StringProcessor *>({&preProcessor}));
-    postFormatter3.unserialize(stream, QVector<StringProcessor *>({&postProcessor}));
+    preFormatter3.deserialize(stream, QVector<StringProcessor *>({&preProcessor}));
+    postFormatter3.deserialize(stream, QVector<StringProcessor *>({&postProcessor}));
 
     CHECK(preFormatter3.format("P ^ ~ Q -> ~ Q ^ P") == "(-> (^ P (~ Q)) (^ (~ Q) P))");
     CHECK(postFormatter3.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
@@ -1169,9 +1169,9 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        unique_ptr<Token> t4(Token::unserializePtr(stream));
-        unique_ptr<Token> t5(Token::unserializePtr(stream));
-        unique_ptr<Token> t6(Token::unserializePtr(stream));
+        unique_ptr<Token> t4(Token::deserializePtr(stream));
+        unique_ptr<Token> t5(Token::deserializePtr(stream));
+        unique_ptr<Token> t6(Token::deserializePtr(stream));
 
         CHECK(t1 == *t4);
         CHECK(t2 == *t5);
@@ -1188,8 +1188,8 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        unique_ptr<Token> t3(Token::unserializePtr(stream));
-        unique_ptr<Token> t4(Token::unserializePtr(stream));
+        unique_ptr<Token> t3(Token::deserializePtr(stream));
+        unique_ptr<Token> t4(Token::deserializePtr(stream));
 
         CHECK(t1 == *t3);
         CHECK(t2 == *t4);
@@ -1205,9 +1205,9 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        unique_ptr<Token> t4(Token::unserializePtr(stream));
-        unique_ptr<Token> t5(Token::unserializePtr(stream));
-        unique_ptr<Token> t6(Token::unserializePtr(stream));
+        unique_ptr<Token> t4(Token::deserializePtr(stream));
+        unique_ptr<Token> t5(Token::deserializePtr(stream));
+        unique_ptr<Token> t6(Token::deserializePtr(stream));
 
         CHECK(t1 == *t4);
         CHECK(t2 == *t5);
@@ -1225,7 +1225,7 @@ TEST_CASE("Serialization")
 
         file.reset();
 
-        unique_ptr<Token> t2(Token::unserializePtr(stream));
+        unique_ptr<Token> t2(Token::deserializePtr(stream));
 
         CHECK(t1 == *t2);
     }

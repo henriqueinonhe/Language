@@ -26,7 +26,7 @@ public:
 
 protected:
     virtual void serialize(QDataStream &stream) const;
-    virtual void unserialize(QDataStream &stream);
+    virtual void deserialize(QDataStream &stream);
 
 private:
     bool tokenIsAlreadyPresentInSignature(const Token &token) const;

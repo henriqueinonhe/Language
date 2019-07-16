@@ -15,6 +15,10 @@ class TypeParsingTreeIterator;
 class TypeParser
 {
 public:
+    TypeParser() = delete;
+    TypeParser(const TypeParser &) = delete;
+    TypeParser &operator=(const TypeParser &) = delete;
+    ~TypeParser() = delete;
 
 private:
     struct ProductArgumentOffsets

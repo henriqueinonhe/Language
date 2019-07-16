@@ -34,9 +34,6 @@ const Token *TableSignature::getTokenPointer(const QString &token)
 
 void TableSignature::pushTokenPointerToTable(const Token &token)
 {
-    unique_ptr<Token> ptr;
-    ptr.reset(token.getAllocatedClone());
-
     tokenTable.emplace(token.getString().toStdString(), unique_ptr<Token>(token.getAllocatedClone()));
 }
 
@@ -104,7 +101,7 @@ void TableSignature::serialize(QDataStream &stream) const
     stream << tokenTable;
 }
 
-void TableSignature::unserialize(QDataStream &stream)
+void TableSignature::deserialize(QDataStream &stream)
 {
     stream >> tokenTable;
 }
@@ -119,7 +116,7 @@ QDataStream &operator >>(QDataStream &stream, unique_ptr<Token> &token)
 {
     //NOTE I could take some precautions regarding deserialization on a Token Table that has already been
     //initialized and is in use, so whoever is using the old pointers don't lose references!
-    token.reset(Token::unserializePtr(stream));
+    token.reset(Token::deserializePtr(stream));
     return stream;
 }
 

@@ -6,9 +6,13 @@
 class TypeParsingTreeIterator
 {
 public:
+    TypeParsingTreeIterator() = delete;
     TypeParsingTreeIterator(TypeParsingTree *tree);
+    TypeParsingTreeIterator(const TypeParsingTree &) = delete;
 
-    TypeParsingTreeIterator &goToChild(unsigned int index);
+    TypeParsingTreeIterator &operator =(const TypeParsingTreeIterator &) = delete;
+
+    TypeParsingTreeIterator &goToChild(const unsigned int index);
     TypeParsingTreeIterator &goToParent();
     TypeParsingTreeIterator &goToRoot();
     TypeParsingTreeIterator &travelPath(const QString &path);
@@ -19,6 +23,8 @@ public:
 
     TypeParsingTreeNode *operator->() const;
     TypeParsingTreeNode &operator*() const;
+
+    ~TypeParsingTreeIterator() = default;
 
 private:
     bool checkPathStringValidity(const QString &path) const;

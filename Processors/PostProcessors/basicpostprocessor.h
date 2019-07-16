@@ -9,9 +9,9 @@ public:
     BasicPostProcessor();
     BasicPostProcessor(Signature * const signature);
 
-    QString processString(const QString &string) const;
+    QString processString(const QString &string) const override;
 
-    QString toString() const;
+    QString toString() const override;
 
 protected:
     struct SubSentenceRecord

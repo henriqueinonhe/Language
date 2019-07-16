@@ -12,6 +12,7 @@ using namespace std;
 class ParsingTree
 {
 public:
+    ParsingTree() = delete;
     ParsingTree(const TokenString &string);
 
     ParsingTree(const ParsingTree &other);
@@ -25,6 +26,8 @@ public:
     bool operator!=(const ParsingTree &other) const;
 
     TokenString getTokenString() const;
+
+    ~ParsingTree() = default;
 
 private:
     void copyChildrenRecursively(const ParsingTreeNode &copyNode, ParsingTreeNode &pasteNode) const;

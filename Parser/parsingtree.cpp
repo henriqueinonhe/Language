@@ -42,16 +42,15 @@ QString ParsingTree::print()
     for(int currentLevel = 0; currentLevel <= static_cast<int>(this->getHeight()); currentLevel++)
     {
         QVector<ParsingTreeNode *> nextLevelNodes2;
-        std::for_each(nextLevelNodes.begin(), nextLevelNodes.end(), [&str, &nextLevelNodes2](ParsingTreeNode *node)
+        for(auto node : nextLevelNodes)
         {
-
             node->printNodeToString(str);
 
-            std::for_each(node->children.begin(), node->children.end(), [&nextLevelNodes2](const shared_ptr<ParsingTreeNode> &node)
+            for(const auto &childNode : node->children)
             {
-                nextLevelNodes2.push_back(node.get());
-            });
-        });
+                nextLevelNodes2.push_back(childNode.get());
+            }
+        }
 
         str += "\n\n";
         nextLevelNodes.swap(nextLevelNodes2);
@@ -79,10 +78,11 @@ TokenString ParsingTree::getTokenString() const
 
 void ParsingTree::copyChildrenRecursively(const ParsingTreeNode &copyNode, ParsingTreeNode &pasteNode) const
 {
-    const QVector<shared_ptr<ParsingTreeNode>> &copyNodeChildren = copyNode.children;
-    QVector<shared_ptr<ParsingTreeNode>> &pasteNodeChildren = pasteNode.children;
+    //NOTE CHECK THIS! (Test for already initialized trees)
+    const auto &copyNodeChildren = copyNode.children;
+    auto &pasteNodeChildren = pasteNode.children;
 
-    for(int index = 0; index < copyNodeChildren.size(); index++)
+    for(auto index = 0; index < copyNodeChildren.size(); index++)
     {
         pasteNodeChildren.push_back(shared_ptr<ParsingTreeNode>(new ParsingTreeNode(pasteNode.tree, &pasteNode)));
         pasteNodeChildren[index]->copyValues(*copyNodeChildren[index]);

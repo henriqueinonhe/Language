@@ -17,6 +17,8 @@ public:
     TypeParsingTree(const TypeParsingTree &other);
     TypeParsingTree &operator=(const TypeParsingTree &other) = delete;
 
+    TypeParsingTreeIterator getIter();
+
     unsigned int getHeight() const;
 
     QString print();
@@ -25,7 +27,9 @@ public:
     bool operator!=(const TypeParsingTree &other) const;
     bool deepEqualityCheck(const TypeParsingTree &other) const;
 
-    TypeTokenString getTypeString() const;
+    const TypeTokenString &getTypeString() const;
+
+    ~TypeParsingTree() = default;
 
 private:
     TypeParsingTreeNode root;

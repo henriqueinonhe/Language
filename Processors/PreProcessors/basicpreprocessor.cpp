@@ -20,15 +20,15 @@ bool BasicPreProcessor::operatorParenthesisAreAlreadyPlaced(const TokenStringWra
     }
     else
     {
-        const unsigned int beforeIteratorInsertCompensation = 1;
-        const TokenStringWrapperIterator leftParenthesisActualIterator = leftParenthesisIterator - beforeIteratorInsertCompensation;
+        const auto beforeIteratorInsertCompensation = 1;
+        const auto leftParenthesisActualIterator = leftParenthesisIterator - beforeIteratorInsertCompensation;
         if(leftParenthesisActualIterator->token == "(" &&
            rightParenthesisIterator->token == ")")
         {
-            TokenStringWrapperIterator endScopeIterator = ParsingAuxiliaryTools::findDelimiterScopeEndIterator(tokenString,
-                                                                                                               TokenWrapper("("),
-                                                                                                               TokenWrapper(")"),
-                                                                                                               leftParenthesisActualIterator);
+            auto endScopeIterator = ParsingAuxiliaryTools::findDelimiterScopeEndIterator(tokenString,
+                                                                                         TokenWrapper("("),
+                                                                                         TokenWrapper(")"),
+                                                                                         leftParenthesisActualIterator);
             return endScopeIterator == rightParenthesisIterator;
         }
         else
@@ -46,7 +46,7 @@ void BasicPreProcessor::insertOperatorParenthesis(TokenStringWrapper &tokenStrin
 
 void BasicPreProcessor::moveOperator(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &leftParenthesisInsertIterator, const TokenStringWrapperIterator &tokenStringIter) const
 {
-    const TokenStringWrapperIterator &firstArgumentIterator = leftParenthesisInsertIterator;
+    const auto &firstArgumentIterator = leftParenthesisInsertIterator;
     tokenString.insert(firstArgumentIterator, *tokenStringIter);
     tokenString.erase(tokenStringIter);
 }
@@ -55,11 +55,11 @@ void BasicPreProcessor::processToken(TokenStringWrapper &tokenString, const Toke
 {
     //Right to Left Scanning
     const unsigned int numberOfArgumentsBeforeOperator = record.record->findTokenSubRecord(tokenStringIter->token).operatorPosition;
-    const TokenStringWrapperIterator leftParenthesisInsertIterator = findOperatorLeftParenthesisIterator(tokenString, numberOfArgumentsBeforeOperator, tokenStringIter);
+    const auto leftParenthesisInsertIterator = findOperatorLeftParenthesisIterator(tokenString, numberOfArgumentsBeforeOperator, tokenStringIter);
 
     //Left to Right Scanning
     const unsigned int numberOfArgumentsAfterOperator = record.record->findTokenSubRecord(tokenStringIter->token).numberOfArguments - numberOfArgumentsBeforeOperator;
-    const TokenStringWrapperIterator rightParenthesisInsertIterator = findOperatorRightParenthesisIterator(tokenString, numberOfArgumentsAfterOperator, tokenStringIter);
+    const auto rightParenthesisInsertIterator = findOperatorRightParenthesisIterator(tokenString, numberOfArgumentsAfterOperator, tokenStringIter);
 
     if(!operatorParenthesisAreAlreadyPlaced(tokenString, leftParenthesisInsertIterator, rightParenthesisInsertIterator))
     {
@@ -80,24 +80,24 @@ QString BasicPreProcessor::processString(const QString &string) const
     }
 
     //1. Lexing
-    TokenStringWrapper tokenString = wrapTokenString(string);
+    auto tokenString = wrapTokenString(string);
 
     //2. Auxiliary Records Vector
     QVector<AuxiliaryTokenRecord> auxiliaryRecords;
     setupAuxiliaryRecords(tokenString, auxiliaryRecords);
 
     //3. Processing
-    std::for_each(auxiliaryRecords.begin(), auxiliaryRecords.end(), [&tokenString, this](const AuxiliaryTokenRecord &record)
+    for(const auto &record : auxiliaryRecords)
     {
         if(record.record->associativity == BasicProcessorTokenRecord::Associativity::Left)
         {
-            std::for_each(record.tokenIterators.begin(), record.tokenIterators.end(), [&tokenString, this, &record](const TokenStringWrapperIterator &tokenStringIter)
+            for(const auto &tokenStringIter : record.tokenIterators)
             {
                 if(!tokenStringIter->alreadyScanned)
                 {
                     processToken(tokenString, tokenStringIter, record);
                 }
-            });
+            }
         }
         else if(record.record->associativity == BasicProcessorTokenRecord::Associativity::Right)
         {
@@ -113,7 +113,8 @@ QString BasicPreProcessor::processString(const QString &string) const
         {
             throw std::logic_error("This shouldn't be happening!");
         }
-    });
+    }
+
 
     return tokenStringWrapperToString(tokenString);
 }
@@ -125,7 +126,7 @@ QString BasicPreProcessor::toString() const
 
 void BasicPreProcessor::setupAuxiliaryRecords(TokenStringWrapper &tokenString, QVector<AuxiliaryTokenRecord> &auxiliaryRecords) const
 {
-    for(TokenStringWrapperIterator tokenIter = tokenString.begin(); tokenIter != tokenString.end(); tokenIter++)
+    for(auto tokenIter = tokenString.begin(); tokenIter != tokenString.end(); tokenIter++)
     {
         considerToken(tokenIter, auxiliaryRecords);
     }

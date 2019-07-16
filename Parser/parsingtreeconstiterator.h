@@ -9,7 +9,11 @@ class QString;
 class ParsingTreeConstIterator
 {
 public:
+    ParsingTreeConstIterator() = delete;
     ParsingTreeConstIterator(const ParsingTree *tree);
+    ParsingTreeConstIterator(const ParsingTreeConstIterator &) = default;
+
+    ParsingTreeConstIterator &operator=(const ParsingTreeConstIterator &) = delete;
 
     ParsingTreeConstIterator &goToChild(const unsigned int index);
     ParsingTreeConstIterator &goToParent();

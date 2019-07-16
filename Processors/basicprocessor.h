@@ -9,7 +9,11 @@ class Signature;
 class BasicProcessor : public StringProcessor
 {
 public:
+    BasicProcessor() = delete;
     BasicProcessor(Signature * const signature);
+    BasicProcessor(const BasicProcessor &) = delete;
+
+    BasicProcessor &operator=(const BasicProcessor &) = delete;
 
     void addTokenRecord(const QString &token,
                         const unsigned int position,
@@ -29,7 +33,7 @@ public:
 
     QString toString() const = 0;
 
-    virtual ~BasicProcessor();
+    virtual ~BasicProcessor() = default;
 
 protected:
     struct TokenWrapper
@@ -49,9 +53,9 @@ protected:
         bool alreadyScanned;
     };
 
-    typedef QLinkedList<TokenWrapper> TokenStringWrapper;
-    typedef QLinkedList<TokenWrapper>::iterator TokenStringWrapperIterator;
-    typedef QLinkedList<TokenWrapper>::reverse_iterator TokenStringWrapperReverseIterator;
+    using TokenStringWrapper = QLinkedList<TokenWrapper>;
+    using TokenStringWrapperIterator = QLinkedList<TokenWrapper>::iterator ;
+    using TokenStringWrapperReverseIterator = QLinkedList<TokenWrapper>::reverse_iterator;
 
     const BasicProcessorTokenRecord *getTokenRecordPtr(const QString &token) const;
 

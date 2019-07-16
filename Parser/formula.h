@@ -21,8 +21,9 @@ class Formula
 public:
     Formula(QDataStream &stream, Signature * const signature);
     Formula(const QString &formula, const Parser &parser);
-    static QLinkedList<Formula> unserializeList(QDataStream &stream, Signature * const signature); //Use templates later
-    static QVector<Formula> unserializeVector(QDataStream &stream, Signature * const signature);
+    static QLinkedList<Formula> deserializeList(QDataStream &stream, Signature * const signature); //Use templates later
+    static QVector<Formula> deserializeVector(QDataStream &stream, Signature * const signature);
+    static Formula deserialize(QDataStream &stream, Signature * const signature);
     Formula(const Formula &other);
 
     Formula &operator=(const Formula &other);
@@ -42,6 +43,7 @@ private:
 
     unique_ptr<const ParsingTree> parsingTree;
 
+    friend class Proof;
     friend class LineOfProof;
     friend class Parser;
     friend class QVector<Formula>;

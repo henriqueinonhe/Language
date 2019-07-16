@@ -18,10 +18,10 @@ BindingToken::BindingToken(const QString &token, const Type &type, const QVector
 QVector<unsigned int> BindingToken::gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const
 {
     QVector<unsigned int> bindingArgumentsIndexes;
-    std::for_each(bindingRecords.begin(), bindingRecords.end(), [&bindingArgumentsIndexes](const BindingRecord &record)
+    for(const auto &record : bindingRecords)
     {
         bindingArgumentsIndexes.push_back(record.bindingArgumentIndex);
-    });
+    }
 
     return bindingArgumentsIndexes;
 }
@@ -29,14 +29,13 @@ QVector<unsigned int> BindingToken::gatherBindingArgumentsIndexes(const QVector<
 QVector<unsigned int> BindingToken::gatherBoundArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const
 {
     QVector<unsigned int> boundArgumentsIndexes;
-    std::for_each(bindingRecords.begin(), bindingRecords.end(), [&boundArgumentsIndexes](const BindingRecord &record)
+    for(const auto &record : bindingRecords)
     {
-        std::for_each(record.boundArgumentsIndexes.begin(), record.boundArgumentsIndexes.end(), [&boundArgumentsIndexes](const unsigned int index)
+        for(const auto index : record.boundArgumentsIndexes)
         {
             boundArgumentsIndexes.push_back(index);
-        });
-    });
-
+        }
+    }
     return boundArgumentsIndexes;
 }
 
@@ -85,16 +84,16 @@ void BindingToken::checkDuplicateBindingRecords(const QVector<BindingRecord> &bi
 
 unsigned int BindingToken::getGreatestBindingArgumentNumber(const QVector<unsigned int> &bindingArgumentsIndexes) const
 {
-    const unsigned int zeroIndexCompensation = 1;
-    const unsigned int greatestBindingNumber = *std::max_element(bindingArgumentsIndexes.begin(), bindingArgumentsIndexes.end()) + zeroIndexCompensation;
+    const auto zeroIndexCompensation = 1;
+    const auto greatestBindingNumber = *std::max_element(bindingArgumentsIndexes.begin(), bindingArgumentsIndexes.end()) + zeroIndexCompensation;
 
     return greatestBindingNumber;
 }
 
 unsigned int BindingToken::getGreatestBoundArgumentNumber(const QVector<unsigned int> &boundArgumentsIndexes) const
 {
-    const unsigned int zeroIndexCompensation = 1;
-    const unsigned int greatestBoundNumber = *std::max_element(boundArgumentsIndexes.begin(), boundArgumentsIndexes.end()) + zeroIndexCompensation;
+    const auto zeroIndexCompensation = 1;
+    const auto greatestBoundNumber = *std::max_element(boundArgumentsIndexes.begin(), boundArgumentsIndexes.end()) + zeroIndexCompensation;
 
     return greatestBoundNumber;
 }
@@ -125,15 +124,15 @@ void BindingToken::checkNumberOfArgumentsConsistency(const unsigned int greatest
 
 void BindingToken::validateBindingRecordsArguments(const QVector<BindingRecord> &bindingRecords) const
 {
-    const QVector<unsigned int> bindingArgumentsIndexes = gatherBindingArgumentsIndexes(bindingRecords);
+    const auto bindingArgumentsIndexes = gatherBindingArgumentsIndexes(bindingRecords);
     checkDuplicatesBindingArgumentsIndexes(bindingArgumentsIndexes);
 
-    const QVector<unsigned int> boundArgumentsIndexes = gatherBoundArgumentsIndexes(bindingRecords);
+    const auto boundArgumentsIndexes = gatherBoundArgumentsIndexes(bindingRecords);
     checkArgumentIsBothBindingAndBound(boundArgumentsIndexes, bindingArgumentsIndexes);
 
-    const unsigned int greatestBindingArgumentNumber = getGreatestBindingArgumentNumber(bindingArgumentsIndexes);
-    const unsigned int greatestBoundArgumentNumber = getGreatestBoundArgumentNumber(boundArgumentsIndexes);
-    const unsigned int numberOfArguments = static_cast<unsigned int>(type.getArgumentsTypes().size());
+    const auto greatestBindingArgumentNumber = getGreatestBindingArgumentNumber(bindingArgumentsIndexes);
+    const auto greatestBoundArgumentNumber = getGreatestBoundArgumentNumber(boundArgumentsIndexes);
+    const auto numberOfArguments = static_cast<unsigned int>(type.getArgumentsTypes().size());
 
     checkNumberOfArgumentsConsistency(greatestBindingArgumentNumber, greatestBoundArgumentNumber, numberOfArguments);
 }

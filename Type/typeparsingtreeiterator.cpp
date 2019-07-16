@@ -8,7 +8,7 @@ TypeParsingTreeIterator::TypeParsingTreeIterator(TypeParsingTree *tree) :
 
 }
 
-TypeParsingTreeIterator &TypeParsingTreeIterator::goToChild(unsigned int index)
+TypeParsingTreeIterator &TypeParsingTreeIterator::goToChild(const unsigned int index)
 {
     if(index >= static_cast<unsigned int>( currentNode->children.size()))
     {
@@ -41,21 +41,21 @@ TypeParsingTreeIterator &TypeParsingTreeIterator::travelPath(const QString &path
         throw std::invalid_argument("This is not a valid path!");
     }
 
-    const QVector<unsigned int> pathVector = convertStringToPath(path);
-    std::for_each(pathVector.begin(), pathVector.end(), [&](unsigned int index)
+    const auto pathVector = convertStringToPath(path);
+    for(const auto index : pathVector)
     {
         this->goToChild(index);
-    });
+    }
 
     return *this;
 }
 
 TypeParsingTreeIterator &TypeParsingTreeIterator::travelPath(const QVector<unsigned int> &path)
 {
-    std::for_each(path.begin(), path.end(), [&](unsigned int index)
+    for(const auto index : path)
     {
         this->goToChild(index);
-    });
+    }
 
     return *this;
 }
@@ -66,9 +66,7 @@ TypeParsingTreeIterator &TypeParsingTreeIterator::goToCoordinates(const QString 
     {
         throw new std::invalid_argument("This is not a valid path!");
     }
-
     goToRoot();
-
     travelPath(coordinates);
 
     return *this;
@@ -105,20 +103,19 @@ QVector<unsigned int> TypeParsingTreeIterator::convertStringToPath(const QString
      * "(x1,x2,...,xn)". */
 
     QVector<unsigned int> pathVector;
-    const QString uncencasedPath = removeOuterParenthesis(path);
-    const QStringList coordinatesList = uncencasedPath.split(",");
-
-    std::for_each(coordinatesList.begin(), coordinatesList.end(), [&](const QString &str)
+    const auto uncencasedPath = removeOuterParenthesis(path);
+    const auto coordinatesStringList = uncencasedPath.split(",");
+    for(const auto str : coordinatesStringList)
     {
         pathVector.push_back(static_cast<unsigned int>(str.toInt()));
-    });
+    }
 
     return pathVector;
 }
 
 QString TypeParsingTreeIterator::removeOuterParenthesis(const QString &path) const
 {
-    const unsigned int parenthesisPadding = 1;
-    const unsigned int numberOfParenthesis = 2;
+    const auto parenthesisPadding = 1;
+    const auto numberOfParenthesis = 2;
     return path.mid(parenthesisPadding, path.size() - static_cast<int>(numberOfParenthesis * parenthesisPadding));
 }

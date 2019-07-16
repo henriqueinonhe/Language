@@ -11,7 +11,7 @@ Formula::Formula(QDataStream &stream, Signature * const signature)
     stream >> formattedString;
 
     Parser parser(signature, wffType);
-    Formula formula = parser.parse(formattedString);
+    auto formula = parser.parse(formattedString);
 
     parsingTree.reset(formula.parsingTree.release());
 }
@@ -22,7 +22,7 @@ Formula::Formula(const QString &formula, const Parser &parser) :
 
 }
 
-QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, Signature * const signature)
+QLinkedList<Formula> Formula::deserializeList(QDataStream &stream, Signature * const signature)
 {
     int size;
     stream >> size;
@@ -36,7 +36,7 @@ QLinkedList<Formula> Formula::unserializeList(QDataStream &stream, Signature * c
     return list;
 }
 
-QVector<Formula> Formula::unserializeVector(QDataStream &stream, Signature * const signature)
+QVector<Formula> Formula::deserializeVector(QDataStream &stream, Signature * const signature)
 {
     int size;
     stream >> size;
@@ -48,6 +48,16 @@ QVector<Formula> Formula::unserializeVector(QDataStream &stream, Signature * con
     }
 
     return vec;
+}
+
+Formula Formula::deserialize(QDataStream &stream, Signature * const signature)
+{
+    Type wffType(stream);
+    QString formattedString;
+    stream >> formattedString;
+
+    Parser parser(signature, wffType);
+    return parser.parse(formattedString);
 }
 
 Formula::Formula(const Formula &other) :
@@ -114,10 +124,10 @@ QDataStream &operator <<(QDataStream &stream, const Formula &formula)
 QDataStream &operator <<(QDataStream &stream, const QLinkedList<Formula> &list)
 {
     stream << list.size();
-    std::for_each(list.begin(), list.end(), [&stream](const Formula &formula)
+    for(const auto &formula : list)
     {
         stream << formula;
-    });
+    }
 
     return stream;
 }

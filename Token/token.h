@@ -15,7 +15,7 @@ class VariableToken;
 class Token
 {
 public:
-    static Token *unserializePtr(QDataStream &stream);
+    static Token *deserializePtr(QDataStream &stream);
 
     QString getString() const;
 

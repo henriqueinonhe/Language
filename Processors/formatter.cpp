@@ -10,18 +10,18 @@ Formatter::Formatter(QDataStream &stream, const QVector<StringProcessor *> &proc
 {
     int size;
     stream >> size;
-    for(int index = 0; index < size; index++)
+    for(auto index = 0; index < size; index++)
     {
         this->processors.push_back(ProcessorEntry(stream, processors[index]));
     }
 }
 
-void Formatter::unserialize(QDataStream &stream, const QVector<StringProcessor *> &processors)
+void Formatter::deserialize(QDataStream &stream, const QVector<StringProcessor *> &processors)
 {
     int size;
     stream >> size;
     QVector<ProcessorEntry> entries;
-    for(int index = 0; index < size; index++)
+    for(auto index = 0; index < size; index++)
     {
         entries.push_back(ProcessorEntry(stream, processors[index]));
     }
@@ -30,10 +30,10 @@ void Formatter::unserialize(QDataStream &stream, const QVector<StringProcessor *
 
 QString Formatter::format(QString string) const
 {
-    std::for_each(processors.begin(), processors.end(), [&string](const ProcessorEntry processor)
+    for(const auto &processor : processors)
     {
         string = processor.processString(string);
-    });
+    }
 
     return string;
 }
@@ -85,11 +85,10 @@ void Formatter::toggleProcessor(const unsigned int index)
 QString Formatter::toString() const
 {
     QString string;
-
-    std::for_each(processors.begin(), processors.end(), [&string](const ProcessorEntry &entry)
+    for(const auto &entry : processors)
     {
         string += entry.toString();
-    });
+    }
 
     return string;
 }

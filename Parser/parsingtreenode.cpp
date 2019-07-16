@@ -31,13 +31,13 @@ void ParsingTreeNode::printNodeToString(QString &str) const
      * 5th - The Bound Variable Set. */
 
 
-    const unsigned int height = getHeight();
-    const QVector<unsigned int> coordinates = getCoordinates();
+    const auto height = getHeight();
+    const auto coordinates = getCoordinates();
     str += "(";
     if(height >= 2)
     {
-        const unsigned int zeroIndexCompensation = 1;
-        const unsigned int fatherNodeCompensation = 1;
+        const auto zeroIndexCompensation = 1;
+        const auto fatherNodeCompensation = 1;
         str += QString::number(coordinates[static_cast<int>(static_cast<unsigned int>(coordinates.size()) - zeroIndexCompensation - fatherNodeCompensation)]);
     }
     if(height != 0)
@@ -67,15 +67,15 @@ QString ParsingTreeNode::printVariableSet(const QSet<const VariableToken *> &set
         QString setString;
         setString += "{\"";
 
-        QList<const VariableToken *> list = set.toList();
-        const unsigned int lastIndexCompensation = 1;
-        std::for_each(list.begin(), list.end() - lastIndexCompensation, [&setString](const VariableToken *token)
+        const auto variableTokenList = set.toList();
+        const auto lastIndexCompensation = 1;
+        std::for_each(variableTokenList.begin(), variableTokenList.end() - lastIndexCompensation, [&setString](const VariableToken *token)
         {
             setString += token->getString();
             setString += "\",\"";
         });
 
-        setString += list.last()->getString();
+        setString += variableTokenList.last()->getString();
         setString += "\"}";
 
         return setString;
@@ -113,7 +113,7 @@ QVector<unsigned int> ParsingTreeNode::getCoordinates() const
 {
     QVector<unsigned int> coordinates;
 
-    const ParsingTreeNode *ptr = this;
+    const auto *ptr = this;
     while(!ptr->isRoot())
     {
         coordinates.prepend(ptr->getOwnChildNumber());
@@ -126,12 +126,12 @@ QVector<unsigned int> ParsingTreeNode::getCoordinates() const
 QString ParsingTreeNode::coordinatesToString() const
 {
     QString coordinatesString;
-    const QVector<unsigned int> coordinates = this->getCoordinates();
+    const auto coordinates = this->getCoordinates();
 
     coordinatesString += "(";
     if(!coordinates.empty())
     {
-        const unsigned int lastIndexCompensation = 1;
+        const auto lastIndexCompensation = 1;
         std::for_each(coordinates.begin(), coordinates.end() - lastIndexCompensation, [&](unsigned int e) {
             coordinatesString += QString::number(e);
             coordinatesString += ",";
@@ -155,15 +155,15 @@ bool ParsingTreeNode::isChildless() const
 
 TokenString ParsingTreeNode::getTokenString() const
 {
-    const unsigned int zeroIndexCompensation = 1;
-    const unsigned int stringSize = endIndex - beginIndex + zeroIndexCompensation;
+    const auto zeroIndexCompensation = 1;
+    const auto stringSize = endIndex - beginIndex + zeroIndexCompensation;
     return tree->tokenString.mid(beginIndex, stringSize);
 }
 
 unsigned int ParsingTreeNode::getHeight() const
 {
-    unsigned int height = 0;
-    const ParsingTreeNode *ptr = this;
+    auto height = 0;
+    const auto *ptr = this;
     while(!ptr->isRoot())
     {
         ptr = ptr->parent;
@@ -180,9 +180,9 @@ unsigned int ParsingTreeNode::getChildrenNumber() const
 
 unsigned int ParsingTreeNode::getOwnChildNumber() const
 {
-    const ParsingTreeNode *ptr = parent;
+    const auto *ptr = parent;
 
-    unsigned int ownChildNumber = 0;
+    auto ownChildNumber = 0;
     while(ptr->children[static_cast<int>(ownChildNumber)].get() != this)
     {
         ownChildNumber++;
@@ -200,12 +200,10 @@ unsigned int ParsingTreeNode::getGreatestDescendantHeight() const
     else
     {
         QVector<unsigned int> greatestDescendantHeightVector;
-
-        std::for_each(children.begin(), children.end(), [&greatestDescendantHeightVector](const shared_ptr<ParsingTreeNode> &node)
+        for(const auto &node : children)
         {
             greatestDescendantHeightVector.push_back(node->getGreatestDescendantHeight());
-        });
-
+        }
 
         return *std::max_element(greatestDescendantHeightVector.begin(),
                                 greatestDescendantHeightVector.end());

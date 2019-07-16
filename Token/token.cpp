@@ -24,7 +24,7 @@ QDataStream &operator <<(QDataStream &stream, const Token &token)
     return stream;
 }
 
-Token *Token::unserializePtr(QDataStream &stream)
+Token *Token::deserializePtr(QDataStream &stream)
 {
     QString tokenType;
     stream >> tokenType;
@@ -47,7 +47,7 @@ Token *Token::unserializePtr(QDataStream &stream)
     }
     else
     {
-        throw std::invalid_argument("Cannot unserialize this token class!");
+        throw std::invalid_argument("Cannot deserialize this token class!");
     }
 }
 

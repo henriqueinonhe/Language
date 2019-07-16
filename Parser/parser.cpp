@@ -35,7 +35,7 @@ Signature *Parser::getSignature() const
 
 void Parser::buildParsingTree(const QString &sentence) const
 {
-    const TokenString tokenString(lexer.lex(sentence));
+    const auto tokenString(lexer.lex(sentence));
 
     parsingTree.reset(new ParsingTree(tokenString));
 
@@ -46,8 +46,8 @@ void Parser::buildParsingTree(const QString &sentence) const
 
 [[noreturn]] void Parser::analyzeError(ParsingTreeIterator currentNodeIter) const
 {
-    const TokenString tokenString = currentNodeIter->getTokenString();
-    const unsigned int beginIndex = currentNodeIter->getBeginIndex();
+    const auto tokenString = currentNodeIter->getTokenString();
+    const auto beginIndex = currentNodeIter->getBeginIndex();
 
     if(tokenString.first().getString() == ")")
     {
@@ -58,8 +58,8 @@ void Parser::buildParsingTree(const QString &sentence) const
     }
     else if(outermostParenthesisMismatch(tokenString))
     {
-        const unsigned int zeroIndexCompensation = 1;
-        const unsigned int endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
+        const auto zeroIndexCompensation = 1;
+        const auto endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
         throw ParsingErrorException<TokenString>("The outermost parenthesis doesn't match!",
                                                  beginIndex,
                                                  endIndex,
@@ -67,8 +67,8 @@ void Parser::buildParsingTree(const QString &sentence) const
     }
     else if(!isDelimiter(tokenString.first()) && tokenString.size() != 1)
     {
-        const unsigned int zeroIndexCompensation = 1;
-        const unsigned int endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
+        const auto zeroIndexCompensation = 1;
+        const auto endIndex = beginIndex + tokenString.size() - zeroIndexCompensation;
         throw ParsingErrorException<TokenString>("A string with more than one token should be an application, which uses parenthesis and none was found!",
                                                  beginIndex,
                                                  endIndex,
@@ -82,11 +82,11 @@ void Parser::buildParsingTree(const QString &sentence) const
 
 void Parser::checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter, const TokenString &tokenString) const
 {
-    const unsigned int minimumApplicatonArgumentNumber = 2;
+    const auto minimumApplicatonArgumentNumber = 2;
     if(argumentsOffsets.size() < static_cast<int>(minimumApplicatonArgumentNumber))
     {
-        const unsigned int beginIndex = currentNodeIter->getBeginIndex();
-        const unsigned int endIndex = currentNodeIter->getBeginIndex() + tokenString.size();
+        const auto beginIndex = currentNodeIter->getBeginIndex();
+        const auto endIndex = currentNodeIter->getBeginIndex() + tokenString.size();
 
         throw ParsingErrorException<TokenString>("An application should have at least two arguments!",
                                                  beginIndex,
@@ -97,13 +97,12 @@ void Parser::checkMinimumApplicationArgumentNumber(const QVector<ArgumentOffsets
 
 void Parser::appendArgumentsNodes(const QVector<ArgumentOffsets> &argumentsOffsets, ParsingTreeIterator currentNodeIter) const
 {
-    std::for_each(argumentsOffsets.begin(), argumentsOffsets.end(), [&currentNodeIter](const ArgumentOffsets &offsets)
+    for(const auto &offsets : argumentsOffsets)
     {
-        const unsigned int argumentBeginIndex = currentNodeIter->getBeginIndex() + offsets.beginOffset;
-        const unsigned int argumentEndIndex = currentNodeIter->getBeginIndex() + offsets.endOffset;
-
+        const auto argumentBeginIndex = currentNodeIter->getBeginIndex() + offsets.beginOffset;
+        const auto argumentEndIndex = currentNodeIter->getBeginIndex() + offsets.endOffset;
         currentNodeIter->appendChild(argumentBeginIndex, argumentEndIndex);
-    });
+    }
 }
 
 void Parser::parseArgumentsNodes(ParsingTreeIterator currentNodeIter) const
@@ -118,18 +117,18 @@ void Parser::parseArgumentsNodes(ParsingTreeIterator currentNodeIter) const
 
 void Parser::parseApplication(ParsingTreeIterator currentNodeIter) const
 {
-    const TokenString tokenString = currentNodeIter->getTokenString();
-    QVector<ArgumentOffsets> argumentsOffsets = separateArgumentOffsets(currentNodeIter);
+    const auto tokenString = currentNodeIter->getTokenString();
+    auto argumentsOffsets = separateArgumentOffsets(currentNodeIter);
     checkMinimumApplicationArgumentNumber(argumentsOffsets, currentNodeIter, tokenString);
 
     appendArgumentsNodes(argumentsOffsets, currentNodeIter);
 
-    parseArgumentsNodes(currentNodeIter); //FIXME There is a BUG IN HERE!
+    parseArgumentsNodes(currentNodeIter);
 }
 
 void Parser::parseSentence(ParsingTreeIterator currentNodeIter) const
 {
-    const TokenString tokenString = currentNodeIter->getTokenString();
+    const auto tokenString = currentNodeIter->getTokenString();
 
     if(tokenString.isEmpty())
     {
@@ -181,11 +180,11 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
 {
     QVector<ArgumentOffsets> offsets;
 
-    const TokenString tokenString = currentNodeIter->getTokenString();
-    const unsigned int firstDelimiterCompensation = 1;
-    const unsigned int lastOffset = tokenString.size() - firstDelimiterCompensation;
+    const auto tokenString = currentNodeIter->getTokenString();
+    const auto firstDelimiterCompensation = 1;
+    const auto lastOffset = tokenString.size() - firstDelimiterCompensation;
     unsigned int argumentBeginOffset = firstDelimiterCompensation;
-    unsigned int argumentEndOffset;
+    unsigned int argumentEndOffset = 0;
 
     while(argumentBeginOffset < lastOffset)
     {
@@ -266,7 +265,7 @@ const Type Parser::setMainOperatorType(ParsingTreeIterator iter) const
 
 void Parser::checkType(ParsingTreeIterator iter) const
 {
-    const TokenString tokenString = iter->getTokenString();
+    const auto tokenString = iter->getTokenString();
 
     if(isAtomic(tokenString))
     {
@@ -276,7 +275,7 @@ void Parser::checkType(ParsingTreeIterator iter) const
     else
     {
         QVector<Type> argumentsTypes;
-        const Type mainOperatorType = setMainOperatorType(iter);
+        const auto mainOperatorType = setMainOperatorType(iter);
 
         setArgumentsTypes(argumentsTypes, iter);
 
@@ -286,40 +285,39 @@ void Parser::checkType(ParsingTreeIterator iter) const
 
 void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix) const
 {
-    std::for_each(nodesMatrix.begin(), nodesMatrix.end(), [this](QVector<ParsingTreeNode *> &nodesRow)
+    for(auto &nodesRow : nodesMatrix)
     {
-        std::for_each(nodesRow.begin(), nodesRow.end(), [this](ParsingTreeNode *node)
+        for(auto node : nodesRow)
         {
             const TokenString currentNodeTokenString = node->getTokenString();
             if(isVariableToken(currentNodeTokenString))
             {
                 node->freeVariables.insert(dynamic_cast<const VariableToken *>(&currentNodeTokenString.first()));
             }
-        });
-    });
+        }
+    }
 }
 
 void Parser::performVariableBindingChecking() const
 {
-    QVector<QVector<ParsingTreeNode *>> nodesMatrix = orderNodesByLevel();
+    auto nodesMatrix = orderNodesByLevel();
     setVariablesNodes(nodesMatrix);
 
     //We go from the Bottom -> Up (Reverse Iterator)
-    //FIXME REFACTOR THIS +1
+    //NOTE REFACTOR THIS +1
     std::for_each(nodesMatrix.rbegin() + 1, nodesMatrix.rend(), [this](QVector<ParsingTreeNode *> &nodeRow)
     {
-        std::for_each(nodeRow.begin(), nodeRow.end(), [this](ParsingTreeNode *parentNode)
+        for(auto parentNode : nodeRow)
         {
             if(nodeHasBindingTokenAtChildren(parentNode))
             {
                 performVariableBinding(parentNode);
             }
             propagateFreeAndBoundVariables(parentNode);
-        });
+        }
     });
 
-    const ParsingTreeNode *root = &(*ParsingTreeIterator(parsingTree.get()));
-
+    const auto *root = &(*ParsingTreeIterator(parsingTree.get()));
     if(!root->freeVariables.isEmpty())
     {
         throw std::invalid_argument("There are free variables at the top level!");
@@ -331,7 +329,7 @@ QVector<QVector<ParsingTreeNode *> > Parser::orderNodesByLevel() const
 {
     QVector<QVector<ParsingTreeNode *>> nodesMatrix;
     ParsingTreeIterator iter(parsingTree.get());
-    ParsingTreeNode *root = &(*iter);
+    auto *root = &(*iter);
 
     //First Row
     QVector<ParsingTreeNode *> firstRow;
@@ -341,19 +339,15 @@ QVector<QVector<ParsingTreeNode *> > Parser::orderNodesByLevel() const
     //Remaining Rows
     for(unsigned int currentHeight = 1; currentHeight <= parsingTree->getHeight(); currentHeight++)
     {
-        const unsigned int parentRowCompensation = 1;
+        const auto parentRowCompensation = 1;
         QVector<ParsingTreeNode *> currentRow;
-        std::for_each(nodesMatrix[static_cast<int>(currentHeight - parentRowCompensation)].begin(),
-                      nodesMatrix[static_cast<int>(currentHeight - parentRowCompensation)].end(),
-                      [&currentRow](ParsingTreeNode *parentNode)
+        for(auto parentNode : nodesMatrix[currentHeight - parentRowCompensation])
         {
-            std::for_each(parentNode->children.begin(),
-                          parentNode->children.end(),
-                          [&currentRow](const shared_ptr<ParsingTreeNode> &childNode)
+            for(const auto &childNode : parentNode->children)
             {
                 currentRow.push_back(childNode.get());
-            });
-        });
+            }
+        }
         nodesMatrix.push_back(currentRow);
     }
 
@@ -374,27 +368,23 @@ bool Parser::nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const
 
 void Parser::performVariableBinding(ParsingTreeNode *parentNode) const
 {
-    const BindingToken *bindingToken = dynamic_cast<const BindingToken *>(&parentNode->children.first()->getTokenString().first());
-    QVector<std::shared_ptr<ParsingTreeNode>> &children = parentNode->children;
-    QVector<BindingRecord> records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
+    const auto *bindingToken = dynamic_cast<const BindingToken *>(&parentNode->children.first()->getTokenString().first());
+    auto &children = parentNode->children;
+    auto records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
 
-    std::for_each(records.begin(),
-                  records.end(),
-                  [&parentNode, &children, this](const BindingRecord &record)
+    for(const auto &record : records)
     {
-        const unsigned int firstChildIsBindingTokenItselfCompensation = 1;
-        const unsigned int bindingArgumentChildIndex = record.bindingArgumentIndex + firstChildIsBindingTokenItselfCompensation;
+        const auto firstChildIsBindingTokenItselfCompensation = 1;
+        const auto bindingArgumentChildIndex = record.bindingArgumentIndex + firstChildIsBindingTokenItselfCompensation;
         if(!isVariableToken(children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString()))
         {
             throw std::invalid_argument("Variable Token expected here!");
         }
         else
         {
-            const VariableToken *currentBindingVariable = dynamic_cast<const VariableToken *>(&children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString().first());
+            const auto *currentBindingVariable = dynamic_cast<const VariableToken *>(&children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString().first());
 
-            std::for_each(record.boundArgumentsIndexes.begin(),
-                          record.boundArgumentsIndexes.end(),
-                          [&currentBindingVariable, &parentNode, &children](const unsigned int boundArgumentIndex)
+            for(const auto boundArgumentIndex : record.boundArgumentsIndexes)
             {
                 const unsigned int boundArgumentChildIndex = boundArgumentIndex + firstChildIsBindingTokenItselfCompensation;
                 if(children[static_cast<int>(boundArgumentChildIndex)]->boundVariables.contains(currentBindingVariable)) //Care! Ptr comparison!
@@ -409,20 +399,20 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode) const
                 {
                     parentNode->boundVariables.insert(currentBindingVariable);
                 }
-            });
+            }
         }
-    });
+    }
 }
 
 void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode) const
 {
-    std::for_each(parentNode->children.begin(), parentNode->children.end(), [&parentNode](std::shared_ptr<ParsingTreeNode> childNode)
+    for(const auto childNode : parentNode->children)
     {
-        QSet<const VariableToken *> childFreeVariablesCopy = childNode->freeVariables; //So operation doesn't affect the original object
-
+        auto childFreeVariablesCopy = childNode->freeVariables; //So operation doesn't affect the original object
         parentNode->freeVariables.unite(childFreeVariablesCopy.subtract(parentNode->boundVariables));
         parentNode->boundVariables.unite(childNode->boundVariables);
-    });
+
+    }
 }
 
 

@@ -10,11 +10,12 @@ class TypeToken;
 class TypeTokenString
 {
 public:
-    TypeTokenString();
+    TypeTokenString() = default;
     TypeTokenString(QDataStream &stream);
     TypeTokenString(const QString &string);
 
-    TypeTokenString &operator =(const TypeTokenString &other) = default;
+    TypeTokenString(const TypeTokenString &) = default;
+    TypeTokenString &operator =(const TypeTokenString &) = default;
 
     QString toString() const;
 
@@ -31,6 +32,8 @@ public:
 
     bool operator==(const TypeTokenString &other) const;
     bool operator!=(const TypeTokenString &other) const;
+
+    ~TypeTokenString() = default;
 
 private:
     static Pool<TypeToken> pool;

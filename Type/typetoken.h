@@ -35,6 +35,8 @@ public:
 
     unsigned int getTokenCharacterSpan() const;
 
+    ~TypeToken() = default;
+
 private:
     TypeToken() = default;
     QString string;

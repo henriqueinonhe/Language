@@ -14,15 +14,15 @@ public:
 
     QVector<BindingRecord> getBindingRecords() const;
 
-    virtual QString tokenClass() const;
+    virtual QString tokenClass() const override;
 
-    virtual Token *getAllocatedClone() const;
+    virtual Token *getAllocatedClone() const override;
 
 
 protected:
-    virtual void serialize(QDataStream &stream) const;
+    virtual void serialize(QDataStream &stream) const override;
 
-    virtual bool isEqual(const Token &other) const;
+    virtual bool isEqual(const Token &other) const override;
 
 private:
 
@@ -42,7 +42,7 @@ private:
 
     QVector<BindingRecord> bindingRecords;
 
-    friend Token *Token::unserializePtr(QDataStream &stream);
+    friend Token *Token::deserializePtr(QDataStream &stream);
 };
 
 #endif // BINDINGTOKEN_H

@@ -45,22 +45,21 @@ ParsingTreeConstIterator &ParsingTreeConstIterator::travelPath(const QString &pa
         throw std::invalid_argument("This is not a valid path!");
     }
 
-    const QVector<unsigned int> pathVector = convertStringToPath(path);
-
-    std::for_each(pathVector.begin(), pathVector.end(), [&](unsigned int index)
+    const auto pathVector = convertStringToPath(path);
+    for(auto index : pathVector)
     {
         this->goToChild(index);
-    });
+    }
 
     return *this;
 }
 
 ParsingTreeConstIterator &ParsingTreeConstIterator::travelPath(const QVector<unsigned int> &path)
 {
-    std::for_each(path.begin(), path.end(), [&](unsigned int index)
+    for(auto index : path)
     {
         this->goToChild(index);
-    });
+    }
 
     return *this;
 }
@@ -107,20 +106,20 @@ bool ParsingTreeConstIterator::checkPathStringValidity(const QString &path) cons
 QVector<unsigned int> ParsingTreeConstIterator::convertStringToPath(const QString &path) const
 {
     QVector<unsigned int> pathVector;
-    const QString uncencasedPath = removeOuterParenthesis(path);
-    const QStringList coordinatesList = uncencasedPath.split(",");
+    const auto uncencasedPath = removeOuterParenthesis(path);
+    const auto coordinatesList = uncencasedPath.split(",");
 
-    std::for_each(coordinatesList.begin(), coordinatesList.end(), [&](const QString &str)
+    for(const auto &str : coordinatesList)
     {
         pathVector.push_back(static_cast<uint>(str.toInt()));
-    });
+    }
 
     return pathVector;
 }
 
 QString ParsingTreeConstIterator::removeOuterParenthesis(const QString &path) const
 {
-    const unsigned int parenthesisPadding = 1;
-    const unsigned int numberOfParenthesis = 2;
+    const auto parenthesisPadding = 1;
+    const auto numberOfParenthesis = 2;
     return path.mid(parenthesisPadding, static_cast<int>(static_cast<uint>(path.size()) - numberOfParenthesis * parenthesisPadding));
 }

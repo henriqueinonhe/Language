@@ -16,6 +16,9 @@ class TokenString
 public:
     TokenString();
     TokenString(QDataStream &stream, Signature * const signature);
+    TokenString(const TokenString &) = default;
+
+    TokenString &operator=(const TokenString &) = default;
 
     QString toString() const;
     QString formattedString() const;
@@ -34,6 +37,8 @@ public:
 
     bool operator==(const TokenString &other) const;
     bool operator!=(const TokenString &other) const;
+
+    ~TokenString() = default;
 
 private:
     bool tokenNeedsSubsequentSeparation(const QVector<const Token *> &tokenList, const int index) const;

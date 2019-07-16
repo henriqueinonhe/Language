@@ -14,12 +14,12 @@ Lexer::Lexer(Signature * const signature) :
 
 void Lexer::lexCoreToken(TokenString &tokenString, int &index, const QString &string) const
 {
-    const int tokenLookaheadCompensation = 1;
-    const int beginTokenIndex = index;
-    const int endTokenIndex = findTokenBreakpointIndex(string, beginTokenIndex) - tokenLookaheadCompensation;
-    const int tokenSpanCompensation = 1;
-    const int tokenSpan = endTokenIndex - beginTokenIndex + tokenSpanCompensation;
-    const QString token = string.mid(beginTokenIndex, tokenSpan);
+    const auto tokenLookaheadCompensation = 1;
+    const auto beginTokenIndex = index;
+    const auto endTokenIndex = findTokenBreakpointIndex(string, beginTokenIndex) - tokenLookaheadCompensation;
+    const auto tokenSpanCompensation = 1;
+    const auto tokenSpan = endTokenIndex - beginTokenIndex + tokenSpanCompensation;
+    const auto token = string.mid(beginTokenIndex, tokenSpan);
 
     tokenString.tokenList.push_back(signature->getTokenPointer(token));
 
@@ -39,7 +39,7 @@ TokenString Lexer::lex(const QString &string) const
 
     TokenString tokenString;
 
-    for(int index = 0; index < string.size(); index++)
+    for(auto index = 0; index < string.size(); index++)
     {
         if(string[index] == '(')
         {
@@ -76,7 +76,7 @@ bool Lexer::stringHasEnded(const QString &string, const int index) const
 
 int Lexer::findTokenBreakpointIndex(const QString &string, int beginIndex) const
 {
-    int &index = beginIndex;
+    auto &index = beginIndex;
     while(!isSeparator(string[index]))
     {
         index++;

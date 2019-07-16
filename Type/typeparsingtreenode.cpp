@@ -24,7 +24,7 @@ void TypeParsingTreeNode::printNodeToString(QString &str) const
      * 1st - (Parent Node Index, This Node Index)
      * 2nd - The Type Sort. */
 
-    const QVector<unsigned int> coordinates = getCoordinates();
+    const auto coordinates = getCoordinates();
     str += "(";
     if(coordinates.size() >= 2)
     {
@@ -64,7 +64,7 @@ QString TypeParsingTreeNode::mainOperatorToString() const
 
 void TypeParsingTreeNode::appendChild()
 {
-    const unsigned int stubIndex = 0;
+    const auto stubIndex = 0;
     children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, stubIndex, stubIndex)));
 }
 
@@ -73,7 +73,7 @@ void TypeParsingTreeNode::copyValues(const TypeParsingTreeNode &other)
     this->typeBeginIndex = other.typeBeginIndex;
     this->typeEndIndex = other.typeEndIndex;
     this->mainOperator = other.mainOperator;
-    for(int index = 0; index < other.children.size(); index++)
+    for(auto index = 0; index < other.children.size(); index++)
     {
         this->appendChild();
         this->children[index]->copyValues(*other.children[index]);
@@ -99,7 +99,7 @@ bool TypeParsingTreeNode::operator==(const TypeParsingTreeNode &other) const
         return false;
     }
 
-    for(int index = 0; index < children.size(); index++)
+    for(auto index = 0; index < children.size(); index++)
     {
         if(*children[index] != *other.children[index])
         {
@@ -139,7 +139,7 @@ QVector<unsigned int> TypeParsingTreeNode::getCoordinates() const
 {
     QVector<unsigned int> coordinates;
 
-    const TypeParsingTreeNode *ptr = this;
+    const auto *ptr = this;
     while(!ptr->isRoot())
     {
         coordinates.prepend(ptr->getOwnChildNumber());
@@ -152,7 +152,7 @@ QVector<unsigned int> TypeParsingTreeNode::getCoordinates() const
 QString TypeParsingTreeNode::coordinatesToString() const
 {
     QString coordinatesString;
-    const QVector<unsigned int> coordinates = getCoordinates();
+    const auto coordinates = getCoordinates();
 
     coordinatesString += "(";
     if(!coordinates.empty())
@@ -180,13 +180,13 @@ bool TypeParsingTreeNode::isChildless() const
 
 TypeTokenString TypeParsingTreeNode::getTypeString() const
 {
-    const unsigned int typeStringSize = typeEndIndex - typeBeginIndex + 1;
+    const auto typeStringSize = typeEndIndex - typeBeginIndex + 1;
     return tree->typeString.mid(typeBeginIndex, typeStringSize);
 }
 
 unsigned int TypeParsingTreeNode::getHeight() const
 {
-    unsigned int height = 0;
+    auto height = 0;
     const TypeParsingTreeNode *ptr = this;
     while(!ptr->isRoot())
     {
@@ -206,7 +206,7 @@ unsigned int TypeParsingTreeNode::getOwnChildNumber() const
 {
     const TypeParsingTreeNode *ptr = parent;
 
-    int ownChildNumber = 0;
+    auto ownChildNumber = 0;
     while(ptr->children[ownChildNumber].get() != this)
     {
         ownChildNumber++;
@@ -225,11 +225,10 @@ unsigned int TypeParsingTreeNode::getGreatestDescendantHeight() const
     {
         QVector<unsigned int> greatestDescendantHeightVector;
 
-        std::for_each(children.begin(), children.end(), [&greatestDescendantHeightVector](const shared_ptr<TypeParsingTreeNode> &node)
+        for(const auto &node : children)
         {
             greatestDescendantHeightVector.push_back(node->getGreatestDescendantHeight());
-        });
-
+        }
 
         return *std::max_element(greatestDescendantHeightVector.begin(),
                                 greatestDescendantHeightVector.end());
@@ -238,7 +237,7 @@ unsigned int TypeParsingTreeNode::getGreatestDescendantHeight() const
 
 void TypeParsingTreeNode::appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex)
 {
-    children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, typeBeginIndex, typeEndIndex))); //NOTE Be aware!
+    children.push_back(shared_ptr<TypeParsingTreeNode>(new TypeParsingTreeNode(this->tree, this, typeBeginIndex, typeEndIndex))); //NOTE Be aware! Be aware of what??
 }
 
 

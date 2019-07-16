@@ -2,11 +2,6 @@
 
 Pool<TypeToken> TypeTokenString::pool;
 
-TypeTokenString::TypeTokenString()
-{
-
-}
-
 TypeTokenString::TypeTokenString(QDataStream &stream)
 {
     stream >> *this;
@@ -20,10 +15,10 @@ TypeTokenString::TypeTokenString(const QString &string)
 QString TypeTokenString::toString() const
 {
     QString str;
-
-    std::for_each(tokenList.begin(), tokenList.end(), [&str](const PoolRecordPointer<TypeToken> &tokenRecord) {
+    for(const auto &tokenRecord : tokenList)
+    {
         str += tokenRecord->getString();
-    });
+    }
 
     return str;
 }
@@ -137,7 +132,7 @@ void TypeTokenString::lexPrimitiveTypeToken(const QString &string, int &index)
     /* Finds the extent of the primitive type token, that is, it keeps
      * on scanning until it finds a separator. */
 
-    const int startIndex = index;
+    const auto startIndex = index;
     while(index < string.size() && !characterIsSeparator(string[index])) //Size must be checked first, as string may have ended already
     {
         index++;
@@ -145,13 +140,13 @@ void TypeTokenString::lexPrimitiveTypeToken(const QString &string, int &index)
 
     tokenList.push_back(pool.getPointer(TypeToken(string.mid(startIndex, index - startIndex))));
 
-    const int tokenLookaheadCompensation = 1;
+    const auto tokenLookaheadCompensation = 1;
     index -= tokenLookaheadCompensation;
 }
 
 void TypeTokenString::lexString(const QString &string)
 {
-    for(int index = 0; index < string.size(); index++)
+    for(auto index = 0; index < string.size(); index++)
     {
         if(string[index] == '(')
         {
