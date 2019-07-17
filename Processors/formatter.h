@@ -14,7 +14,7 @@ class Formatter
 public:
     Formatter();
     Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors);
-    Formatter(const Formatter&) = delete;
+    Formatter(const Formatter&) = default;
 
     Formatter &operator=(const Formatter &) = delete;
     void deserialize(QDataStream &stream, const QVector<StringProcessor *> &processors);

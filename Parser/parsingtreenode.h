@@ -17,7 +17,6 @@ class ParsingTreeNode
 {
 public:
     ParsingTreeNode() = delete;
-    ParsingTreeNode(const ParsingTreeNode &) = delete;
 
     ParsingTreeNode &operator =(const ParsingTreeNode &) = delete;
 
