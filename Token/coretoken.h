@@ -20,9 +20,11 @@ public:
 
 protected:
     virtual void serialize(QDataStream &stream) const override;
-    virtual bool isEqual(const Token &other) const override;
 
 private:
+    bool isEqual(const Token &other) const override;
+    virtual bool isEqual(const CoreToken &other) const;
+
     Type type;
 
     friend Token *Token::deserializePtr(QDataStream &stream);

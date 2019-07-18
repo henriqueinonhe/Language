@@ -60,10 +60,15 @@ void BindingToken::serialize(QDataStream &stream) const
     stream << bindingRecords;
 }
 
-bool BindingToken::isEqual(const Token &other) const
+bool BindingToken::isEqual(const CoreToken &other) const
 {
-    return CoreToken::isEqual(other) &&
-           this->bindingRecords == static_cast<const BindingToken &>(other).bindingRecords;
+    return this->bindingRecords == static_cast<const BindingToken &>(other).bindingRecords &&
+            isEqual(static_cast<const BindingToken &>(other));
+}
+
+bool BindingToken::isEqual(const BindingToken &other) const
+{
+    return true;
 }
 
 void BindingToken::checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const

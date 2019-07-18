@@ -28,5 +28,10 @@ VariableToken::~VariableToken()
 
 bool VariableToken::isEqual(const Token &other) const
 {
-    return CoreToken::isEqual(other);
+    return isEqual(static_cast<const VariableToken &>(other));
+}
+
+bool VariableToken::isEqual(const VariableToken &other) const
+{
+    return true;
 }

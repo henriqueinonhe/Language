@@ -16,7 +16,8 @@ public:
     virtual ~VariableToken() override;
 
 protected:
-    virtual bool isEqual(const Token &other) const override;
+    bool isEqual(const Token &other) const override;
+    virtual bool isEqual(const VariableToken &other) const;
 
     friend Token *Token::deserializePtr(QDataStream &stream);
 };

@@ -12,11 +12,6 @@ Token::Token(const QString &string) :
 
 }
 
-bool Token::isEqual(const Token &other) const
-{
-    return this->string == other.string;
-}
-
 QDataStream &operator <<(QDataStream &stream, const Token &token)
 {
     token.serialize(stream);
@@ -64,7 +59,8 @@ bool Token::operator==(const Token &other) const
     }
     else
     {
-        return this->isEqual(other);
+        return this->string == other.string &&
+               isEqual(other);
     }
 }
 
@@ -76,17 +72,6 @@ bool Token::operator!=(const Token &other) const
 unsigned int Token::getTokenCharacterSpan() const
 {
     return static_cast<unsigned int>(string.size());
-}
-
-QString Token::tokenClass() const
-{
-    return "Token";
-}
-
-Token *Token::getAllocatedClone() const
-{
-    //This is due to polymorphic Token creation
-    return new Token(*this);
 }
 
 Token::~Token()

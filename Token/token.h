@@ -26,9 +26,9 @@ public:
 
     unsigned int getTokenCharacterSpan() const;
 
-    virtual QString tokenClass() const;
+    virtual QString tokenClass() const = 0;
 
-    virtual Token *getAllocatedClone() const;
+    virtual Token *getAllocatedClone() const = 0;
 
     virtual ~Token();
 
@@ -37,10 +37,11 @@ protected:
     Token(QDataStream &stream);
     Token(const QString &string);
 
-    virtual bool isEqual(const Token &other) const;
     virtual void serialize(QDataStream &stream) const;
 
 private:
+    virtual bool isEqual(const Token &other) const = 0;
+
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const Token &token);

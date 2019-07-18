@@ -27,7 +27,11 @@ Token *PunctuationToken::getAllocatedClone() const
 
 bool PunctuationToken::isEqual(const Token &other) const
 {
-    return Token::isEqual(other) &&
-           this->tokenClass() == other.tokenClass();
+    return isEqual(static_cast<const PunctuationToken &>(other));
+}
+
+bool PunctuationToken::isEqual(const PunctuationToken &other) const
+{
+    return true;
 }
 

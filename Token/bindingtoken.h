@@ -20,7 +20,8 @@ public:
 
 private:
     virtual void serialize(QDataStream &stream) const override;
-    virtual bool isEqual(const Token &other) const override;
+    bool isEqual(const CoreToken &other) const override;
+    virtual bool isEqual(const BindingToken &other) const;
 
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 
