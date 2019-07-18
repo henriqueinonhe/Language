@@ -38,7 +38,6 @@ TokenString Lexer::lex(const QString &string) const
     //2st - Type assignment.
 
     TokenString tokenString;
-
     for(auto index = 0; index < string.size(); index++)
     {
         if(string[index] == '(')

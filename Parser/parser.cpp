@@ -269,7 +269,7 @@ void Parser::checkType(ParsingTreeIterator iter) const
 
     if(isAtomic(tokenString))
     {
-        iter->setType(dynamic_cast<const CoreToken &>(tokenString.first()).getType());
+        iter->setType(static_cast<const CoreToken &>(tokenString.first()).getType());
         return;
     }
     else
@@ -292,7 +292,7 @@ void Parser::setVariablesNodes(QVector<QVector<ParsingTreeNode *>> &nodesMatrix)
             const TokenString currentNodeTokenString = node->getTokenString();
             if(isVariableToken(currentNodeTokenString))
             {
-                node->freeVariables.insert(dynamic_cast<const VariableToken *>(&currentNodeTokenString.first()));
+                node->freeVariables.insert(static_cast<const VariableToken *>(&currentNodeTokenString.first()));
             }
         }
     }
@@ -368,7 +368,7 @@ bool Parser::nodeHasBindingTokenAtChildren(const ParsingTreeNode *node) const
 
 void Parser::performVariableBinding(ParsingTreeNode *parentNode) const
 {
-    const auto *bindingToken = dynamic_cast<const BindingToken *>(&parentNode->children.first()->getTokenString().first());
+    const auto *bindingToken = static_cast<const BindingToken *>(&parentNode->children.first()->getTokenString().first());
     auto &children = parentNode->children;
     auto records = bindingToken->getBindingRecords();  //Remember that iterators are implemented internally as pointers, so if you get the same object two different times by value, their pointers, even tough they point to to equal objects, will be different!
 
@@ -382,7 +382,7 @@ void Parser::performVariableBinding(ParsingTreeNode *parentNode) const
         }
         else
         {
-            const auto *currentBindingVariable = dynamic_cast<const VariableToken *>(&children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString().first());
+            const auto *currentBindingVariable = static_cast<const VariableToken *>(&children[static_cast<int>(bindingArgumentChildIndex)]->getTokenString().first());
 
             for(const auto boundArgumentIndex : record.boundArgumentsIndexes)
             {

@@ -13,10 +13,8 @@ public:
 
     virtual Token *getAllocatedClone() const override;
 
-protected:
-    virtual bool isEqual(const Token &other) const override;
-
 private:
+    virtual bool isEqual(const Token &other) const override;
 
     friend Token *Token::deserializePtr(QDataStream &stream);
 };

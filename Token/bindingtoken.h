@@ -18,13 +18,9 @@ public:
 
     virtual Token *getAllocatedClone() const override;
 
-
-protected:
-    virtual void serialize(QDataStream &stream) const override;
-
-    virtual bool isEqual(const Token &other) const override;
-
 private:
+    virtual void serialize(QDataStream &stream) const override;
+    virtual bool isEqual(const Token &other) const override;
 
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 

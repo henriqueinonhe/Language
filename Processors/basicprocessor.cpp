@@ -22,6 +22,7 @@ void BasicProcessor::addTokenRecord(const QString &token, const unsigned int pos
             throw std::invalid_argument("Associativity mismatch!");
         }
 
+        //NOTE What if the token associated with QString "token" is not actually a core token?
         const auto &coreToken = dynamic_cast<const CoreToken &>(*(signature->getTokenPointer(token)));
         tokenPositionIterator->tokenSubRecordList.push_back(BasicProcessorTokenRecord::TokenSubRecord(coreToken, position, coreToken.getType().getNumberOfArguments()));
     }

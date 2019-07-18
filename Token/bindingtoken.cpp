@@ -63,7 +63,7 @@ void BindingToken::serialize(QDataStream &stream) const
 bool BindingToken::isEqual(const Token &other) const
 {
     return CoreToken::isEqual(other) &&
-            this->bindingRecords == dynamic_cast<const BindingToken &>(other).bindingRecords;
+           this->bindingRecords == static_cast<const BindingToken &>(other).bindingRecords;
 }
 
 void BindingToken::checkEmptyRecords(const QVector<BindingRecord> &bindingRecords) const
@@ -132,7 +132,7 @@ void BindingToken::validateBindingRecordsArguments(const QVector<BindingRecord> 
 
     const auto greatestBindingArgumentNumber = getGreatestBindingArgumentNumber(bindingArgumentsIndexes);
     const auto greatestBoundArgumentNumber = getGreatestBoundArgumentNumber(boundArgumentsIndexes);
-    const auto numberOfArguments = static_cast<unsigned int>(type.getArgumentsTypes().size());
+    const auto numberOfArguments = static_cast<unsigned int>(getType().getArgumentsTypes().size());
 
     checkNumberOfArgumentsConsistency(greatestBindingArgumentNumber, greatestBoundArgumentNumber, numberOfArguments);
 }

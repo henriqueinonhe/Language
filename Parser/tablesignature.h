@@ -15,7 +15,7 @@ public:
     TableSignature();
     TableSignature(QDataStream &stream);
 
-    virtual const Token *getTokenPointer(const QString &token);
+    virtual const Token *getTokenPointer(const QString &token) override;
 
     void addToken(const Token &token);
 
@@ -25,8 +25,8 @@ public:
     bool equalTokenTable(const TableSignature &other) const;
 
 protected:
-    virtual void serialize(QDataStream &stream) const;
-    virtual void deserialize(QDataStream &stream);
+    virtual void serialize(QDataStream &stream) const override;
+    virtual void deserialize(QDataStream &stream) override;
 
 private:
     bool tokenIsAlreadyPresentInSignature(const Token &token) const;

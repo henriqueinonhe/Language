@@ -1,4 +1,4 @@
-﻿#include "punctuationtoken.h"
+#include "punctuationtoken.h"
 
 PunctuationToken::PunctuationToken(QDataStream &stream) :
     Token(stream)
@@ -12,10 +12,6 @@ PunctuationToken::PunctuationToken(const QString &string) :
        string != ")")
     {
         throw std::invalid_argument("A punctuation token must be a left parenthesis or a right parenthesis!");
-    }
-    else
-    {
-        this->string = string;
     }
 }
 
@@ -31,6 +27,7 @@ Token *PunctuationToken::getAllocatedClone() const
 
 bool PunctuationToken::isEqual(const Token &other) const
 {
-    return Token::isEqual(other);
+    return Token::isEqual(other) &&
+           this->tokenClass() == other.tokenClass();
 }
 

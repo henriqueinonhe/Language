@@ -50,7 +50,7 @@ void CoreToken::serialize(QDataStream &stream) const
 bool CoreToken::isEqual(const Token &other) const
 {
     return Token::isEqual(other) &&
-            this->type == dynamic_cast<const CoreToken &>(other).type;
+           this->type == static_cast<const CoreToken &>(other).type;
 }
 
 QDataStream &operator <<(QDataStream &stream, const CoreToken &token)

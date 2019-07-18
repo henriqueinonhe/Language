@@ -38,9 +38,9 @@ protected:
     Token(const QString &string);
 
     virtual bool isEqual(const Token &other) const;
-
     virtual void serialize(QDataStream &stream) const;
 
+private:
     QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const Token &token);

@@ -121,6 +121,7 @@ bool BasicPostProcessor::hasLowerIndex(const BasicProcessor::TokenStringWrapperI
 
 unsigned int BasicPostProcessor::getOperatorArity(const SubSentenceRecord &mainSentenceRecord) const
 {
+    //NOTE Make sure this is actually a core token!
     const auto operatorArity = dynamic_cast<const CoreToken *>(signature->getTokenPointer(mainSentenceRecord.operatorIterator->token))->getType().getNumberOfArguments();
 
     return operatorArity;
