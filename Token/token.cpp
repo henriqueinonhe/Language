@@ -5,6 +5,7 @@
 #include "variabletoken.h"
 #include "coretoken.h"
 #include "bindingtoken.h"
+#include <typeinfo>
 
 Token::Token(const QString &string) :
     string(string)
@@ -83,10 +84,10 @@ QString Token::tokenClass() const
     return "Token";
 }
 
-Token *Token::getAllocatedClone() const
+unique_ptr<Token> Token::getAllocatedClone() const
 {
     //This is due to polymorphic Token creation
-    return new Token(*this);
+    return unique_ptr<Token>(new Token(*this));
 }
 
 Token::~Token()

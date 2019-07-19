@@ -31,9 +31,9 @@ QString CoreToken::tokenClass() const
     return "CoreToken";
 }
 
-Token *CoreToken::getAllocatedClone() const
+unique_ptr<Token> CoreToken::getAllocatedClone() const
 {
-    return new CoreToken(*this);
+    return unique_ptr<Token>(new CoreToken(*this));
 }
 
 CoreToken::~CoreToken()

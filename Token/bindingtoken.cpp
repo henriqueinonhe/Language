@@ -49,9 +49,9 @@ QString BindingToken::tokenClass() const
     return "BindingToken";
 }
 
-Token *BindingToken::getAllocatedClone() const
+unique_ptr<Token> BindingToken::getAllocatedClone() const
 {
-    return new BindingToken(*this);
+    return unique_ptr<Token>(new BindingToken(*this));
 }
 
 void BindingToken::serialize(QDataStream &stream) const

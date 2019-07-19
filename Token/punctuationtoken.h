@@ -11,7 +11,7 @@ public:
 
     virtual QString tokenClass() const override;
 
-    virtual Token *getAllocatedClone() const override;
+    virtual unique_ptr<Token> getAllocatedClone() const override;
 
 private:
     virtual bool isEqual(const Token &other) const override;

@@ -3,7 +3,6 @@
 
 #include <QString>
 #include <memory>
-#include <typeinfo>
 
 using namespace std;
 
@@ -28,7 +27,7 @@ public:
 
     virtual QString tokenClass() const;
 
-    virtual Token *getAllocatedClone() const;
+    virtual unique_ptr<Token> getAllocatedClone() const;
 
     virtual ~Token();
 

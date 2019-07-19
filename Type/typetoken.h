@@ -21,6 +21,7 @@ public:
 
     TypeToken(QDataStream &stream);
     TypeToken(const QString &string);
+    ~TypeToken() = default;
 
     TypeToken(const TypeToken &other) = default;
     TypeToken &operator =(const TypeToken &) = delete;
@@ -34,8 +35,6 @@ public:
     QString getString() const;
 
     unsigned int getTokenCharacterSpan() const;
-
-    ~TypeToken() = default;
 
 private:
     TypeToken() = default;

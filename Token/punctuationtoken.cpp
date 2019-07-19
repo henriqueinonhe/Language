@@ -20,9 +20,9 @@ QString PunctuationToken::tokenClass() const
     return "PunctuationToken";
 }
 
-Token *PunctuationToken::getAllocatedClone() const
+unique_ptr<Token> PunctuationToken::getAllocatedClone() const
 {
-    return new PunctuationToken(*this);
+    return unique_ptr<Token>(new PunctuationToken(*this));
 }
 
 bool PunctuationToken::isEqual(const Token &other) const
