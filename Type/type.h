@@ -13,6 +13,10 @@ class CoreToken;
 
 using namespace std;
 
+/* Class Invariants:
+ * Type uses a TypeParsingTree as an internal type representation
+ * and this TypeParsingTree represents a valid type and is immutable. */
+
 class Type
 {
 public:
@@ -45,7 +49,7 @@ private:
 
     Type &operator =(const Type &other);
 
-    unique_ptr<TypeParsingTree> parsingTree;
+    unique_ptr<const TypeParsingTree> parsingTree;
 
     friend class QVector<Type>;
     friend class TypeParser;

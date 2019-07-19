@@ -31,6 +31,7 @@ DEPENDPATH += Parser \
               $$PWD
 
 SOURCES += main.cpp \
+    Type/typeparsingtreeconstiterator.cpp \
     qtclassesdeserialization.cpp \
     tests.cpp \
     Parser/formula.cpp \
@@ -76,6 +77,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    Type/typeparsingtreeconstiterator.h \
     catch.hpp \
     Parser/formula.h \
     Parser/lexer.h \

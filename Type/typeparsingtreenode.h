@@ -84,6 +84,7 @@ private:
     MainOperator mainOperator; //NOTE This can be made constant if I change the way Type Parser works a bit
     QVector<shared_ptr<TypeParsingTreeNode>> children;
 
+friend class TypeParsingTreeConstIterator;
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTree;
 friend QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode &node);

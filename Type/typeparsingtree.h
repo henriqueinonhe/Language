@@ -43,6 +43,7 @@ private:
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTreeNode;
+friend class TypeParsingTreeConstIterator;
 friend QDataStream &operator <<(QDataStream &stream, const TypeParsingTree &tree);
 };
 

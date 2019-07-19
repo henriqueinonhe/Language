@@ -2,6 +2,7 @@
 #include <QDataStream>
 #include "typeparser.h"
 #include "typeparsingtreeiterator.h"
+#include "typeparsingtreeconstiterator.h"
 #include <QVector>
 
 Type::Type(QDataStream &stream) :
@@ -67,7 +68,7 @@ Type &Type::operator =(const Type &other)
 
 Type Type::getReturnType() const
 {
-    TypeParsingTreeIterator iter(parsingTree.get());
+    TypeParsingTreeConstIterator iter(parsingTree.get());
     if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
     {
         return Type(iter->getTypeString());
@@ -96,7 +97,7 @@ bool Type::isOperator() const
 
 QVector<Type> Type::getArgumentsTypes() const
 {
-    TypeParsingTreeIterator iter(parsingTree.get());
+    TypeParsingTreeConstIterator iter(parsingTree.get());
     if(iter->getMainOperator() == TypeParsingTreeNode::MainOperator::Primitive)
     {
         return QVector<Type>();
