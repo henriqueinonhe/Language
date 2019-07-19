@@ -14,11 +14,15 @@ class VariableToken;
 class Token
 {
 public:
+    Token() = delete;
+    Token(Token &&) = default;
+    Token &operator =(const Token &other) = delete;
+    Token &operator =(Token &&) = default;
+    virtual ~Token() = default;
+
     static Token *deserializePtr(QDataStream &stream);
 
     QString getString() const;
-
-    Token &operator =(const Token &other) = delete;
 
     bool operator==(const Token &other) const;
     bool operator!=(const Token &other) const;
@@ -29,10 +33,9 @@ public:
 
     virtual unique_ptr<Token> getAllocatedClone() const;
 
-    virtual ~Token();
-
-
 protected:
+    Token(const Token &other) = default;
+
     Token(QDataStream &stream);
     Token(const QString &string);
 
@@ -40,7 +43,7 @@ protected:
     virtual void serialize(QDataStream &stream) const;
 
 private:
-    QString string;
+    const QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const Token &token);
 };

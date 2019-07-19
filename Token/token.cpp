@@ -6,6 +6,7 @@
 #include "coretoken.h"
 #include "bindingtoken.h"
 #include <typeinfo>
+#include "qtclassesdeserialization.h"
 
 Token::Token(const QString &string) :
     string(string)
@@ -90,17 +91,12 @@ unique_ptr<Token> Token::getAllocatedClone() const
     return unique_ptr<Token>(new Token(*this));
 }
 
-Token::~Token()
-{
-
-}
-
 void Token::serialize(QDataStream &stream) const
 {
     stream << tokenClass() << string;
 }
 
-Token::Token(QDataStream &stream)
+Token::Token(QDataStream &stream) :
+    string(QtDeserialization::deserializeQString(stream))
 {
-    stream >> string;
 }
