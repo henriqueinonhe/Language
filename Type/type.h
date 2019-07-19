@@ -52,8 +52,7 @@ private:
     unique_ptr<const TypeParsingTree> parsingTree;
 
     friend class QVector<Type>;
-    friend class TypeParser;
-    friend class ParsingTreeNode;
+    friend class ParsingTreeNode; //TODO Remove this intrusion
     friend QDataStream &operator <<(QDataStream &stream, const Type &type);
 };
 
