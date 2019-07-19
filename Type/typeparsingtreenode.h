@@ -12,7 +12,7 @@ class Type;
 
 using namespace std;
 
-class TypeParsingTreeNode
+class TypeParsingTreeNode final
 {
 public:
     enum class MainOperator : unsigned int
@@ -22,9 +22,14 @@ public:
         Product
     };
 
+    static MainOperator deserializeMainOperator(QDataStream &stream);
+
     TypeParsingTreeNode() = delete;
     TypeParsingTreeNode(const TypeParsingTreeNode &other) = delete;
+    TypeParsingTreeNode(TypeParsingTreeNode &&) = delete;
     TypeParsingTreeNode &operator=(const TypeParsingTreeNode &other) = delete;
+    TypeParsingTreeNode &operator=(TypeParsingTreeNode &&) = delete;
+    ~TypeParsingTreeNode() = default;
 
     void appendChild(const unsigned int typeBeginIndex, const unsigned int typeEndIndex);
 
@@ -50,11 +55,14 @@ public:
     bool operator==(const TypeParsingTreeNode &other) const;
     bool operator!=(const TypeParsingTreeNode &other) const;
 
-    ~TypeParsingTreeNode() = default;
+    TypeParsingTreeNode(const TypeParsingTreeNode &other,
+                        const TypeParsingTree *tree,
+                        const TypeParsingTreeNode *parent); //How could we make this private?
+    TypeParsingTreeNode(QDataStream &stream,
+                        const TypeParsingTree *tree,
+                        const TypeParsingTreeNode *parent); //How could we make this private?
 
 private:
-    TypeParsingTreeNode(QDataStream &stream);
-    TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree);
     TypeParsingTreeNode(const TypeParsingTree *tree,
                         const TypeParsingTreeNode *parent,
                         const unsigned int typeBeginIndex,
@@ -65,25 +73,24 @@ private:
     void printNodeToString(QString &str) const;
     QString mainOperatorToString() const;
     void appendChild();
+    QVector<shared_ptr<TypeParsingTreeNode>> deepCopyChildren(const QVector<shared_ptr<TypeParsingTreeNode>> &source,
+                                                              const TypeParsingTree *tree,
+                                                              const TypeParsingTreeNode *parent) const;
 
-    void copyValues(const TypeParsingTreeNode &other);
-
-    const TypeParsingTree *tree;
-    const TypeParsingTreeNode *parent;
-    QVector<shared_ptr<TypeParsingTreeNode>> children;
-    unsigned int typeBeginIndex;
-    unsigned int typeEndIndex;
+    const TypeParsingTree * const tree;
+    const TypeParsingTreeNode * const parent;
+    const unsigned int typeBeginIndex;
+    const unsigned int typeEndIndex;
     MainOperator mainOperator;
+    QVector<shared_ptr<TypeParsingTreeNode>> children;
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTree;
 friend QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode &node);
 friend QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode &node);
-
 };
 
 QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode &node);
-QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode &node);
 QDataStream &operator <<(QDataStream &stream, const TypeParsingTreeNode::MainOperator mainOperator);
 QDataStream &operator >>(QDataStream &stream, TypeParsingTreeNode::MainOperator &mainOperator);
 

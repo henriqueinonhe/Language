@@ -5,7 +5,12 @@
 
 template <class T> class PoolRecord;
 
-class TypeToken
+/* Class Invariant:
+ * A TypeToken ALWAYS represent a valid TypeToken
+ * and it holds that token until the end of its life,
+ * that is, it is not mutable and therefore not copyable. */
+
+class TypeToken final
 {
 public:
     enum class Sort : unsigned char
@@ -19,12 +24,14 @@ public:
         PrimitiveType
     };
 
-    TypeToken(QDataStream &stream);
-    TypeToken(const QString &string);
+    TypeToken(const TypeToken &other) = default;
+    TypeToken(TypeToken &&) = default;
+    TypeToken &operator =(const TypeToken &) = delete;
+    TypeToken &operator =(TypeToken &&) = default;
     ~TypeToken() = default;
 
-    TypeToken(const TypeToken &other) = default;
-    TypeToken &operator =(const TypeToken &) = delete;
+    TypeToken(QDataStream &stream);
+    TypeToken(const QString &string);
 
     Sort sort() const;
     static Sort sort(const QString &string);
@@ -38,7 +45,7 @@ public:
 
 private:
     TypeToken() = default;
-    QString string;
+    const QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeToken &token);
     friend class PoolRecord<TypeToken>;

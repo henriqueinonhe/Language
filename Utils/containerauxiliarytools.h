@@ -62,7 +62,7 @@ public:
         {
              stream << *content;
         });
-    }
+    } //TODO Refactor to accept only smart pointers if possible
 
     template <class T1, class T2> static void deserializeSmartPointerContainer(T1 &stream, T2 &container)
     {
@@ -70,6 +70,16 @@ public:
         {
             stream >> *content;
         });
+    }//TODO Refactor to accept only smart pointers if possible
+
+    template <class Container> static Container sharedPointerContainerDeepCopy(const Container &source)
+    {
+        Container copy;
+        for(const auto &ptr : source)
+        {
+            copy.push_back(std::make_shared(*ptr));
+        }
+        return copy;
     }
 
 private:

@@ -7,15 +7,18 @@
 
 class TypeToken;
 
-class TypeTokenString
+class TypeTokenString final
 {
 public:
     TypeTokenString() = default;
+    TypeTokenString(const TypeTokenString &) = default;
+    TypeTokenString(TypeTokenString &&) = default;
+    TypeTokenString &operator =(const TypeTokenString &) = default;
+    TypeTokenString &operator =(TypeTokenString &&) = default;
+    ~TypeTokenString() = default;
+
     TypeTokenString(QDataStream &stream);
     TypeTokenString(const QString &string);
-
-    TypeTokenString(const TypeTokenString &) = default;
-    TypeTokenString &operator =(const TypeTokenString &) = default;
 
     QString toString() const;
 
@@ -33,8 +36,6 @@ public:
     bool operator==(const TypeTokenString &other) const;
     bool operator!=(const TypeTokenString &other) const;
 
-    ~TypeTokenString() = default;
-
 private:
     static Pool<TypeToken> pool;
 
@@ -49,7 +50,6 @@ private:
 
     friend QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);
     friend QDataStream &operator >>(QDataStream &stream, TypeTokenString &string);
-    friend class Type;
 };
 
 QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string);

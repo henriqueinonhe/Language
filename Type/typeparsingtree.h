@@ -5,17 +5,25 @@
 #include "typeparsingtreenode.h"
 #include "typetokenstring.h"
 
+/* Class Invariant:
+ * A TypeParsingTree holds the same const TypeTokenString
+ * until the end of its life, therefore it is not copy constructible
+   assignable. */
+
 using namespace std;
 
-class TypeParsingTree //NOTE Maybe I should implement a Const Iterator.
+class TypeParsingTree final //NOTE Maybe I should implement a Const Iterator.
 {
 public:
     TypeParsingTree() = delete;
+    TypeParsingTree(const TypeParsingTree &other);
+    TypeParsingTree(TypeParsingTree &&) = default;
+    TypeParsingTree &operator=(const TypeParsingTree &other) = delete;
+    TypeParsingTree &operator=(TypeParsingTree &&) = default;
+    ~TypeParsingTree() = default;
+
     TypeParsingTree(QDataStream &stream);
     TypeParsingTree(const TypeTokenString &typeString);
-
-    TypeParsingTree(const TypeParsingTree &other);
-    TypeParsingTree &operator=(const TypeParsingTree &other) = delete;
 
     TypeParsingTreeIterator getIter();
 
@@ -29,16 +37,13 @@ public:
 
     const TypeTokenString &getTypeString() const;
 
-    ~TypeParsingTree() = default;
-
 private:
     TypeParsingTreeNode root;
-    TypeTokenString typeString;
+    const TypeTokenString typeString;
 
 friend class TypeParsingTreeIterator;
 friend class TypeParsingTreeNode;
 friend QDataStream &operator <<(QDataStream &stream, const TypeParsingTree &tree);
-
 };
 
 

@@ -2,7 +2,7 @@
 #include "typeparsingtreeiterator.h"
 
 TypeParsingTree::TypeParsingTree(QDataStream &stream) :
-    root(stream),
+    root(stream, this, nullptr),
     typeString(stream)
 {
 
@@ -15,7 +15,7 @@ TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
 }
 
 TypeParsingTree::TypeParsingTree(const TypeParsingTree &other) :
-    root(other.root, this),
+    root(other.root, this, nullptr),
     typeString(other.typeString)
 {
 }
@@ -79,6 +79,8 @@ bool TypeParsingTree::operator!=(const TypeParsingTree &other) const
 
 bool TypeParsingTree::deepEqualityCheck(const TypeParsingTree &other) const
 {
+    //Not sure what is the purpose of this method
+    //once the == operator should suffice (given the class invariants).
     if(this->typeString != other.typeString)
     {
         return false;

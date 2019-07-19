@@ -6,16 +6,17 @@
  * via initialization, that is, via a "Copy Constructor"
  * instead of a "Copy Assignment" */
 
-#include <QString>
-#include <QStringList>
+#include <QDataStream>
+#include <memory>
 #include <QVector>
 #include <QLinkedList>
-#include <QDataStream>
 
 class QDataStream;
 
 namespace QtDeserialization {
 
+    int deserializeInt(QDataStream &stream);
+    unsigned int deserializeUInt(QDataStream &stream);
     QString deserializeQString(QDataStream &stream);
     QStringList deserializeQStringList(QDataStream &stream);
 
@@ -33,6 +34,20 @@ namespace QtDeserialization {
         QLinkedList<T> list;
         stream >> list;
         return list;
+    }
+
+    template <class T, class ... Args>
+    QVector<std::shared_ptr<T>> deserializeSharedPointerQVector(QDataStream &stream, Args ... args)
+    {
+        //NOTE Not quite sure this is right!
+        int size;
+        stream >> size;
+        QVector<std::shared_ptr<T>> vec;
+        for(auto i = 0; i < size; i++)
+        {
+            vec.push_back(std::make_shared<T>(stream, args ...));
+        }
+        return vec;
     }
 }
 
