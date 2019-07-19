@@ -81,7 +81,7 @@ private:
     const TypeParsingTreeNode * const parent;
     const unsigned int typeBeginIndex;
     const unsigned int typeEndIndex;
-    MainOperator mainOperator;
+    MainOperator mainOperator; //NOTE This can be made constant if I change the way Type Parser works a bit
     QVector<shared_ptr<TypeParsingTreeNode>> children;
 
 friend class TypeParsingTreeIterator;
