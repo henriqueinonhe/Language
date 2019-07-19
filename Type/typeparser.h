@@ -17,7 +17,9 @@ class TypeParser
 public:
     TypeParser() = delete;
     TypeParser(const TypeParser &) = delete;
+    TypeParser(TypeParser &&) = delete;
     TypeParser &operator=(const TypeParser &) = delete;
+    TypeParser &operator=(TypeParser &&) = delete;
     ~TypeParser() = delete;
 
 private:
