@@ -1,18 +1,19 @@
 #include "bindingtoken.h"
 #include <QDataStream>
 #include "containerauxiliarytools.h"
+#include "qtclassesdeserialization.h"
 
 BindingToken::BindingToken(QDataStream &stream) :
-    CoreToken(stream)
+    CoreToken(stream),
+    bindingRecords(QtDeserialization::deserializeQVector<BindingRecord>(stream))
 {
-    stream >> bindingRecords;
 }
 
 BindingToken::BindingToken(const QString &token, const Type &type, const QVector<BindingRecord> &bindingRecords) :
-    CoreToken(token, type)
+    CoreToken(token, type),
+    bindingRecords(bindingRecords)
 {
     validateBindingRecords(bindingRecords);
-    this->bindingRecords = bindingRecords;
 }
 
 QVector<unsigned int> BindingToken::gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const

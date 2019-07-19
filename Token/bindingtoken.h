@@ -7,6 +7,12 @@
 class BindingToken : public CoreToken
 {
 public:
+    BindingToken() = delete;
+    BindingToken(BindingToken &&) = default;
+    BindingToken &operator =(const BindingToken &) = delete;
+    BindingToken &operator =(BindingToken &&) = default;
+    virtual ~BindingToken() = default;
+
     BindingToken(QDataStream &stream);
     BindingToken(const QString &token,
                  const Type &type,
@@ -18,10 +24,13 @@ public:
 
     virtual unique_ptr<Token> getAllocatedClone() const override;
 
-private:
+protected:
+    BindingToken(const BindingToken &) = default;
+
     virtual void serialize(QDataStream &stream) const override;
     virtual bool isEqual(const Token &other) const override;
 
+private:
     void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 
     QVector<unsigned int> gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
@@ -36,7 +45,7 @@ private:
     void checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkNumberOfArgumentsConsistency(const unsigned int greatestBindingArgumentNumber, const unsigned int greatestBoundArgumentNumber, const unsigned int numberOfArguments) const;
 
-    QVector<BindingRecord> bindingRecords;
+    const QVector<BindingRecord> bindingRecords;
 
     friend Token *Token::deserializePtr(QDataStream &stream);
 };

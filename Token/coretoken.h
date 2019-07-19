@@ -7,6 +7,12 @@
 class CoreToken : public Token
 {
 public:
+    CoreToken() = delete;
+    CoreToken(CoreToken &&) = default;
+    CoreToken &operator =(const CoreToken &other) = default;
+    CoreToken &operator =(CoreToken &&) = default;
+    virtual ~CoreToken() = default;
+
     CoreToken(QDataStream &stream);
     CoreToken(const QString &string, const Type &type);
 
@@ -16,14 +22,15 @@ public:
 
     virtual unique_ptr<Token> getAllocatedClone() const override;
 
-    virtual ~CoreToken();
 
 protected:
+    CoreToken(const CoreToken &other) = default;
+
     virtual void serialize(QDataStream &stream) const override;
     virtual bool isEqual(const Token &other) const override;
 
 private:
-    Type type;
+    const Type type;
 
     friend Token *Token::deserializePtr(QDataStream &stream);
     friend QDataStream &operator <<(QDataStream &stream, const CoreToken &token);

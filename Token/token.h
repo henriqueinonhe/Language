@@ -20,6 +20,9 @@ public:
     Token &operator =(Token &&) = default;
     virtual ~Token() = default;
 
+    Token(QDataStream &stream);
+    Token(const QString &string);
+
     static Token *deserializePtr(QDataStream &stream);
 
     QString getString() const;
@@ -35,9 +38,6 @@ public:
 
 protected:
     Token(const Token &other) = default;
-
-    Token(QDataStream &stream);
-    Token(const QString &string);
 
     virtual bool isEqual(const Token &other) const;
     virtual void serialize(QDataStream &stream) const;

@@ -36,11 +36,6 @@ unique_ptr<Token> CoreToken::getAllocatedClone() const
     return unique_ptr<Token>(new CoreToken(*this));
 }
 
-CoreToken::~CoreToken()
-{
-
-}
-
 void CoreToken::serialize(QDataStream &stream) const
 {
     Token::serialize(stream);

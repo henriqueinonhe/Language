@@ -5,16 +5,19 @@
 
 class QDataStream;
 
-struct BindingRecord
+struct BindingRecord final
 {
 public:
-    BindingRecord();
-    BindingRecord(QDataStream &stream);
+    BindingRecord() = default;
     BindingRecord(const BindingRecord &) = default;
+    BindingRecord(BindingRecord &&) = default;
+    BindingRecord &operator =(const BindingRecord &) = default;
+    BindingRecord &operator =(BindingRecord &&) = default;
+    ~BindingRecord() = default;
+
+    BindingRecord(QDataStream &stream);
     BindingRecord(const unsigned int bindingArgumentIndex,
                   const QVector<unsigned int> &boundArgumentsIndexes);
-
-    BindingRecord &operator =(const BindingRecord &other) = default;
 
     bool operator==(const BindingRecord &other) const;
     bool operator!=(const BindingRecord &other) const;

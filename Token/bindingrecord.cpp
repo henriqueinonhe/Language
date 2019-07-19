@@ -2,11 +2,6 @@
 #include "containerauxiliarytools.h"
 #include <QDataStream>
 
-BindingRecord::BindingRecord()
-{
-
-}
-
 BindingRecord::BindingRecord(QDataStream &stream)
 {
     stream >> *this;
