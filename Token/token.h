@@ -15,13 +15,13 @@ class Token
 {
 public:
     Token() = delete;
-    Token(Token &&) = default;
     Token &operator =(const Token &other) = delete;
-    Token &operator =(Token &&) = default;
+    Token &operator =(Token &&) = delete;
     virtual ~Token() = default;
 
     Token(QDataStream &stream);
     Token(const QString &string);
+    Token(QString &&string);
 
     static Token *deserializePtr(QDataStream &stream);
 
@@ -38,12 +38,13 @@ public:
 
 protected:
     Token(const Token &other) = default;
+    Token(Token &&) noexcept = default;
 
     virtual bool isEqual(const Token &other) const;
     virtual void serialize(QDataStream &stream) const;
 
 private:
-    const QString string;
+    QString string;
 
     friend QDataStream &operator <<(QDataStream &stream, const Token &token);
 };

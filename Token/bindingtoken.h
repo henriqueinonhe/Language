@@ -8,9 +8,8 @@ class BindingToken : public CoreToken
 {
 public:
     BindingToken() = delete;
-    BindingToken(BindingToken &&) = default;
     BindingToken &operator =(const BindingToken &) = delete;
-    BindingToken &operator =(BindingToken &&) = default;
+    BindingToken &operator =(BindingToken &&) = delete;
     virtual ~BindingToken() = default;
 
     BindingToken(QDataStream &stream);
@@ -26,12 +25,13 @@ public:
 
 protected:
     BindingToken(const BindingToken &) = default;
+    BindingToken(BindingToken &&) noexcept = default;
 
     virtual void serialize(QDataStream &stream) const override;
     virtual bool isEqual(const Token &other) const override;
 
 private:
-    void validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
+    QVector<BindingRecord> validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const;
 
     QVector<unsigned int> gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
     QVector<unsigned int> gatherBoundArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const;
@@ -45,7 +45,7 @@ private:
     void checkArgumentIsBothBindingAndBound(const QVector<unsigned int> &boundArgumentsIndexes, const QVector<unsigned int> &bindingArgumentsIndexes) const;
     void checkNumberOfArgumentsConsistency(const unsigned int greatestBindingArgumentNumber, const unsigned int greatestBoundArgumentNumber, const unsigned int numberOfArguments) const;
 
-    const QVector<BindingRecord> bindingRecords;
+    QVector<BindingRecord> bindingRecords;
 
     friend Token *Token::deserializePtr(QDataStream &stream);
 };

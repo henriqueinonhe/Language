@@ -1,19 +1,14 @@
-﻿#include <QCoreApplication>
+#include <QCoreApplication>
 #include <iostream>
 
-#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 
+int main( int argc, char* argv[] ) {
 
-#ifndef CATCH_CONFIG_MAIN
+  int result = Catch::Session().run( argc, argv );
 
-#include <memory>
-#include "typeparser.h"
-#include "type.h"
 
-int main()
-{
-    return 0;
+  return result;
 }
 
-#endif

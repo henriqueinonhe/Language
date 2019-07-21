@@ -7,9 +7,8 @@ class VariableToken : public CoreToken
 {
 public:
     VariableToken() = delete;
-    VariableToken(VariableToken &&) = default;
     VariableToken &operator =(const VariableToken &) = delete;
-    VariableToken &operator =(VariableToken &&) = default;
+    VariableToken &operator =(VariableToken &&) = delete;
     virtual ~VariableToken() override;
 
     VariableToken(QDataStream &stream);
@@ -20,6 +19,7 @@ public:
     virtual unique_ptr<Token> getAllocatedClone() const override;
 protected:
     VariableToken(const VariableToken &) = default;
+    VariableToken(VariableToken &&) noexcept = default;
 
     virtual bool isEqual(const Token &other) const override;
 

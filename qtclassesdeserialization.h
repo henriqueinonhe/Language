@@ -15,20 +15,26 @@ class QDataStream;
 
 namespace QtDeserialization {
 
+    bool deserializeBool(QDataStream &stream);
     int deserializeInt(QDataStream &stream);
     unsigned int deserializeUInt(QDataStream &stream);
     QString deserializeQString(QDataStream &stream);
     QStringList deserializeQStringList(QDataStream &stream);
 
-    template <class T>
-    QVector<T> deserializeQVector(QDataStream &stream)
+    template <typename T, typename ... Args>
+    QVector<T> deserializeQVector(QDataStream &stream, Args && ... args)
     {
+        int size;
+        stream >> size;
         QVector<T> vec;
-        stream >> vec;
+        for(auto i = 0; i < size; i++)
+        {
+            vec.push_back(T(stream, std::forward<Args>(args) ...));
+        }
         return vec;
     }
 
-    template <class T>
+    template <typename T>
     QLinkedList<T> deserializeQLinkedList(QDataStream &stream)
     {
         QLinkedList<T> list;
@@ -36,10 +42,9 @@ namespace QtDeserialization {
         return list;
     }
 
-    template <class T, class ... Args>
+    template <typename T, typename ... Args>
     QVector<std::shared_ptr<T>> deserializeSharedPointerQVector(QDataStream &stream, Args ... args)
     {
-        //NOTE Not quite sure this is right!
         int size;
         stream >> size;
         QVector<std::shared_ptr<T>> vec;
@@ -49,6 +54,8 @@ namespace QtDeserialization {
         }
         return vec;
     }
+
+
 }
 
 #endif // QTCLASSESDESERIALIZATION_H

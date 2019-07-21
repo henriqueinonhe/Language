@@ -14,6 +14,12 @@ Token::Token(const QString &string) :
 
 }
 
+Token::Token(QString &&string) :
+    string(std::move(string))
+{
+
+}
+
 bool Token::isEqual(const Token &other) const
 {
     return this->string == other.string;

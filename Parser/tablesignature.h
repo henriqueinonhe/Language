@@ -13,6 +13,12 @@ class TableSignature : public Signature
 {
 public:
     TableSignature();
+    TableSignature(const TableSignature &) = default; //Maybe this is problematic due to unique_ptr<Token>, test!
+    TableSignature(TableSignature &&) noexcept = default;
+    TableSignature &operator =(const TableSignature &) = default; //Idem
+    TableSignature &operator =(TableSignature &&) noexcept = default;
+    ~TableSignature() = default;
+
     TableSignature(QDataStream &stream);
 
     virtual const Token *getTokenPointer(const QString &token) override;

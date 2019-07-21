@@ -11,9 +11,8 @@ BindingToken::BindingToken(QDataStream &stream) :
 
 BindingToken::BindingToken(const QString &token, const Type &type, const QVector<BindingRecord> &bindingRecords) :
     CoreToken(token, type),
-    bindingRecords(bindingRecords)
+    bindingRecords(validateBindingRecords(bindingRecords))
 {
-    validateBindingRecords(bindingRecords);
 }
 
 QVector<unsigned int> BindingToken::gatherBindingArgumentsIndexes(const QVector<BindingRecord> &bindingRecords) const
@@ -138,9 +137,10 @@ void BindingToken::validateBindingRecordsArguments(const QVector<BindingRecord> 
     checkNumberOfArgumentsConsistency(greatestBindingArgumentNumber, greatestBoundArgumentNumber, numberOfArguments);
 }
 
-void BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
+QVector<BindingRecord> BindingToken::validateBindingRecords(const QVector<BindingRecord> &bindingRecords) const
 {
     checkEmptyRecords(bindingRecords);
     checkDuplicateBindingRecords(bindingRecords);
     validateBindingRecordsArguments(bindingRecords);
+    return bindingRecords;
 }

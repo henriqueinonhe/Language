@@ -8,9 +8,9 @@ class TypeParsingTreeIterator
 public:
     TypeParsingTreeIterator() = delete;
     TypeParsingTreeIterator(const TypeParsingTreeIterator &) = default;
-    TypeParsingTreeIterator(TypeParsingTreeIterator &&) = default;
+    TypeParsingTreeIterator(TypeParsingTreeIterator &&) noexcept = default;
     TypeParsingTreeIterator &operator =(const TypeParsingTreeIterator &) = default;
-    TypeParsingTreeIterator &operator =(TypeParsingTreeIterator &&) = default;
+    TypeParsingTreeIterator &operator =(TypeParsingTreeIterator &&) noexcept = default;
     ~TypeParsingTreeIterator() = default;
 
     TypeParsingTreeIterator(TypeParsingTree *tree);

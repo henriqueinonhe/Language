@@ -4,7 +4,7 @@
 #include "qtclassesdeserialization.h"
 #include "containerauxiliarytools.h"
 
-TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
+TypeParsingTreeNode::TypeParsingTreeNode(TypeParsingTree *tree, TypeParsingTreeNode *parent, const unsigned int typeBeginIndex, const unsigned int typeEndIndex, const MainOperator mainOperator) :
     tree(tree),
     parent(parent),
     typeBeginIndex(typeBeginIndex),
@@ -13,7 +13,7 @@ TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTree *tree, const Type
 {
 }
 
-TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTreeNode &other, const TypeParsingTree *tree, const TypeParsingTreeNode *parent) :
+TypeParsingTreeNode::TypeParsingTreeNode(const TypeParsingTreeNode &other, TypeParsingTree *tree, TypeParsingTreeNode *parent) :
     tree(tree),
     parent(parent),
     typeBeginIndex(other.typeBeginIndex),
@@ -74,8 +74,8 @@ void TypeParsingTreeNode::appendChild()
 }
 
 QVector<shared_ptr<TypeParsingTreeNode> > TypeParsingTreeNode::deepCopyChildren(const QVector<shared_ptr<TypeParsingTreeNode> > &source,
-                                                                                const TypeParsingTree *tree,
-                                                                                const TypeParsingTreeNode *parent) const
+                                                                                TypeParsingTree *tree,
+                                                                                TypeParsingTreeNode *parent) const
 {
     QVector<shared_ptr<TypeParsingTreeNode>> copy;
     for(const auto &ptr : source)
@@ -121,14 +121,14 @@ bool TypeParsingTreeNode::operator!=(const TypeParsingTreeNode &other) const
 }
 
 TypeParsingTreeNode::TypeParsingTreeNode(QDataStream &stream,
-                                         const TypeParsingTree *tree,
-                                         const TypeParsingTreeNode *parent) :
+                                         TypeParsingTree *tree,
+                                         TypeParsingTreeNode *parent) :
     tree(tree),
     parent(parent),
     typeBeginIndex(QtDeserialization::deserializeUInt(stream)),
     typeEndIndex(QtDeserialization::deserializeUInt(stream)),
     mainOperator(deserializeMainOperator(stream)),
-    children(QtDeserialization::deserializeSharedPointerQVector<TypeParsingTreeNode>(stream, tree, static_cast<const TypeParsingTreeNode *>(this)))
+    children(QtDeserialization::deserializeSharedPointerQVector<TypeParsingTreeNode>(stream, tree, this))
 {
 }
 

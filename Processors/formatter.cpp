@@ -6,14 +6,10 @@ Formatter::Formatter()
 
 }
 
-Formatter::Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors)
+Formatter::Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors) :
+    processors(deserializeEntries(stream, processors))
 {
-    int size;
-    stream >> size;
-    for(auto index = 0; index < size; index++)
-    {
-        this->processors.push_back(ProcessorEntry(stream, processors[index]));
-    }
+
 }
 
 void Formatter::deserialize(QDataStream &stream, const QVector<StringProcessor *> &processors)
@@ -91,6 +87,18 @@ QString Formatter::toString() const
     }
 
     return string;
+}
+
+QVector<Formatter::ProcessorEntry> Formatter::deserializeEntries(QDataStream &stream, const QVector<StringProcessor *> &processors)
+{
+    QVector<Formatter::ProcessorEntry> entries;
+    int size;
+    stream >> size;
+    for(auto index = 0; index < size; index++)
+    {
+        entries.push_back(Formatter::ProcessorEntry(stream, processors[index]));
+    }
+    return entries;
 }
 
 void Formatter::checkIndexIsWithinBounds(const unsigned int index)

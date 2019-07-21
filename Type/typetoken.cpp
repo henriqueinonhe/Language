@@ -8,10 +8,14 @@ TypeToken::TypeToken(QDataStream &stream) :
 }
 
 TypeToken::TypeToken(const QString &string) :
-    string(string)
+    string(validateString(string))
 {
-    //Validating input
+}
+
+QString TypeToken::validateString(const QString &string) const
+{
     sort(string);
+    return string;
 }
 
 TypeToken::Sort TypeToken::sort() const

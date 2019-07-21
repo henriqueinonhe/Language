@@ -5,6 +5,7 @@
 #include <QVector>
 #include "stringprocessor.h"
 #include <QDataStream>
+#include "qtclassesdeserialization.h"
 
 class QDataStream;
 class StringProcessor;
@@ -40,9 +41,9 @@ private:
         ProcessorEntry(){}
 
         ProcessorEntry(QDataStream &stream, StringProcessor *processor) :
-            processor(processor)
+            processor(processor),
+            isOnline(QtDeserialization::deserializeBool(stream))
         {
-            stream >> isOnline;
         }
 
         ProcessorEntry(StringProcessor *processor) :
@@ -99,6 +100,7 @@ private:
         friend QDataStream &operator <<(QDataStream &stream, const ProcessorEntry &entry);
     };
 
+    QVector<ProcessorEntry> deserializeEntries(QDataStream &stream, const QVector<StringProcessor *> &processors);
     void checkIndexIsWithinBounds(const unsigned int index);
 
     QVector<ProcessorEntry> processors;

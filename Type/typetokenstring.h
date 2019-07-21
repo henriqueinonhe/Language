@@ -39,9 +39,11 @@ public:
 private:
     static Pool<TypeToken> pool;
 
+    QVector<PoolRecordPointer<TypeToken>> deserializeTokenList(QDataStream &stream);
+
     TypeTokenString(const QVector<PoolRecordPointer<TypeToken>> &tokenList);
 
-    void lexString(const QString &string);
+    QVector<PoolRecordPointer<TypeToken>> lexString(const QString &string);
     bool characterIsSeparator(const QString &c) const;
     void lexCompositionOperator(const QString &string, int &index);
     void lexPrimitiveTypeToken(const QString &string, int &index);

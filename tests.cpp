@@ -74,6 +74,12 @@ TEST_CASE("Pool")
     {
         public:
         IntWrapper() = default;
+        IntWrapper(IntWrapper &&) noexcept = default;
+        IntWrapper(const IntWrapper &other) :
+            a(other.a)
+        {
+            //cout << "Copy!" << endl;
+        }
         IntWrapper(const int a) : a(a){}
         int a;
 
@@ -89,11 +95,10 @@ TEST_CASE("Pool")
     };
 
     Pool<IntWrapper> pool;
-    PoolRecordPointer<IntWrapper> ptr1, ptr2, ptr3;
 
-    ptr1 = pool.getPointer(1);
-    ptr2 = pool.getPointer(2);
-    ptr3 = pool.getPointer(1);
+    auto ptr1 = pool.getPointer(1);
+    auto ptr2 = pool.getPointer(2);
+    auto ptr3 = pool.getPointer(1);
 
     CHECK(*ptr1 == 1);
     CHECK(*ptr2 == 2);

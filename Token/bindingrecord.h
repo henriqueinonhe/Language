@@ -10,9 +10,9 @@ struct BindingRecord final
 public:
     BindingRecord() = default;
     BindingRecord(const BindingRecord &) = default;
-    BindingRecord(BindingRecord &&) = default;
+    BindingRecord(BindingRecord &&) noexcept = default;
     BindingRecord &operator =(const BindingRecord &) = default;
-    BindingRecord &operator =(BindingRecord &&) = default;
+    BindingRecord &operator =(BindingRecord &&) noexcept = default;
     ~BindingRecord() = default;
 
     BindingRecord(QDataStream &stream);

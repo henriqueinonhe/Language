@@ -14,11 +14,14 @@ class Parser;
 class TokenString
 {
 public:
-    TokenString();
-    TokenString(QDataStream &stream, Signature * const signature);
+    TokenString() = default; //Representing the empty token string
     TokenString(const TokenString &) = default;
-
+    TokenString(TokenString &&) = default;
     TokenString &operator=(const TokenString &) = default;
+    TokenString &operator=(TokenString &&) = default;
+    ~TokenString() = default;
+
+    TokenString(QDataStream &stream, Signature * const signature);
 
     QString toString() const;
     QString formattedString() const;
@@ -38,9 +41,8 @@ public:
     bool operator==(const TokenString &other) const;
     bool operator!=(const TokenString &other) const;
 
-    ~TokenString() = default;
-
 private:
+    QVector<const Token *> deserializeTokenList(QDataStream &stream, Signature * const signature) const;
     bool tokenNeedsSubsequentSeparation(const QVector<const Token *> &tokenList, const int index) const;
 
     QVector<const Token *> tokenList;
@@ -50,6 +52,5 @@ private:
 };
 
 QDataStream &operator << (QDataStream &stream, const TokenString &tokenString);
-QDataStream &operator >> (QDataStream &stream, TokenString &tokenString);
 
 #endif // TOKENSTRING_H

@@ -8,17 +8,10 @@ CoreToken::CoreToken(QDataStream &stream) :
 }
 
 CoreToken::CoreToken(const QString &string, const Type &type) :
-    Token(string),
+    Token(validateCoreTokenString(string)),
     type(type)
 {
-    if(!QRegularExpression("^([a-z]|[A-Z]|[0-9]|\\+|\\-|\\\\|\\*|&|-|>|<|\\||=|\\~|\\^)+$").match(string).hasMatch())
-    {
-        QString errorMsg;
-        errorMsg += "This (\"";
-        errorMsg += string;
-        errorMsg += "\") is not a suitable Core Token!";
-        throw std::invalid_argument(errorMsg.toStdString());
-    }
+
 }
 
 Type CoreToken::getType() const
@@ -45,7 +38,20 @@ void CoreToken::serialize(QDataStream &stream) const
 bool CoreToken::isEqual(const Token &other) const
 {
     return Token::isEqual(other) &&
-           this->type == static_cast<const CoreToken &>(other).type;
+            this->type == static_cast<const CoreToken &>(other).type;
+}
+
+QString CoreToken::validateCoreTokenString(const QString &tokenString) const
+{
+    if(!QRegularExpression("^([a-z]|[A-Z]|[0-9]|\\+|\\-|\\\\|\\*|&|-|>|<|\\||=|\\~|\\^)+$").match(tokenString).hasMatch())
+    {
+        QString errorMsg;
+        errorMsg += "This (\"";
+        errorMsg += tokenString;
+        errorMsg += "\") is not a suitable Core Token!";
+        throw std::invalid_argument(errorMsg.toStdString());
+    }
+    return tokenString;
 }
 
 QDataStream &operator <<(QDataStream &stream, const CoreToken &token)

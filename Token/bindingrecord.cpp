@@ -1,10 +1,12 @@
 #include "bindingrecord.h"
 #include "containerauxiliarytools.h"
 #include <QDataStream>
+#include "qtclassesdeserialization.h"
 
-BindingRecord::BindingRecord(QDataStream &stream)
+BindingRecord::BindingRecord(QDataStream &stream) :
+    bindingArgumentIndex(QtDeserialization::deserializeUInt(stream)),
+    boundArgumentsIndexes(QtDeserialization::deserializeQVector<unsigned int>(stream))
 {
-    stream >> *this;
 }
 
 void BindingRecord::checkBoundArgumentIndexesDuplicates(const QVector<unsigned int> &boundArgumentsIndexes)

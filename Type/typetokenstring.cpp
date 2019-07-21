@@ -2,14 +2,14 @@
 
 Pool<TypeToken> TypeTokenString::pool;
 
-TypeTokenString::TypeTokenString(QDataStream &stream)
+TypeTokenString::TypeTokenString(QDataStream &stream) :
+    tokenList(deserializeTokenList(stream))
 {
-    stream >> *this;
 }
 
-TypeTokenString::TypeTokenString(const QString &string)
+TypeTokenString::TypeTokenString(const QString &string) :
+    tokenList(lexString(string))
 {
-    lexString(string);
 }
 
 QString TypeTokenString::toString() const
@@ -104,6 +104,15 @@ bool TypeTokenString::operator!=(const TypeTokenString &other) const
     return !(*this == other);
 }
 
+QVector<PoolRecordPointer<TypeToken> > TypeTokenString::deserializeTokenList(QDataStream &stream)
+{
+    //TODO Implement PoolRecordPointer serialization so I can get rid of this
+    QString stringnizedTypeString;
+    stream >> stringnizedTypeString;
+
+    return lexString(stringnizedTypeString);
+}
+
 TypeTokenString::TypeTokenString(const QVector<PoolRecordPointer<TypeToken> > &tokenList) :
     tokenList(tokenList)
 {
@@ -144,8 +153,9 @@ void TypeTokenString::lexPrimitiveTypeToken(const QString &string, int &index)
     index -= tokenLookaheadCompensation;
 }
 
-void TypeTokenString::lexString(const QString &string)
+QVector<PoolRecordPointer<TypeToken> > TypeTokenString::lexString(const QString &string)
 {
+    QVector<PoolRecordPointer<TypeToken>> tokenList;
     for(auto index = 0; index < string.size(); index++)
     {
         if(string[index] == '(')
@@ -177,6 +187,8 @@ void TypeTokenString::lexString(const QString &string)
             lexPrimitiveTypeToken(string, index);
         }
     }
+
+    return tokenList;
 }
 
 bool TypeTokenString::characterIsSeparator(const QString &c) const
@@ -198,10 +210,7 @@ QDataStream &operator <<(QDataStream &stream, const TypeTokenString &string)
 
 QDataStream &operator >>(QDataStream &stream, TypeTokenString &string)
 {
-    QString stringnizedTypeString;
-    stream >> stringnizedTypeString;
-
-    string.lexString(stringnizedTypeString);
+    string.tokenList = string.deserializeTokenList(stream);
 
     return stream;
 }

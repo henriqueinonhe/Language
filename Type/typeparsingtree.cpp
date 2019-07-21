@@ -1,5 +1,6 @@
 #include "typeparsingtree.h"
 #include "typeparsingtreeiterator.h"
+#include "typeparsingtreeconstiterator.h"
 
 TypeParsingTree::TypeParsingTree(QDataStream &stream) :
     root(stream, this, nullptr),
@@ -14,15 +15,34 @@ TypeParsingTree::TypeParsingTree(const TypeTokenString &type) :
 {
 }
 
+TypeParsingTree::TypeParsingTree(TypeTokenString &&typeString) :
+    root(this, nullptr, 0, typeString.size() - 1),
+    typeString(std::move(typeString))
+{
+
+}
+
 TypeParsingTree::TypeParsingTree(const TypeParsingTree &other) :
     root(other.root, this, nullptr),
     typeString(other.typeString)
 {
 }
 
+TypeParsingTree::TypeParsingTree(TypeParsingTree &&other) noexcept :
+    root(other.root, this, &root),
+    typeString(std::move(other.typeString))
+{
+
+}
+
 TypeParsingTreeIterator TypeParsingTree::getIter()
 {
     return TypeParsingTreeIterator(this);
+}
+
+TypeParsingTreeConstIterator TypeParsingTree::getConstIter() const
+{
+    return TypeParsingTreeConstIterator(this);
 }
 
 unsigned int TypeParsingTree::getHeight() const
@@ -89,7 +109,7 @@ bool TypeParsingTree::deepEqualityCheck(const TypeParsingTree &other) const
     return this->root == other.root;
 }
 
-const TypeTokenString &TypeParsingTree::getTypeString() const
+TypeTokenString TypeParsingTree::getTypeString() const
 {
     return typeString;
 }

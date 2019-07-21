@@ -6,17 +6,17 @@
 #include <QVector>
 
 Type::Type(QDataStream &stream) :
-    parsingTree(new TypeParsingTree(stream))
+    parsingTree(make_unique<TypeParsingTree>(stream))
 {
 }
 
 Type::Type(const QString &type) :
-    parsingTree(new TypeParsingTree(TypeParser::getParsingTree(type)))
+    parsingTree(make_unique<TypeParsingTree>(TypeParser::getParsingTree(type)))
 {
 }
 
 Type::Type(const Type &other) :
-    parsingTree(new TypeParsingTree(other.getParsingTree()))
+    parsingTree(make_unique<TypeParsingTree>(other.getParsingTree()))
 {
 }
 

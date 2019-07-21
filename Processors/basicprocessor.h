@@ -10,10 +10,12 @@ class BasicProcessor : public StringProcessor
 {
 public:
     BasicProcessor() = delete;
-    BasicProcessor(Signature * const signature);
     BasicProcessor(const BasicProcessor &) = delete;
+    BasicProcessor(BasicProcessor &&) = delete;
+    BasicProcessor &operator =(const BasicProcessor &) = delete;
+    BasicProcessor &operator =(BasicProcessor &&) = delete;
 
-    BasicProcessor &operator=(const BasicProcessor &) = delete;
+    BasicProcessor(Signature * const signature);
 
     void addTokenRecord(const QString &token,
                         const unsigned int position,

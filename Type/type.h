@@ -13,16 +13,16 @@ class CoreToken;
 
 using namespace std;
 
-/* Class Invariants:
- * Type uses a TypeParsingTree as an internal type representation
- * and this TypeParsingTree represents a valid type and is immutable. */
-
 class Type
 {
 public:
+    Type(const Type &other);
+    Type(Type &&) noexcept = default;
+    Type &operator= (Type &&) noexcept = default;
+    ~Type() = default;
+
     Type(QDataStream &stream);
     Type(const QString &type);
-    Type(const Type &other);
 
     bool operator==(const Type &other) const;
     bool operator!=(const Type &other) const;
@@ -41,18 +41,15 @@ public:
     unsigned int getNumberOfArguments() const;
     bool isOperator() const;
 
-    ~Type() = default;
-
 private:
     Type();
     Type(const TypeTokenString &typeString);
-
-    Type &operator =(const Type &other);
+    Type &operator =(const Type &other); //TODO This operation should be deleted
 
     unique_ptr<const TypeParsingTree> parsingTree;
 
     friend class QVector<Type>;
-    friend class ParsingTreeNode; //TODO Remove this intrusion
+    friend class ParsingTreeNode; //TODO Try to remove this intrusion
     friend QDataStream &operator <<(QDataStream &stream, const Type &type);
 };
 

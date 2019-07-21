@@ -7,9 +7,8 @@ class PunctuationToken : public Token
 {
 public:
     PunctuationToken() = delete;
-    PunctuationToken(PunctuationToken &&) = default;
     PunctuationToken &operator =(const PunctuationToken &other) = delete;
-    PunctuationToken &operator =(PunctuationToken &&) = default;
+    PunctuationToken &operator =(PunctuationToken &&) = delete;
     virtual ~PunctuationToken() = default;
 
     PunctuationToken(QDataStream &stream);
@@ -21,8 +20,11 @@ public:
 
 protected:
     PunctuationToken(const PunctuationToken&) = default;
+    PunctuationToken(PunctuationToken &&) noexcept = default;
 
 private:
+    QString validatePunctuationTokenString(const QString &string) const;
+
     virtual bool isEqual(const Token &other) const override;
 
     friend Token *Token::deserializePtr(QDataStream &stream);

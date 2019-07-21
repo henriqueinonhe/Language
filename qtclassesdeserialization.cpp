@@ -31,3 +31,10 @@ int QtDeserialization::deserializeInt(QDataStream &stream)
     stream >> val;
     return val;
 }
+
+bool QtDeserialization::deserializeBool(QDataStream &stream)
+{
+    bool val;
+    stream >> val;
+    return val;
+}

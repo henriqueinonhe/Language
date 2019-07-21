@@ -23,17 +23,32 @@ template<class T>
 class Pool
 {
 public:
-    Pool()
-    {
-    }
+    Pool() = default;
+    Pool(const Pool &) = delete; //Could be implemented later
+    Pool(Pool &&) = delete;
+    Pool &operator =(const Pool &) = delete;
+    Pool &operator =(Pool &&) = delete;
+    ~Pool() noexcept = default;
 
     PoolRecordPointer<T> getPointer(const T &sample)
     {
         const auto key = sample.getString();
-        auto valueIter = records.find(key.toStdString());
+        const auto valueIter = records.find(key.toStdString());
         if(valueIter == records.end())
         {
             records.emplace(key.toStdString(), PoolRecord<T>(sample, this));
+        }
+
+        return PoolRecordPointer<T>(&records[key.toStdString()]);
+    }
+
+    PoolRecordPointer<T> getPointer(T &&sample)
+    {
+        const auto key = sample.getString();
+        const auto valueIter = records.find(key.toStdString());
+        if(valueIter == records.end())
+        {
+            records.emplace(key.toStdString(), PoolRecord<T>(std::move(sample), this));
         }
 
         return PoolRecordPointer<T>(&records[key.toStdString()]);
@@ -55,8 +70,17 @@ template<class T>
 class PoolRecord
 {
 public:
-    PoolRecord()
-    {}
+    PoolRecord() = default;
+    PoolRecord(const PoolRecord &other) = delete;
+    PoolRecord(PoolRecord &&) noexcept = default;
+    PoolRecord &operator =(const PoolRecord &) = delete;
+    PoolRecord &operator =(PoolRecord &&) noexcept = delete;
+    ~PoolRecord() noexcept = default;
+
+    const T &getObject() const
+    {
+        return object;
+    }
 
     T &getObject()
     {
@@ -74,10 +98,14 @@ public:
                this->parent == other.parent;
     }
 
-private:
+    bool operator!=(const PoolRecord &other)
+    {
+        return !(*this == other);
+    }
 
-    PoolRecord(const T &object, Pool<T> *parent) :
-        object(object),
+private:
+    PoolRecord(T object, Pool<T> *parent) :
+        object(std::move(object)),
         counter(0),
         parent(parent)
     {
@@ -101,7 +129,7 @@ private:
 
     T object;
     unsigned int counter;
-    Pool<T> *parent; //Do we really need this?
+    Pool<T> *parent; //So Pool Record Pointer can access the pool to deallocate the record
 
     friend class Pool<T>;
     friend class PoolRecordPointer<T>;
@@ -112,31 +140,48 @@ template <class T>
 class PoolRecordPointer
 {
 public:
-    PoolRecordPointer() :
-        isSet(false)
-    {}
+    PoolRecordPointer() = default;
 
     PoolRecordPointer(PoolRecord<T> *ptr) :
-        ptr(ptr),
-        isSet(true)
+        ptr(ptr)
     {
         ptr->incrementCounter();
     }
 
     PoolRecordPointer(const PoolRecordPointer &other) :
-        ptr(other.ptr),
-        isSet(other.isSet)
+        ptr(other.ptr)
     {
         ptr->incrementCounter();
     }
 
     PoolRecordPointer &operator=(const PoolRecordPointer &other)
     {
-        recountPointer();
+        if(ptr != nullptr) //Needed due to default constructor
+        {
+            decrementAndRecountPointer();
+        }
 
-        ptr = other.ptr;
-        isSet = other.isSet;
+        ptr = other.ptr; //Change Record
+        ptr->incrementCounter(); //Increment New Record Counter
+
+        return *this;
+    }
+
+    PoolRecordPointer(PoolRecordPointer &&other) noexcept :
+        ptr(other.ptr)
+    {
         ptr->incrementCounter();
+    }
+
+    PoolRecordPointer &operator=(PoolRecordPointer &&other) noexcept
+    {
+        if(ptr != nullptr) //Needed due to default constructor
+        {
+            decrementAndRecountPointer();
+        }
+
+        ptr = other.ptr; //Change Record
+        ptr->incrementCounter(); //Increment New Record Counter
 
         return *this;
     }
@@ -151,31 +196,23 @@ public:
         return &ptr->getObject();
     }
 
-
-    ~PoolRecordPointer()
+    ~PoolRecordPointer() noexcept
     {
-        recountPointer();
+        decrementAndRecountPointer();
     }
 
 private:
-    void recountPointer()
+    void decrementAndRecountPointer()
     {
-        if(isSet)
+        ptr->decrementCounter();
+        if(ptr->counterIsZero())
         {
-            ptr->decrementCounter();
-
-            if(ptr->counterIsZero())
-            {
-                ptr->parent->records.erase(ptr->getObject().getString().toStdString());
-                ptr = nullptr;
-                isSet = false;
-            }
+            ptr->parent->records.erase(ptr->getObject().getString().toStdString());
         }
     }
 
-    PoolRecord<T> *ptr;
-    bool isSet; //To avoid using delete on a nullptr (removing a PoolRecord), when the PoolRecordPointer is still not set,
-                //like while passing the pointer as value, or creating a new one in a vector.
+    PoolRecord<T> *ptr = nullptr; //To test whether the pointer has been initialized given
+                                  //it must be default constructible to support QVector
 };
 
 #endif // POOL_H

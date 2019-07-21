@@ -3,18 +3,9 @@
 #include "lexer.h"
 #include <QDataStream>
 
-TokenString::TokenString()
+TokenString::TokenString(QDataStream &stream, Signature * const signature) :
+    tokenList(deserializeTokenList(stream, signature))
 {
-
-}
-
-TokenString::TokenString(QDataStream &stream, Signature * const signature)
-{
-    Lexer lexer(signature);
-    QString formattedString;
-    stream >> formattedString;
-
-    *this = lexer.lex(formattedString);
 }
 
 bool TokenString::tokenNeedsSubsequentSeparation(const QVector<const Token *> &tokenList, const int index) const
@@ -136,6 +127,15 @@ bool TokenString::operator==(const TokenString &other) const
 bool TokenString::operator!=(const TokenString &other) const
 {
     return !(*this == other);
+}
+
+QVector<const Token *> TokenString::deserializeTokenList(QDataStream &stream, Signature * const signature) const
+{
+    Lexer lexer(signature);
+    QString formattedString;
+    stream >> formattedString;
+
+    return lexer.lex(formattedString).tokenList;
 }
 
 QDataStream &operator <<(QDataStream &stream, const TokenString &tokenString)

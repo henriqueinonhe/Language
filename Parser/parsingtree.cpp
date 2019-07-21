@@ -8,6 +8,13 @@ ParsingTree::ParsingTree(const TokenString &string) :
 {
 }
 
+ParsingTree::ParsingTree(TokenString &&string) :
+    root(this, nullptr, 0, string.size() - 1),
+    tokenString(std::move(string))
+{
+
+}
+
 ParsingTree::ParsingTree(const ParsingTree &other) :
     root(this, nullptr)
 {
