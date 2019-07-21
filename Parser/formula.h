@@ -22,7 +22,7 @@ public:
     Formula(const Formula &other);
     Formula(Formula &&other) noexcept;
     Formula &operator=(const Formula &other);
-    Formula &operator=(Formula &&other) = delete;
+    Formula &operator=(Formula &&other) noexcept = default;
 
     Formula(QDataStream &stream, Signature * const signature);
     Formula(const QString &formula, const Parser &parser);

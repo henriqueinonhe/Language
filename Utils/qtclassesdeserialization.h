@@ -22,15 +22,10 @@ namespace QtDeserialization {
     QStringList deserializeQStringList(QDataStream &stream);
 
     template <typename T, typename ... Args>
-    QVector<T> deserializeQVector(QDataStream &stream, Args && ... args)
+    QVector<T> deserializeQVector(QDataStream &stream)
     {
-        int size;
-        stream >> size;
         QVector<T> vec;
-        for(auto i = 0; i < size; i++)
-        {
-            vec.push_back(T(stream, std::forward<Args>(args) ...));
-        }
+        stream >> vec;
         return vec;
     }
 
