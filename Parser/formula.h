@@ -19,14 +19,16 @@ using namespace std;
 class Formula
 {
 public:
+    Formula(const Formula &other);
+    Formula(Formula &&other) noexcept;
+    Formula &operator=(const Formula &other);
+    Formula &operator=(Formula &&other) = delete;
+
     Formula(QDataStream &stream, Signature * const signature);
     Formula(const QString &formula, const Parser &parser);
     static QLinkedList<Formula> deserializeList(QDataStream &stream, Signature * const signature); //Use templates later
     static QVector<Formula> deserializeVector(QDataStream &stream, Signature * const signature);
     static Formula deserialize(QDataStream &stream, Signature * const signature);
-    Formula(const Formula &other);
-
-    Formula &operator=(const Formula &other);
 
     bool operator==(const Formula &other) const;
     bool operator!=(const Formula &other) const;

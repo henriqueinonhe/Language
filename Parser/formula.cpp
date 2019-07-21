@@ -66,6 +66,12 @@ Formula::Formula(const Formula &other) :
 
 }
 
+Formula::Formula(Formula &&other) noexcept :
+    parsingTree(other.parsingTree.release())
+{
+
+}
+
 Formula &Formula::operator=(const Formula &other)
 {
     parsingTree.reset(new ParsingTree(other.getParsingTree()));
