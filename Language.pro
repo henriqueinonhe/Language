@@ -32,7 +32,7 @@ DEPENDPATH += Parser \
 
 SOURCES += main.cpp \
     Type/typeparsingtreeconstiterator.cpp \
-    qtclassesdeserialization.cpp \
+    Utils/qtclassesdeserialization.cpp \
     tests.cpp \
     Parser/formula.cpp \
     Parser/lexer.cpp \
