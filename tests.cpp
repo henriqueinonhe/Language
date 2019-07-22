@@ -106,22 +106,22 @@ TEST_CASE("Pool")
 
     auto iter = pool.getRecords().find("1");
 
-    CHECK(iter->second.getObject() == 1);
-    CHECK(iter->second.getCounter() == 2);
+    CHECK(iter->second->getObject() == 1);
+    CHECK(iter->second.use_count() == 3);
 
     iter = pool.getRecords().find("2");
-    CHECK(iter->second.getObject() == 2);
-    CHECK(iter->second.getCounter() == 1);
+    CHECK(iter->second->getObject() == 2);
+    CHECK(iter->second.use_count() == 2);
 
     ptr3 = ptr2;
 
     iter = pool.getRecords().find("1");
-    CHECK(iter->second.getObject() == 1);
-    CHECK(iter->second.getCounter() == 1);
+    CHECK(iter->second->getObject() == 1);
+    CHECK(iter->second.use_count() == 2);
 
     iter = pool.getRecords().find("2");
-    CHECK(iter->second.getObject() == 2);
-    CHECK(iter->second.getCounter() == 2);
+    CHECK(iter->second->getObject() == 2);
+    CHECK(iter->second.use_count() == 3);
 }
 
 TEST_CASE("TypeTokenString")

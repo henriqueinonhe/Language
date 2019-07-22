@@ -5,6 +5,7 @@
 #include <QLinkedList>
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 //NOTE Maybe implement Serialization of this class!
 
@@ -36,10 +37,10 @@ public:
         const auto valueIter = records.find(key.toStdString());
         if(valueIter == records.end())
         {
-            records.emplace(key.toStdString(), PoolRecord<T>(sample, this));
+            records.emplace(key.toStdString(), make_shared<PoolRecord<T>>(sample));
         }
 
-        return PoolRecordPointer<T>(&records[key.toStdString()]);
+        return PoolRecordPointer<T>(records[key.toStdString()]);
     }
 
     PoolRecordPointer<T> getPointer(T &&sample)
@@ -48,19 +49,19 @@ public:
         const auto valueIter = records.find(key.toStdString());
         if(valueIter == records.end())
         {
-            records.emplace(key.toStdString(), PoolRecord<T>(std::move(sample), this));
+            records.emplace(key.toStdString(), make_shared<PoolRecord<T>>(std::move(sample)));
         }
 
-        return PoolRecordPointer<T>(&records[key.toStdString()]);
+        return PoolRecordPointer<T>(records[key.toStdString()]);
     }
 
-    unordered_map<string, PoolRecord<T>> &getRecords()
+    unordered_map<string, shared_ptr<PoolRecord<T>>> &getRecords()
     {
         return records;
     }
 
 private:
-    unordered_map<string, PoolRecord<T>> records;
+    unordered_map<string, shared_ptr<PoolRecord<T>>> records;
 
 friend class PoolRecordPointer<T>;
 
@@ -87,11 +88,6 @@ public:
         return object;
     }
 
-    unsigned int getCounter() const
-    {
-        return counter;
-    }
-
     bool operator==(const PoolRecord &other) const
     {
         return this->object == other.object &&
@@ -103,33 +99,19 @@ public:
         return !(*this == other);
     }
 
+    PoolRecord(const T &object) :
+        object(object)
+    {
+    }
+
+    PoolRecord(T &&object) :
+        object(std::move(object))
+    {
+    }
+
 private:
-    PoolRecord(T object, Pool<T> *parent) :
-        object(std::move(object)),
-        counter(0),
-        parent(parent)
-    {
-        /* Only the pool may create pool records. */
-    }
-
-    void incrementCounter()
-    {
-        counter++;
-    }
-
-    void decrementCounter()
-    {
-        counter--;
-    }
-
-    bool counterIsZero() const
-    {
-        return counter == 0;
-    }
 
     T object;
-    unsigned int counter;
-    Pool<T> *parent; //So Pool Record Pointer can access the pool to deallocate the record
 
     friend class Pool<T>;
     friend class PoolRecordPointer<T>;
@@ -140,51 +122,28 @@ template <class T>
 class PoolRecordPointer
 {
 public:
-    PoolRecordPointer() = default;
-
-    PoolRecordPointer(PoolRecord<T> *ptr) :
+    PoolRecordPointer(const shared_ptr<PoolRecord<T>> &ptr) :
         ptr(ptr)
     {
-        ptr->incrementCounter();
     }
 
-    PoolRecordPointer(const PoolRecordPointer &other) :
-        ptr(other.ptr)
+    PoolRecordPointer(shared_ptr<PoolRecord<T>> &&ptr) :
+        ptr(std::move(ptr))
     {
-        ptr->incrementCounter();
+
     }
+
+    PoolRecordPointer(const PoolRecordPointer &other) = default;
 
     PoolRecordPointer &operator=(const PoolRecordPointer &other)
     {
-        if(ptr != nullptr) //Needed due to default constructor
-        {
-            decrementAndRecountPointer();
-        }
-
-        ptr = other.ptr; //Change Record
-        ptr->incrementCounter(); //Increment New Record Counter
-
+        ptr = other.ptr;
         return *this;
     }
 
-    PoolRecordPointer(PoolRecordPointer &&other) noexcept :
-        ptr(other.ptr)
-    {
-        ptr->incrementCounter();
-    }
+    PoolRecordPointer(PoolRecordPointer &&other) noexcept = default;
 
-    PoolRecordPointer &operator=(PoolRecordPointer &&other) noexcept
-    {
-        if(ptr != nullptr) //Needed due to default constructor
-        {
-            decrementAndRecountPointer();
-        }
-
-        ptr = other.ptr; //Change Record
-        ptr->incrementCounter(); //Increment New Record Counter
-
-        return *this;
-    }
+    PoolRecordPointer &operator=(PoolRecordPointer &&other) noexcept = default;
 
     T operator*() const
     {
@@ -196,23 +155,8 @@ public:
         return &ptr->getObject();
     }
 
-    ~PoolRecordPointer() noexcept
-    {
-        decrementAndRecountPointer();
-    }
-
 private:
-    void decrementAndRecountPointer()
-    {
-        ptr->decrementCounter();
-        if(ptr->counterIsZero())
-        {
-            ptr->parent->records.erase(ptr->getObject().getString().toStdString());
-        }
-    }
-
-    PoolRecord<T> *ptr = nullptr; //To test whether the pointer has been initialized given
-                                  //it must be default constructible to support QVector
+    shared_ptr<PoolRecord<T>> ptr;
 };
 
 #endif // POOL_H
