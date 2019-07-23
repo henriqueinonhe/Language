@@ -3,8 +3,8 @@
 #include "tokenstring.h"
 #include "lexer.h"
 
-BasicProcessor::BasicProcessor(Signature * const signature) :
-    signature(signature)
+BasicProcessor::BasicProcessor(const Signature * const signature) :
+    StringProcessor (signature)
 {
 
 }
@@ -154,6 +154,16 @@ BasicProcessorTokenRecord::Associativity BasicProcessor::getOperatorAssociativit
     }
 
     return associativity;
+}
+
+void BasicProcessor::serialize(QDataStream &stream) const
+{
+    //TODO
+}
+
+void BasicProcessor::deserialize(QDataStream &stream)
+{
+    //TODO
 }
 
 const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString &token) const

@@ -1,7 +1,7 @@
 #include "basicpreprocessor.h"
 
 
-BasicPreProcessor::BasicPreProcessor(Signature * const signature) :
+BasicPreProcessor::BasicPreProcessor(const Signature * const signature) :
     BasicProcessor(signature)
 {
 
@@ -68,6 +68,16 @@ void BasicPreProcessor::processToken(TokenStringWrapper &tokenString, const Toke
 
     //Put operator on the right place
     moveOperator(tokenString, leftParenthesisInsertIterator, tokenStringIter);
+}
+
+void BasicPreProcessor::serialize(QDataStream &stream) const
+{
+    //TODO
+}
+
+void BasicPreProcessor::deserialize(QDataStream &stream)
+{
+    //TODO
 }
 
 
@@ -166,8 +176,3 @@ void BasicPreProcessor::considerToken(const TokenStringWrapperIterator &tokenIte
     }
 }
 
-
-BasicPreProcessor::BasicPreProcessor() : BasicProcessor (nullptr)
-{
-
-}

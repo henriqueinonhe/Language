@@ -1,6 +1,7 @@
 #ifndef CONTAINERAUXILIARYTOOLS_H
 #define CONTAINERAUXILIARYTOOLS_H
 #include <memory>
+#include <algorithm>
 
 class ContainerAuxiliaryTools
 {
@@ -48,12 +49,14 @@ public:
     }
 
     template <class SmartPointerContainer, class RawPointerContainer>
-    static void adatpFromSmartPointerContainer(const SmartPointerContainer &source, RawPointerContainer &target)
+    static RawPointerContainer adaptFromSmartPointerContainer(const SmartPointerContainer &source)
     {
+        RawPointerContainer target;
         for(auto const smartPtr : source)
         {
             target.push_back(smartPtr.get());
         }
+        return target;
     }
 
     template <class T1, class T2> static void serializeSmartPointerContainer(T1 &stream, const T2 &container)

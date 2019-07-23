@@ -10,13 +10,16 @@ class Lexer
 {
 public:
     Lexer() = delete;
-    Lexer(Signature * const signature);
+    Lexer(const Lexer &) = default;
+    Lexer(Lexer &&) noexcept = default;
+    Lexer &operator =(const Lexer &) = default;
+    Lexer &operator =(Lexer &&) noexcept = default;
 
-    Lexer &operator =(const Lexer &) = delete;
+    Lexer(const Signature * const signature);
 
     TokenString lex(const QString &string) const;
 
-    Signature *getSignature() const;
+    const Signature *getSignature() const;
 
 private:
     bool isSeparator(const QChar &character) const;
@@ -24,7 +27,7 @@ private:
     int findTokenBreakpointIndex(const QString &string, int beginIndex) const;
     void lexCoreToken(TokenString &tokenString, int &index, const QString &string) const;
 
-    Signature *signature;
+    const Signature *signature;
 };
 
 #endif // LEXER_H

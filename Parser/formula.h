@@ -24,10 +24,10 @@ public:
     Formula &operator=(const Formula &other);
     Formula &operator=(Formula &&other) noexcept = default;
 
-    Formula(QDataStream &stream, Signature * const signature);
+    Formula(QDataStream &stream, const Signature * const signature);
     Formula(const QString &formula, const Parser &parser);
     static QLinkedList<Formula> deserializeList(QDataStream &stream, Signature * const signature); //Use templates later
-    static QVector<Formula> deserializeVector(QDataStream &stream, Signature * const signature);
+    static QVector<Formula> deserializeVector(QDataStream &stream, const Signature * const signature);
     static Formula deserialize(QDataStream &stream, Signature * const signature);
 
     bool operator==(const Formula &other) const;

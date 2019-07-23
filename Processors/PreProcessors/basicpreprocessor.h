@@ -7,12 +7,15 @@
 class BasicPreProcessor : public BasicProcessor
 {
 public:
-    BasicPreProcessor();
-    BasicPreProcessor(Signature * const signature);
+    BasicPreProcessor(const Signature * const signature);
 
     QString processString(const QString &string) const override;
 
     QString toString() const override;
+
+protected:
+    void serialize(QDataStream &stream) const override;
+    void deserialize(QDataStream &stream) override;
 
 private:
     struct AuxiliaryTokenRecord
@@ -39,6 +42,8 @@ private:
     void moveOperator(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &leftParenthesisInsertIterator,
                       const TokenStringWrapperIterator &tokenStringIter) const;
     void processToken(TokenStringWrapper &tokenString, const TokenStringWrapperIterator &tokenStringIter, const AuxiliaryTokenRecord &record) const;
+
+
 };
 
 #endif // BASICPREPROCESSOR_H

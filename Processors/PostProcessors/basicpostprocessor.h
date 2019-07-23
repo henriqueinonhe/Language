@@ -7,13 +7,16 @@ class BasicPostProcessor : public BasicProcessor
 {
 public:
     BasicPostProcessor();
-    BasicPostProcessor(Signature * const signature);
+    BasicPostProcessor(const Signature * const signature);
 
     QString processString(const QString &string) const override;
 
     QString toString() const override;
 
 protected:
+    void serialize(QDataStream &stream) const override;
+    void deserialize(QDataStream &stream) override;
+
     struct SubSentenceRecord
     {
         TokenStringWrapperIterator operatorIterator;

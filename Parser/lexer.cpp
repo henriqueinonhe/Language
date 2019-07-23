@@ -3,7 +3,7 @@
 #include <QString>
 #include "tokenstring.h"
 
-Lexer::Lexer(Signature * const signature) :
+Lexer::Lexer(const Signature * const signature) :
     signature(signature)
 {
     if(signature == nullptr)
@@ -26,7 +26,7 @@ void Lexer::lexCoreToken(TokenString &tokenString, int &index, const QString &st
     index = endTokenIndex;
 }
 
-Signature *Lexer::getSignature() const
+const Signature *Lexer::getSignature() const
 {
     return signature;
 }

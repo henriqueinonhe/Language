@@ -11,6 +11,8 @@
 #include <QVector>
 #include <QLinkedList>
 
+using namespace std;
+
 class QDataStream;
 
 namespace QtDeserialization {
@@ -20,6 +22,12 @@ namespace QtDeserialization {
     unsigned int deserializeUInt(QDataStream &stream);
     QString deserializeQString(QDataStream &stream);
     QStringList deserializeQStringList(QDataStream &stream);
+
+    template <typename T>
+    shared_ptr<T> deserializeSharedPtr(QDataStream &stream)
+    {
+        return make_shared<T>(stream);
+    }
 
     template <typename T, typename ... Args>
     QVector<T> deserializeQVector(QDataStream &stream)

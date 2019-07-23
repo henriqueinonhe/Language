@@ -15,8 +15,6 @@ public:
 
     ~ClassicFunctionNotationPreProcessor();
 
-private:
-    Signature *signature;
 };
 
 #endif // CLASSICFUNCTIONNOTATIONPREPROCESSOR_H

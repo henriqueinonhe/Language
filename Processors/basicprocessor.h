@@ -15,7 +15,7 @@ public:
     BasicProcessor &operator =(const BasicProcessor &) = delete;
     BasicProcessor &operator =(BasicProcessor &&) = delete;
 
-    BasicProcessor(Signature * const signature);
+    BasicProcessor(const Signature * const signature);
 
     void addTokenRecord(const QString &token,
                         const unsigned int position,
@@ -31,13 +31,16 @@ public:
     unsigned int getOperatorPosition(const QString &tokenString) const;
     BasicProcessorTokenRecord::Associativity getOperatorAssociativity(const QString &tokenString) const;
 
-    virtual QString processString(const QString &string) const = 0;
+    virtual QString processString(const QString &string) const override = 0;
 
-    QString toString() const = 0;
+    QString toString() const override = 0;
 
     virtual ~BasicProcessor() = default;
 
 protected:
+    void serialize(QDataStream &stream) const override;
+    void deserialize(QDataStream &stream) override;
+
     struct TokenWrapper
     {
         TokenWrapper();
@@ -77,7 +80,6 @@ protected:
     bool tokenNeedsSubsequentSeparation(const TokenStringWrapper &tokenString, const TokenStringWrapperIterator &iter) const;
 
     QLinkedList<BasicProcessorTokenRecord> tokenRecords;
-    Signature *signature;
 
 private:
     void checkExistsConflictingTokenRecord(const QString &token);

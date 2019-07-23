@@ -6,7 +6,7 @@ BasicPostProcessor::BasicPostProcessor() : BasicProcessor (nullptr)
 
 }
 
-BasicPostProcessor::BasicPostProcessor(Signature * const signature) :
+BasicPostProcessor::BasicPostProcessor(const Signature * const signature) :
     BasicProcessor(signature)
 {
 
@@ -47,6 +47,16 @@ QString BasicPostProcessor::processString(const QString &string) const
 QString BasicPostProcessor::toString() const
 {
     return "Basic PostProcessor (Operator position, precedence and associativity)";
+}
+
+void BasicPostProcessor::serialize(QDataStream &stream) const
+{
+    //TODO
+}
+
+void BasicPostProcessor::deserialize(QDataStream &stream)
+{
+    //TODO
 }
 
 void BasicPostProcessor::moveOperator(BasicProcessor::TokenStringWrapper &tokenString, const BasicProcessor::TokenStringWrapperIterator &mainOperatorIter, const BasicProcessor::TokenStringWrapperIterator &operatorInsertIter) const

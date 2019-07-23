@@ -4,7 +4,7 @@
 #include "parser.h"
 #include <QDataStream>
 
-Formula::Formula(QDataStream &stream, Signature * const signature)
+Formula::Formula(QDataStream &stream, const Signature * const signature)
 {
     Type wffType(stream);
     QString formattedString;
@@ -36,7 +36,7 @@ QLinkedList<Formula> Formula::deserializeList(QDataStream &stream, Signature * c
     return list;
 }
 
-QVector<Formula> Formula::deserializeVector(QDataStream &stream, Signature * const signature)
+QVector<Formula> Formula::deserializeVector(QDataStream &stream, const Signature * const signature)
 {
     int size;
     stream >> size;

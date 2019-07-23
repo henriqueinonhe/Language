@@ -7,7 +7,7 @@ Formatter::Formatter()
 }
 
 Formatter::Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors) :
-    processors(deserializeEntries(stream, processors))
+    processorsEntries(deserializeEntries(stream, processors))
 {
 
 }
@@ -21,12 +21,12 @@ void Formatter::deserialize(QDataStream &stream, const QVector<StringProcessor *
     {
         entries.push_back(ProcessorEntry(stream, processors[index]));
     }
-    this->processors = entries;
+    this->processorsEntries = entries;
 }
 
 QString Formatter::format(QString string) const
 {
-    for(const auto &processor : processors)
+    for(const auto &processor : processorsEntries)
     {
         string = processor.processString(string);
     }
@@ -36,14 +36,14 @@ QString Formatter::format(QString string) const
 
 void Formatter::addProcessor(StringProcessor *processor)
 {
-    processors.push_back(ProcessorEntry(processor));
+    processorsEntries.push_back(ProcessorEntry(processor));
 }
 
 void Formatter::removeProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors.remove(static_cast<int>(index));
+    processorsEntries.remove(static_cast<int>(index));
 }
 
 void Formatter::moveProcessor(const unsigned int locationIndex, const unsigned int targetIndex)
@@ -52,36 +52,36 @@ void Formatter::moveProcessor(const unsigned int locationIndex, const unsigned i
     checkIndexIsWithinBounds(locationIndex);
     checkIndexIsWithinBounds(targetIndex);
 
-    ProcessorEntry tempLocationProcessor = processors[static_cast<int>(locationIndex)];
-    processors.remove(static_cast<int>(locationIndex));
-    processors.insert(static_cast<int>(targetIndex), tempLocationProcessor);
+    ProcessorEntry tempLocationProcessor = processorsEntries[static_cast<int>(locationIndex)];
+    processorsEntries.remove(static_cast<int>(locationIndex));
+    processorsEntries.insert(static_cast<int>(targetIndex), tempLocationProcessor);
 }
 
 void Formatter::turnOnProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors[static_cast<int>(index)].turnOn();
+    processorsEntries[static_cast<int>(index)].turnOn();
 }
 
 void Formatter::turnOffProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors[static_cast<int>(index)].turnOff();
+    processorsEntries[static_cast<int>(index)].turnOff();
 }
 
 void Formatter::toggleProcessor(const unsigned int index)
 {
     checkIndexIsWithinBounds(index);
 
-    processors[static_cast<int>(index)].toggle();
+    processorsEntries[static_cast<int>(index)].toggle();
 }
 
 QString Formatter::toString() const
 {
     QString string;
-    for(const auto &entry : processors)
+    for(const auto &entry : processorsEntries)
     {
         string += entry.toString();
     }
@@ -103,7 +103,7 @@ QVector<Formatter::ProcessorEntry> Formatter::deserializeEntries(QDataStream &st
 
 void Formatter::checkIndexIsWithinBounds(const unsigned int index)
 {
-    if(index >= static_cast<unsigned int>(processors.size()))
+    if(index >= static_cast<unsigned int>(processorsEntries.size()))
     {
         throw std::invalid_argument("Processor index is out of bounds!");
     }
@@ -111,7 +111,7 @@ void Formatter::checkIndexIsWithinBounds(const unsigned int index)
 
 QDataStream &operator <<(QDataStream &stream, const Formatter &formatter)
 {
-    stream << formatter.processors;
+    stream << formatter.processorsEntries;
     return stream;
 }
 

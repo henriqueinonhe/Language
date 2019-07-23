@@ -20,9 +20,9 @@ public:
     Formatter &operator=(Formatter &&) noexcept = default;
     ~Formatter() noexcept = default;
 
-    Formatter(QDataStream &stream, const QVector<StringProcessor *> &processors);
+    Formatter(QDataStream &stream, const QVector<StringProcessor *> &processorsEntries);
 
-    void deserialize(QDataStream &stream, const QVector<StringProcessor *> &processors);
+    void deserialize(QDataStream &stream, const QVector<StringProcessor *> &processorsEntries);
 
     QString format(QString string) const;
 
@@ -102,10 +102,10 @@ private:
         friend QDataStream &operator <<(QDataStream &stream, const ProcessorEntry &entry);
     };
 
-    QVector<ProcessorEntry> deserializeEntries(QDataStream &stream, const QVector<StringProcessor *> &processors);
+    QVector<ProcessorEntry> deserializeEntries(QDataStream &stream, const QVector<StringProcessor *> &processorsEntries);
     void checkIndexIsWithinBounds(const unsigned int index);
 
-    QVector<ProcessorEntry> processors;
+    QVector<ProcessorEntry> processorsEntries;
 
     friend QDataStream &operator <<(QDataStream &stream, const Formatter &formatter);
     friend QDataStream &operator <<(QDataStream &stream, const ProcessorEntry &entry);

@@ -18,7 +18,8 @@ class Type
 public:
     Type(const Type &other);
     Type(Type &&) noexcept = default;
-    Type &operator= (Type &&) noexcept = default;
+    Type &operator =(const Type &other);
+    Type &operator =(Type &&) noexcept = default;
     ~Type() = default;
 
     Type(QDataStream &stream);
@@ -44,7 +45,6 @@ public:
 private:
     Type();
     Type(const TypeTokenString &typeString);
-    Type &operator =(const Type &other); //TODO This operation should be deleted
 
     unique_ptr<const TypeParsingTree> parsingTree;
 

@@ -21,7 +21,7 @@ public:
 
     TableSignature(QDataStream &stream);
 
-    virtual const Token *getTokenPointer(const QString &token) override;
+    virtual const Token *getTokenPointer(const QString &token) const override;
 
     void addToken(const Token &token);
 

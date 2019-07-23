@@ -19,9 +19,10 @@ bool TableSignature::tokenIsAlreadyPresentInSignature(const Token &token) const
     return tokenTable.find(token.getString().toStdString()) != tokenTable.end();
 }
 
-const Token *TableSignature::getTokenPointer(const QString &token)
+const Token *TableSignature::getTokenPointer(const QString &token) const
 {
-    if(tokenTable.find(token.toStdString()) == tokenTable.end())
+    auto targetTokenIter = tokenTable.find(token.toStdString());
+    if(targetTokenIter == tokenTable.end())
     {
         QString errorMsg = "This token (\"";
         errorMsg += token;
@@ -29,7 +30,7 @@ const Token *TableSignature::getTokenPointer(const QString &token)
 
         throw std::invalid_argument(errorMsg.toStdString());
     }
-    return tokenTable[token.toStdString()].get();
+    return targetTokenIter->second.get();
 }
 
 void TableSignature::pushTokenPointerToTable(const Token &token)

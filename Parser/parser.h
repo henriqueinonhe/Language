@@ -16,12 +16,17 @@ class Parser
 {
 public:
     Parser() = delete;
-    Parser(Signature * const signature, const Type &wellFormedFormulaType);
+    Parser(const Parser &other);
+    Parser(Parser &&other) noexcept;
+    Parser &operator =(const Parser &other);
+    Parser &operator =(Parser &&other) noexcept;
+    ~Parser() noexcept = default;
 
-    Parser &operator =(const Parser &) = delete;
+    Parser(QDataStream &stream, Signature * const signature);
+    Parser(const Signature * const signature, const Type &wellFormedFormulaType);
 
     Formula parse(const QString &sentence) const;
-    Signature * getSignature() const;
+    const Signature *getSignature() const;
 
 private:
     struct ArgumentOffsets
@@ -75,6 +80,9 @@ private:
     Lexer lexer;
     Type wellFormedFormulaType;
     mutable unique_ptr<ParsingTree> parsingTree;
+
+    friend QDataStream &operator <<(QDataStream &stream, const Parser &parser);
 };
+QDataStream &operator <<(QDataStream &stream, const Parser &parser);
 
 #endif // PARSER_H

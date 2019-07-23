@@ -11,7 +11,40 @@
 #include "parsingtreenode.h"
 #include <iostream>
 
-Parser::Parser(Signature * const signature, const Type &wellFormedFormulaType) :
+Parser::Parser(const Parser &other) :
+    lexer(other.lexer),
+    wellFormedFormulaType(other.wellFormedFormulaType)
+{
+}
+
+Parser::Parser(Parser &&other) noexcept :
+    lexer(std::move(other.lexer)),
+    wellFormedFormulaType(std::move(other.wellFormedFormulaType))
+{
+
+}
+
+Parser &Parser::operator =(const Parser &other)
+{
+    this->lexer = other.lexer;
+    this->wellFormedFormulaType = other.wellFormedFormulaType;
+    return *this;
+}
+
+Parser &Parser::operator =(Parser &&other) noexcept
+{
+    this->lexer = std::move(other.lexer);
+    this->wellFormedFormulaType = std::move(other.wellFormedFormulaType);
+    return *this;
+}
+
+Parser::Parser(QDataStream &stream, Signature * const signature) :
+    lexer(signature),
+    wellFormedFormulaType(stream)
+{
+}
+
+Parser::Parser(const Signature * const signature, const Type &wellFormedFormulaType) :
     lexer(signature),
     wellFormedFormulaType(wellFormedFormulaType)
 {
@@ -28,7 +61,7 @@ Formula Parser::parse(const QString &sentence) const
     return Formula(parsingTree.release());
 }
 
-Signature *Parser::getSignature() const
+const Signature *Parser::getSignature() const
 {
     return lexer.getSignature();
 }
@@ -415,22 +448,8 @@ void Parser::propagateFreeAndBoundVariables(ParsingTreeNode *parentNode) const
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+QDataStream &operator <<(QDataStream &stream, const Parser &parser)
+{
+    stream << parser.wellFormedFormulaType;
+    return stream;
+}

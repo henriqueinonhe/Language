@@ -2,7 +2,7 @@
 #include <QString>
 
 ClassicFunctionNotationPreProcessor::ClassicFunctionNotationPreProcessor(Signature *signature) :
-    signature(signature)
+    StringProcessor (signature)
 {
 
 }
