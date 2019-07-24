@@ -52,6 +52,7 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
 
     unsigned int compositionOperatorOffset;
     const auto compositionOperatorCompensation = 1;
+    const auto zeroIndexCompensation = 1;
 
     if(tokenString.first().sort() == TypeToken::Sort::PrimitiveType)
     {
@@ -62,9 +63,11 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
         try
         {
             compositionOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                                   TypeToken("("),
-                                                                                   TypeToken(")")) +
-                                                                                   compositionOperatorCompensation;
+                                                                                          TypeToken("("),
+                                                                                          TypeToken(")"),
+                                                                                          0,
+                                                                                          tokenString.size() - zeroIndexCompensation) +
+                                                                                          compositionOperatorCompensation;
         }
         catch(std::invalid_argument &exception)
         {
@@ -77,9 +80,11 @@ unsigned int TypeParser::findCompositionOperatorOffsetAndValidateLeftSideArgumen
     else if(tokenString.first().sort() == TypeToken::Sort::LeftSquareBracket)
     {
         compositionOperatorOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex(tokenString,
-                                                                               TypeToken("["),
-                                                                               TypeToken("]")) +
-                                                                               compositionOperatorCompensation;
+                                                                                      TypeToken("["),
+                                                                                      TypeToken("]"),
+                                                                                      0,
+                                                                                      tokenString.size() - zeroIndexCompensation) +
+                                                                                      compositionOperatorCompensation;
     }
     else
     {

@@ -608,6 +608,7 @@ TEST_CASE("Parser Propositional Logic")
     CHECK_THROWS(parser.parse("((Not P))"));
     CHECK_THROWS(parser.parse("(Not (P))"));
     CHECK_THROWS(parser.parse(")Not P("));
+    CHECK_THROWS(parser.parse("(Not (Or (Not P) (Not (Not Q)))")); //Missing one right parenthesis
 
     //Fail Due To Type Checking
     CHECK_THROWS(parser.parse("(Not (And P Q) P)"));

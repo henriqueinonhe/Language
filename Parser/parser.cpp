@@ -215,11 +215,13 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
 
     const auto tokenString = currentNodeIter->getTokenString();
     const auto firstDelimiterCompensation = 1;
-    const auto lastOffset = tokenString.size() - firstDelimiterCompensation;
+    const auto lastDelimiterCompensation = 1;
+    const auto zeroIndexCompensation = 1;
+    const auto lastOffset = tokenString.size() - lastDelimiterCompensation - zeroIndexCompensation;
     unsigned int argumentBeginOffset = firstDelimiterCompensation;
     unsigned int argumentEndOffset = 0;
 
-    while(argumentBeginOffset < lastOffset)
+    while(argumentBeginOffset <= lastOffset)
     {
         if(tokenString[argumentBeginOffset].getString() == ")")
         {
@@ -236,14 +238,15 @@ QVector<Parser::ArgumentOffsets> Parser::separateArgumentOffsets(ParsingTreeIter
                 argumentEndOffset = ParsingAuxiliaryTools::findDelimiterScopeEndIndex<TokenString>(tokenString,
                                                                                                    PunctuationToken("("),
                                                                                                    PunctuationToken(")"),
-                                                                                                   argumentBeginOffset);
+                                                                                                   argumentBeginOffset,
+                                                                                                   lastOffset);
             }
             catch(const std::invalid_argument)
             {
                 throw ParsingErrorException<TokenString>("There are unmatched parenthesis!",
-                                            argumentBeginOffset,
-                                            argumentBeginOffset,
-                                            currentNodeIter.goToRoot()->getTokenString());
+                                                         argumentBeginOffset,
+                                                         argumentBeginOffset,
+                                                         currentNodeIter.goToRoot()->getTokenString());
             }
         }
         else

@@ -16,30 +16,32 @@ template<class StringClass, class CharClass>
 unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
                                         const CharClass &leftDelimiter,
                                         const CharClass &rightDelimiter,
-                                        unsigned int startPos = 0,
+                                        unsigned int startIndex,
+                                        unsigned int endIndex,
                                         const ParsingDirection direction = ParsingDirection::LeftToRight)
 {
     unsigned int leftDelimiterCount = 0;
     unsigned int rightDelimiterCount = 0;
-    unsigned int &index = startPos;
+    unsigned int &index = startIndex;
+    const unsigned int zeroIndexCompensation = 1;
 
     if(direction == ParsingDirection::LeftToRight)
     {
+        const unsigned int subSentenceSize = endIndex + zeroIndexCompensation;
         do
         {
             if(sentence[index] == leftDelimiter)
             {
                 leftDelimiterCount++;
             }
-
-            if(sentence[index] == rightDelimiter)
+            else if(sentence[index] == rightDelimiter)
             {
                 rightDelimiterCount++;
             }
 
             index++;
 
-            if(index == sentence.size())
+            if(index == subSentenceSize)
             {
                 if(leftDelimiterCount != rightDelimiterCount)
                 {
@@ -54,21 +56,21 @@ unsigned int findDelimiterScopeEndIndex(const StringClass &sentence,
     }
     else if(direction == ParsingDirection::RightToLeft)
     {
+        const unsigned int subSentenceBeforeFirstIndex = endIndex - zeroIndexCompensation;
         do
         {
             if(sentence[index] == leftDelimiter)
             {
                 leftDelimiterCount++;
             }
-
-            if(sentence[index] == rightDelimiter)
+            else if(sentence[index] == rightDelimiter)
             {
                 rightDelimiterCount++;
             }
 
             index--;
 
-            if(index == 0)
+            if(index == subSentenceBeforeFirstIndex)
             {
                 if(leftDelimiterCount != rightDelimiterCount)
                 {
