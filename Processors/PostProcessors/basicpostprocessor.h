@@ -6,8 +6,8 @@
 class BasicPostProcessor : public BasicProcessor
 {
 public:
-    BasicPostProcessor();
     BasicPostProcessor(const Signature * const signature);
+    BasicPostProcessor(QDataStream &stream, const Signature * const signature);
 
     QString processString(const QString &string) const override;
 

@@ -57,6 +57,5 @@ QString CoreToken::validateCoreTokenString(const QString &tokenString) const
 QDataStream &operator <<(QDataStream &stream, const CoreToken &token)
 {
     token.serialize(stream);
-
     return stream;
 }

@@ -34,6 +34,8 @@ public:
     const Token &first() const;
     const Token &last() const;
 
+    TokenString &replace(const Token &before, const Token * after);
+
     bool isLastIndex(const unsigned int index) const;
     bool indexIsWithinBounds(const unsigned int index) const;
     bool isEmpty() const;

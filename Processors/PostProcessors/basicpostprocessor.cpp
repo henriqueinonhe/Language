@@ -1,13 +1,14 @@
 #include "basicpostprocessor.h"
 #include "signature.h"
 
-BasicPostProcessor::BasicPostProcessor() : BasicProcessor (nullptr)
+BasicPostProcessor::BasicPostProcessor(const Signature * const signature) :
+    BasicProcessor(signature)
 {
 
 }
 
-BasicPostProcessor::BasicPostProcessor(const Signature * const signature) :
-    BasicProcessor(signature)
+BasicPostProcessor::BasicPostProcessor(QDataStream &stream, const Signature * const signature) :
+    BasicProcessor(stream, signature)
 {
 
 }
@@ -32,6 +33,12 @@ QString BasicPostProcessor::processString(const QString &string) const
     auto tokenString = wrapTokenString(string);
 
     //2. Processing
+    //TODO Refactor
+    if(tokenString.size() == 1)
+    {
+        return string;
+    }
+
     SubSentenceRecord firstRecord;
     setupFirstRecord(firstRecord, tokenString);
 

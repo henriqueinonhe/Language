@@ -17,7 +17,7 @@ public:
     TableSignature(TableSignature &&) noexcept = default;
     TableSignature &operator =(const TableSignature &) = default; //Idem
     TableSignature &operator =(TableSignature &&) noexcept = default;
-    ~TableSignature() = default;
+    ~TableSignature() noexcept = default;
 
     TableSignature(QDataStream &stream);
 
@@ -35,6 +35,8 @@ protected:
     virtual void deserialize(QDataStream &stream) override;
 
 private:
+    virtual unique_ptr<Token> deserializeTokenPtr(QDataStream &stream) const;
+
     bool tokenIsAlreadyPresentInSignature(const Token &token) const;
     void pushTokenPointerToTable(const Token &token);
 
@@ -48,7 +50,5 @@ QDataStream &operator <<(QDataStream &stream, const TableSignature &signature);
 QDataStream &operator >>(QDataStream &stream, TableSignature &signature);
 QDataStream &operator <<(QDataStream &stream, const unique_ptr<Token> &token);
 QDataStream &operator >>(QDataStream &stream, unique_ptr<Token> &token);
-QDataStream &operator <<(QDataStream &stream, const unordered_map<string, unique_ptr<Token>> &map);
-QDataStream &operator >>(QDataStream &stream, unordered_map<string, unique_ptr<Token>> &map);
 
 #endif // TABLESIGNATURE_H

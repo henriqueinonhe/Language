@@ -94,6 +94,18 @@ const Token &TokenString::last() const
     return (*this)[this->size() - zeroIndexCompensation];
 }
 
+TokenString &TokenString::replace(const Token &before, const Token *after)
+{
+    for(auto &token : tokenList)
+    {
+        if(*token == before)
+        {
+            token = after;
+        }
+    }
+    return *this;
+}
+
 bool TokenString::indexIsWithinBounds(const unsigned int index) const
 {
     return index < this->size();

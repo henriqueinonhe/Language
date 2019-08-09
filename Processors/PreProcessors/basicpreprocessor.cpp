@@ -7,6 +7,12 @@ BasicPreProcessor::BasicPreProcessor(const Signature * const signature) :
 
 }
 
+BasicPreProcessor::BasicPreProcessor(QDataStream &stream, const Signature * const signature) :
+    BasicProcessor(stream, signature)
+{
+
+}
+
 
 
 bool BasicPreProcessor::operatorParenthesisAreAlreadyPlaced(const TokenStringWrapper &tokenString, const TokenStringWrapperIterator &leftParenthesisIterator, const TokenStringWrapperIterator &rightParenthesisIterator) const

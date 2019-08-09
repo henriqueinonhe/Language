@@ -17,7 +17,7 @@ public:
     Token() = delete;
     Token &operator =(const Token &other) = delete;
     Token &operator =(Token &&) = delete;
-    virtual ~Token() = default;
+    virtual ~Token() noexcept = default;
 
     Token(QDataStream &stream);
     Token(const QString &string);

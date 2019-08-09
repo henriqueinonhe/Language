@@ -8,6 +8,7 @@ class BasicPreProcessor : public BasicProcessor
 {
 public:
     BasicPreProcessor(const Signature * const signature);
+    BasicPreProcessor(QDataStream &stream, const Signature * const signature);
 
     QString processString(const QString &string) const override;
 

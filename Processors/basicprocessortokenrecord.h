@@ -16,6 +16,8 @@ public:
         Right
     };
 
+    static Associativity associativityFromString(const QString &string);
+
     BasicProcessorTokenRecord();
     BasicProcessorTokenRecord(const CoreToken &token,
                               const unsigned int operatorPosition,
@@ -65,6 +67,15 @@ private:
     friend class BasicProcessor;
     friend class BasicPreProcessor;
     friend class BasicPostProcessor;
+    friend QDataStream &operator <<(QDataStream &stream, const BasicProcessorTokenRecord &record);
+    friend QDataStream &operator >>(QDataStream &stream, BasicProcessorTokenRecord &record);
 };
+
+QDataStream &operator <<(QDataStream &stream, const BasicProcessorTokenRecord &record);
+QDataStream &operator >>(QDataStream &stream, BasicProcessorTokenRecord &record);
+QDataStream &operator <<(QDataStream &stream, const BasicProcessorTokenRecord::TokenSubRecord &subRecord);
+QDataStream &operator >>(QDataStream &stream, BasicProcessorTokenRecord::TokenSubRecord &subRecord);
+QDataStream &operator <<(QDataStream &stream, const BasicProcessorTokenRecord::Associativity &associativity);
+QDataStream &operator >>(QDataStream &stream, BasicProcessorTokenRecord::Associativity &associativity);
 
 #endif // BASICPROCESSORTOKENRECORD_H

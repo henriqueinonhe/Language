@@ -10,7 +10,7 @@ public:
     CoreToken() = delete;
     CoreToken &operator =(const CoreToken &other) = default;
     CoreToken &operator =(CoreToken &&) = delete;
-    virtual ~CoreToken() = default;
+    virtual ~CoreToken() noexcept = default;
 
     CoreToken(QDataStream &stream);
     CoreToken(const QString &string, const Type &type);

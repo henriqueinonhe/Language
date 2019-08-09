@@ -15,6 +15,7 @@ public:
     BasicProcessor &operator =(const BasicProcessor &) = delete;
     BasicProcessor &operator =(BasicProcessor &&) = delete;
 
+    BasicProcessor(QDataStream &stream, const Signature * const signature);
     BasicProcessor(const Signature * const signature);
 
     void addTokenRecord(const QString &token,

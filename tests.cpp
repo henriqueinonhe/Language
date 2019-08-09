@@ -32,6 +32,7 @@
 #include <QDataStream>
 #include "bindingrecord.h"
 #include <QBuffer>
+#include "../General Sources/catchprinters.hpp"
 
 TEST_CASE("TypeToken")
 {
@@ -609,6 +610,7 @@ TEST_CASE("Parser Propositional Logic")
     CHECK_THROWS(parser.parse("(Not (P))"));
     CHECK_THROWS(parser.parse(")Not P("));
     CHECK_THROWS(parser.parse("(Not (Or (Not P) (Not (Not Q)))")); //Missing one right parenthesis
+    CHECK_THROWS(parser.parse("(Not (And P Q)"));//Missing one right parenthesis
 
     //Fail Due To Type Checking
     CHECK_THROWS(parser.parse("(Not (And P Q) P)"));
@@ -785,9 +787,12 @@ TEST_CASE("Token String Methods")
 
     Lexer lexer(&signature);
 
-    TokenString tokenString = lexer.lex("0 1 2 3 4 6 7 8 9");
-    //tokenString.insert(5, "5");
-    //CHECK(tokenString.toString() == "0123456789");
+    TokenString tokenString = lexer.lex("0 1 2 3 4 5 6 7 8 9");
+    CHECK(tokenString.formattedString() == "0 1 2 3 4 5 6 7 8 9");
+
+    //replace(const Token &, const Token *) Post Conditions
+    CHECK(tokenString.replace(CoreToken("5", Type("i")), signature.getTokenPointer("2")).formattedString() == "0 1 2 3 4 2 6 7 8 9");
+    CHECK(tokenString.replace(CoreToken("5", Type("o")), signature.getTokenPointer("4")).formattedString() == "0 1 2 3 4 2 6 7 8 9");
 }
 
 TEST_CASE("PreProcessed Elementary One Digit Binary Arithmetic")
@@ -926,6 +931,7 @@ TEST_CASE("Formatter")
     postFormatter.addProcessor(&postProcessor);
     CHECK(preFormatter.format("P ^ ~ Q -> ~ Q ^ P") == "(-> (^ P (~ Q)) (^ (~ Q) P))");
     CHECK(postFormatter.format("(-> (^ P (~ Q)) (^ (~ Q) P))").toStdString() == "P ^ ~ Q -> ~ Q ^ P");
+    CHECK(postFormatter.format("P").toStdString() == "P");
 
     //Serialization
     QBuffer buffer;

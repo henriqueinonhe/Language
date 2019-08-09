@@ -1,10 +1,12 @@
 #include "tablesignature.h"
 #include "punctuationtoken.h"
 #include <QDataStream>
+#include "variabletoken.h"
+#include "bindingtoken.h"
 
 TableSignature::TableSignature(QDataStream &stream)
 {
-    stream >> tokenTable;
+    deserialize(stream);
 }
 
 TableSignature::TableSignature()
@@ -40,13 +42,13 @@ void TableSignature::pushTokenPointerToTable(const Token &token)
 
 QDataStream &operator <<(QDataStream &stream, const TableSignature &signature)
 {
-    stream << signature.tokenTable;
+    signature.serialize(stream);
     return stream;
 }
 
 QDataStream &operator >>(QDataStream &stream, TableSignature &signature)
 {
-    stream >> signature.tokenTable;
+    signature.deserialize(stream);
     return stream;
 }
 
@@ -99,12 +101,56 @@ bool TableSignature::equalTokenTable(const TableSignature &other) const
 
 void TableSignature::serialize(QDataStream &stream) const
 {
-    stream << tokenTable;
+    stream << tokenTable.size();
+    for(const auto &element : tokenTable)
+    {
+        stream << QString(element.first.data());
+        stream << *element.second;
+    }
 }
 
 void TableSignature::deserialize(QDataStream &stream)
 {
-    stream >> tokenTable;
+    unsigned int size;
+    stream >> size;
+    for(unsigned int count = 0; count < size; count++)
+    {
+        QString key;
+        stream >> key;
+
+        tokenTable.emplace(key.toStdString(), deserializeTokenPtr(stream));
+    }
+}
+
+unique_ptr<Token> TableSignature::deserializeTokenPtr(QDataStream &stream) const
+{
+    QString tokenClass;
+    stream >> tokenClass;
+
+    if(tokenClass == "PunctuationToken")
+    {
+        return unique_ptr<Token>(new PunctuationToken(stream));
+    }
+    else if(tokenClass == "CoreToken")
+    {
+        return unique_ptr<Token>(new CoreToken(stream));
+    }
+    else if(tokenClass == "BindingToken")
+    {
+        return unique_ptr<Token>(new BindingToken(stream));
+    }
+    else if(tokenClass == "VariableToken")
+    {
+        return unique_ptr<Token>(new VariableToken(stream));
+    }
+    else
+    {
+        QString errorMsg;
+        errorMsg += "\"";
+        errorMsg += tokenClass;
+        errorMsg += "\" is not a valid token class!";
+        throw invalid_argument(errorMsg.toStdString());
+    }
 }
 
 QDataStream &operator <<(QDataStream &stream, const unique_ptr<Token> &token)
@@ -121,29 +167,3 @@ QDataStream &operator >>(QDataStream &stream, unique_ptr<Token> &token)
     return stream;
 }
 
-QDataStream &operator <<(QDataStream &stream, const unordered_map<string, unique_ptr<Token> > &map)
-{
-    stream << map.size();
-    for(const auto &element : map)
-    {
-        stream << QString(element.first.data());
-        stream << *element.second;
-    }
-    return stream;
-}
-
-QDataStream &operator >>(QDataStream &stream, unordered_map<string, unique_ptr<Token> > &map)
-{
-    unsigned int size;
-    stream >> size;
-    for(unsigned int count = 0; count < size; count++)
-    {
-        QString key;
-        stream >> key;
-        unique_ptr<Token> token;
-        stream >> token;
-
-        map.emplace(key.toStdString(), unique_ptr<Token>(token.release()));
-    }
-    return stream;
-}

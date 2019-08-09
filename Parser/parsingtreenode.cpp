@@ -104,6 +104,11 @@ unsigned int ParsingTreeNode::getEndIndex() const
     return endIndex;
 }
 
+bool ParsingTreeNode::hasSingleToken() const
+{
+    return beginIndex == endIndex;
+}
+
 unsigned int ParsingTreeNode::getBeginIndex() const
 {
     return beginIndex;

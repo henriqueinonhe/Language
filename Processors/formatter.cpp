@@ -78,15 +78,15 @@ void Formatter::toggleProcessor(const unsigned int index)
     processorsEntries[static_cast<int>(index)].toggle();
 }
 
-QString Formatter::toString() const
+QStringList Formatter::toStringList() const
 {
-    QString string;
+    QStringList stringList;
     for(const auto &entry : processorsEntries)
     {
-        string += entry.toString();
+        stringList << entry.toString();
     }
 
-    return string;
+    return stringList;
 }
 
 QVector<Formatter::ProcessorEntry> Formatter::deserializeEntries(QDataStream &stream, const QVector<StringProcessor *> &processors)

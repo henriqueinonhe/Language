@@ -38,6 +38,8 @@ public:
     unsigned int getBeginIndex() const;
     unsigned int getEndIndex() const;
 
+    bool hasSingleToken() const;
+
     Type getType() const;
     void setType(const Type &value);
 

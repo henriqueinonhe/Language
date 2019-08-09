@@ -2,6 +2,14 @@
 #include "signature.h"
 #include "tokenstring.h"
 #include "lexer.h"
+#include "qtclassesdeserialization.h"
+
+BasicProcessor::BasicProcessor(QDataStream &stream, const Signature * const signature) :
+    StringProcessor(signature),
+    tokenRecords(QtDeserialization::deserializeQLinkedList<BasicProcessorTokenRecord>(stream))
+{
+
+}
 
 BasicProcessor::BasicProcessor(const Signature * const signature) :
     StringProcessor (signature)
@@ -158,12 +166,12 @@ BasicProcessorTokenRecord::Associativity BasicProcessor::getOperatorAssociativit
 
 void BasicProcessor::serialize(QDataStream &stream) const
 {
-    //TODO
+    stream << tokenRecords;
 }
 
 void BasicProcessor::deserialize(QDataStream &stream)
 {
-    //TODO
+    stream >> tokenRecords;
 }
 
 const BasicProcessorTokenRecord *BasicProcessor::getTokenRecordPtr(const QString &token) const

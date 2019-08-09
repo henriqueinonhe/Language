@@ -34,7 +34,7 @@ public:
     void turnOffProcessor(const unsigned int index);
     void toggleProcessor(const unsigned int index);
 
-    QString toString() const;
+    QStringList toStringList() const;
 
 private:
     class ProcessorEntry
