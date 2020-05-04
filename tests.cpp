@@ -32,7 +32,7 @@
 #include <QDataStream>
 #include "bindingrecord.h"
 #include <QBuffer>
-#include "../General Sources/catchprinters.hpp"
+//#include "../General Sources/catchprinters.hpp"
 
 TEST_CASE("TypeToken")
 {
@@ -1111,6 +1111,7 @@ TEST_CASE("First Order Logic With Pre and Post Processor")
 
 }
 
+/*
 TEST_CASE("Serialization")
 {
     QFile file("C:/Users/Henrique/Documents/Qt Projects/Language/test.dat");
@@ -1343,4 +1344,4 @@ TEST_CASE("Serialization")
         CHECK(f4 == f8);
     }
 
-}
+}*/
